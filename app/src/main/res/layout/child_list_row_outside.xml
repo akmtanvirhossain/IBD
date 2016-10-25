@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools" android:id="@+id/bariListRow"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="#FFFFFF"
+	android:orientation="vertical"  android:layout_marginTop="0sp" android:layout_marginBottom="0sp">
+
+    <View android:layout_height="8dip" android:background="#006699" android:layout_width="match_parent"/>
+	<LinearLayout android:id="@+id/secChildNameRow" android:layout_gravity="center_vertical" android:paddingTop="5sp" android:paddingBottom="5sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+		android:layout_width="match_parent"
+		android:layout_height="35sp" android:gravity="left">
+        <TextView android:layout_width="130sp" android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" android:id="@+id/lblChildName"
+            android:text="শিশুর নাম" android:textColor="#006699"
+            android:textSize="18sp" />
+
+		<TextView
+			android:id="@+id/ChildName"  android:textColor="#006699"
+			android:layout_width="320sp"  android:layout_gravity="center_vertical"
+			android:layout_height="wrap_content"
+			android:text=""
+			android:textSize="18sp" />
+        <TextView
+            android:id="@+id/childStatus"  android:textColor="#006699" android:gravity="right"
+            android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="বয়স উত্তীর্ণ"
+            android:textSize="18sp" />
+
+	</LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+    <LinearLayout android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30sp" android:gravity="left">
+        <TextView android:layout_width="130sp" android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="চলতি আইডি" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/CID"  android:layout_gravity="center_vertical"
+            android:layout_width="180sp"
+            android:layout_height="wrap_content"
+            android:text=""  android:textColor="#000000"
+            android:textSize="18sp" />
+        <TextView android:layout_width="90sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="স্থায়ী আইডি" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/PID"  android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""  android:textColor="#000000"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+    <LinearLayout android:layout_marginBottom="3sp" android:layout_marginTop="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp" android:gravity="left">
+        <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical" android:id="@+id/lblFM_Husband"
+            android:layout_height="wrap_content"
+            android:text="পিতা/মাতা"  android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/FatherMother"  android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""  android:textColor="#000000"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+    <LinearLayout android:id="@+id/secChildDob" android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30sp" android:gravity="left">
+        <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="বয়স" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/Age"  android:textColor="#000000"
+            android:layout_width="180sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+        <TextView android:layout_width="90sp"
+            android:layout_height="wrap_content"  android:layout_gravity="center_vertical"
+            android:text="জন্ম তারিখ" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/Sex"  android:textColor="#000000"
+            android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+
+    </LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+    <LinearLayout android:id="@+id/secPregStatus" android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30sp" android:gravity="left">
+        <TextView android:layout_width="130sp"
+            android:layout_height="wrap_content"  android:layout_gravity="center_vertical"
+            android:text="জন্ম তারিখ" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/DOB_MWRA"  android:textColor="#000000"
+            android:layout_width="120sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/PregStatus"  android:textColor="#000000"
+            android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+
+    </LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+
+    <LinearLayout android:visibility="gone" android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30sp" android:gravity="left">
+        <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="DSS Cluster" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lblDSSCluster"  android:textColor="#000000"
+            android:layout_width="180sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+        <TextView android:layout_width="90sp"
+            android:layout_height="wrap_content"  android:layout_gravity="center_vertical"
+            android:text="DSS Block" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lblDSSBlock"  android:textColor="#000000"
+            android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <View android:visibility="gone" android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+
+    <LinearLayout android:id="@+id/secContactNo" android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30sp" android:gravity="left">
+        <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="Contact #" android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lblContactNo"  android:textColor="#000000"
+            android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+
+    <LinearLayout android:id="@+id/secVisitStatus" android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="30sp" android:gravity="left">
+        <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="Visit Status" android:textColor="#D2288E"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lblVisitStatus"  android:textColor="#D2288E"
+            android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+
+    </LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+    <LinearLayout android:id="@+id/secCommandButton" android:paddingTop="5sp" android:paddingBottom="0sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="50sp" android:gravity="left">
+        <Button android:id="@+id/btnOut" android:visibility="gone" android:layout_marginLeft="0sp" android:background="@drawable/button_style_red" android:textColor="#ffffff"
+            android:layout_width="40sp"
+            android:layout_height="30sp"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="5sp"
+            android:text="Out" android:textSize="14sp"/>
+
+        <Button android:id="@+id/btnAdditionalFollowUp" android:layout_marginLeft="5sp" android:background="@drawable/button_style"
+            android:layout_width="150sp"
+            android:layout_height="30sp"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="0sp"
+            android:text="অতিরিক্ত পরিদর্শন" android:textSize="14sp"/>
+
+        <Button android:id="@+id/btnAdditionalFollowUp_R" android:layout_marginLeft="5sp" android:background="@drawable/button_style_blue"
+            android:layout_width="150sp"
+            android:layout_height="30sp"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="5sp"
+            android:text="R (অতিরিক্ত)" android:textSize="14sp" android:textColor="#ffffff"/>
+
+        <Button android:id="@+id/btnAbsent_Sick_R" android:layout_marginLeft="5sp" android:background="@drawable/button_style_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="5sp"
+            android:text="(চ)" android:textSize="14sp" android:textColor="#ffffff"/>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+	android:paddingLeft="5sp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:background="#ffffff"
+    android:orientation="vertical" android:id="@+id/mig_row">
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="3sp">
+		<TextView android:text="শিশুর নাম" android:layout_width="90sp" android:layout_height="wrap_content" android:textSize="18sp"/>
+		<TextView android:id="@+id/lblName" android:layout_width="250sp" android:layout_height="wrap_content"  android:textSize="18sp" />
+		<TextView android:text="জন্ম তারিখ" android:layout_width="90sp" android:layout_height="wrap_content"   android:textSize="18sp"/>
+		<TextView android:id="@+id/lblDOB" android:layout_width="wrap_content" android:layout_height="wrap_content"   android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="3sp">
+		<TextView android:text="পিতা/মাতা" android:layout_width="90sp" android:layout_height="wrap_content"   android:textSize="18sp"/>
+		<TextView android:id="@+id/lblFatherMother" android:layout_width="wrap_content" android:layout_height="wrap_content"   android:textSize="18sp"/>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="3sp">
+		<TextView android:text="CID" android:layout_width="90sp" android:layout_height="wrap_content"   android:textSize="18sp"/>
+		<TextView android:id="@+id/lblCID" android:layout_width="250sp" android:layout_height="wrap_content"   android:textSize="18sp"/>
+		<TextView android:text="PID" android:layout_width="90sp" android:layout_height="wrap_content"   android:textSize="18sp"/>
+		<TextView android:id="@+id/lblPID" android:layout_width="wrap_content" android:layout_height="wrap_content"   android:textSize="18sp"/>
+	</LinearLayout>
+</LinearLayout>
+ 

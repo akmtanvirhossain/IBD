@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"        android:layout_width="fill_parent"         android:layout_height="fill_parent"         android:overScrollMode="always"         android:isScrollContainer="true"         android:scrollbarAlwaysDrawVerticalTrack="true"         android:scrollbarStyle="outsideInset"         android:scrollbars="vertical">
+    <LinearLayout  android:orientation="vertical" android:layout_width="fill_parent"    android:layout_marginLeft="10sp" android:layout_marginRight="0sp"    android:layout_height="wrap_content" android:scrollbars="vertical">
+
+    <LinearLayout android:id="@+id/secQCluster" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+       <TextView android:id="@+id/VlblQCluster" android:text="Cluster:" android:layout_width="100sp" android:layout_height="wrap_content" android:textSize="20sp" />
+       <TextView android:id="@+id/txtCluster" android:layout_width="150sp" android:layout_height="wrap_content" android:textSize="20sp" />
+              
+       <TextView android:id="@+id/VlblQBlock" android:text="Block:" android:layout_width="70sp" android:layout_height="wrap_content" android:textSize="20sp" />
+       <TextView android:id="@+id/txtBlock" android:text="5" android:layout_width="100sp" android:layout_height="wrap_content" android:textSize="20sp" style="@style/customEdit"/>-->
+    </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secWeek" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+
+            <TextView android:id="@+id/VlblWeek" android:text="সপ্তাহ" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/txtWeek" android:maxLength="3" android:gravity="center" android:layout_width="100sp" android:inputType="number" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
+        </LinearLayout>
+
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secVDate" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+
+            <TextView android:id="@+id/VlblVDate" android:text="ভিজিটের তারিখ" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <EditText android:id="@+id/dtpVDate" android:layout_width="120sp" android:inputType="text" android:layout_height="wrap_content" android:focusable="false" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
+            <ImageButton android:id="@+id/btnVDate" android:layout_width="40sp" android:layout_height="40sp" android:src="@drawable/calender" android:layout_gravity="center" />
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secVstat" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+
+            <TextView android:id="@+id/VlblVstat" android:text="পরিদর্শনের অবস্থা" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <Spinner android:id="@+id/spnVstat" android:drawSelectorOnTop="true" android:layout_width="300sp" android:layout_height="wrap_content" android:layout_weight="0" android:prompt="@string/planet_prompt" android:textSize="20sp" />
+        </LinearLayout>
+
+       <LinearLayout android:layout_width="fill_parent" android:paddingTop="20sp" android:layout_height="wrap_content" android:orientation="horizontal">
+       	<Button android:id="@+id/cmdSave" android:layout_width="200sp" android:layout_height="wrap_content"
+       			android:text="Save"  android:layout_marginBottom="10sp"/>
+       	<Button android:id="@+id/cmdClose" android:layout_width="200sp" android:layout_height="wrap_content"
+       			android:text="Close"  android:layout_marginBottom="10sp"/>
+       	
+       	</LinearLayout>
+</LinearLayout>
+</ScrollView>

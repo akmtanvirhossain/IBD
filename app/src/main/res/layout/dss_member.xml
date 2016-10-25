@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout  android:layout_marginTop="2sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:gravity="left"
+        android:padding="0dip" >
+        <TextView android:paddingLeft="10sp"
+            android:layout_column="0" android:layout_marginBottom="5sp"
+            android:layout_marginTop="5sp"
+            android:textSize="20sp" android:gravity="left"
+            android:textColor="#000000"
+            android:text=" গ্রাম" android:layout_height="30sp" android:layout_width="110sp"/>
+        <Spinner
+            android:id="@+id/VillageList" android:layout_column="1"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:layout_marginRight="10sp"
+            android:drawSelectorOnTop="true"
+            android:prompt="@string/planet_prompt"
+            android:textSize="25sp" />
+    </LinearLayout>
+    <View android:layout_height="1dip" android:background="#D7D7D7" android:layout_width="match_parent"/>
+    <LinearLayout  android:layout_marginTop="2sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:gravity="left"
+        android:padding="0dip" >
+        <TextView android:paddingLeft="10sp"
+            android:layout_column="0" android:layout_marginBottom="5sp"
+            android:layout_marginTop="5sp"
+            android:textSize="20sp" android:gravity="left"
+            android:textColor="#000000"
+            android:text=" বাড়ী" android:layout_height="30sp" android:layout_width="110sp"/>
+        <Spinner
+            android:id="@+id/BariList"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:layout_marginRight="10sp"
+            android:drawSelectorOnTop="true"
+            android:prompt="@string/planet_prompt"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout android:paddingTop="5sp" android:paddingBottom="5sp" android:paddingLeft="10sp" android:paddingRight="10sp"
+        android:layout_width="match_parent" android:background="#F3F3F3"
+        android:layout_height="wrap_content" android:gravity="left" android:layout_gravity="center_vertical" android:orientation="horizontal">
+        <Button android:id="@+id/cmdRefresh"
+            android:layout_width="85sp"  android:textSize="16sp"
+            android:layout_height="35sp" android:layout_marginTop="5dip" android:layout_marginBottom="0sp"
+            android:text="রিফ্রেশ" android:background="@drawable/button_style_blue" android:textColor="#ffffff"/>
+
+        <Button android:id="@+id/btnInMigration" android:layout_marginLeft="10sp" android:layout_marginRight="10sp"
+            android:background="@drawable/button_style_blue"
+            android:layout_width="match_parent"
+            android:layout_height="35sp"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="0sp" android:textSize="16sp" android:textColor="#ffffff"
+            android:text="শিশু নিবন্ধন"/>
+
+    </LinearLayout>
+    <LinearLayout android:layout_marginTop="10sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:gravity="center"
+        android:padding="5dip" >
+
+        <ListView
+            android:id="@+id/listDSSMember"
+            android:layout_width="match_parent"
+            android:layout_height="550sp"
+            android:layout_weight="1"
+            android:divider="#006699"
+            android:fadeScrollbars="false"
+            android:scrollX="0px"
+            android:scrollY="0px"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarSize="150dip"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical" >
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

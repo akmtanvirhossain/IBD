@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">IBD Surveillance</string>
+
+    <string name="title_section1">Block: 01</string>
+    <string name="title_section2">Block: 02</string>
+    <string name="title_section3">Block: 03</string>
+    <string name="title_section4">Block: 04</string>
+    <string name="title_section5">Block: 05</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="planet_prompt">Choose a planet</string>
+</resources>

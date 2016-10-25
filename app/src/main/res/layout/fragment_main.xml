@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity$PlaceholderFragment">
+
+    <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout android:id="@+id/seclblH1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:background="#00B7FB">
+
+        <TextView
+            android:id="@+id/lblBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="40sp"
+            android:layout_marginBottom="5sp"
+            android:layout_marginTop="5sp"
+            android:gravity="left"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/lblVillageName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp" android:paddingLeft="10sp"
+            android:layout_marginRight="25sp"
+            android:layout_marginTop="5sp"
+            android:gravity="right"
+            android:text="lblVillage"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+    <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+    <LinearLayout android:id="@+id/seclblH" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingLeft="0sp" android:paddingRight="0sp">
+        <ListView
+            android:id="@+id/listHHIndex"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:divider="#000000"
+            android:dividerHeight="1px"
+            android:clickable="true">
+        </ListView>
+    </LinearLayout>
+    <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#00B7FB" />
+</RelativeLayout>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"        android:layout_width="fill_parent"         android:layout_height="fill_parent"         android:overScrollMode="always"         android:isScrollContainer="true"         android:scrollbarAlwaysDrawVerticalTrack="true"         android:scrollbarStyle="outsideInset"         android:scrollbars="vertical">
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent"    android:layout_marginLeft="10sp" android:layout_marginRight="0sp"    android:layout_height="wrap_content" android:scrollbars="vertical">
+        <LinearLayout android:id="@+id/secCName" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+
+            <TextView android:id="@+id/VlblCName" android:text="শিশুর নাম" android:layout_width="120sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/lblCName"  android:layout_width="300sp" android:inputType="text" android:layout_height="wrap_content"  android:layout_marginRight="10sp" android:textSize="20sp" />
+        </LinearLayout>
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secCID" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+
+            <TextView android:id="@+id/VlblCID" android:text="চলতি ID" android:layout_width="120sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/txtCID" android:maxLength="18" android:layout_width="180sp" android:inputType="text" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/VlblPID" android:text="স্থায়ী ID" android:layout_width="100sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/txtPID" android:maxLength="10" android:layout_width="wrap_content" android:inputType="number" android:layout_height="wrap_content" android:layout_marginRight="10sp" android:textSize="20sp" />
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secWeek" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+
+            <TextView android:id="@+id/VlblWeek" android:text="সপ্তাহ" android:layout_width="120sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/txtWeek" android:maxLength="10" android:gravity="left" android:layout_width="wrap_content" android:inputType="number" android:layout_height="wrap_content"  android:layout_marginRight="10sp" android:textSize="20sp" />
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+            <TextView android:layout_width="120sp"  android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:text="বয়স" android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/Age"  android:textColor="#000000"
+                android:layout_width="180sp"  android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
+            <TextView android:layout_width="110sp"
+                android:layout_height="wrap_content"  android:layout_gravity="center_vertical"
+                android:text="জন্ম তারিখ : " android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtDOB"  android:textColor="#000000"
+                android:layout_width="wrap_content"  android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
+
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle1">
+            <TextView android:layout_width="120sp"  android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:text="পিতা/মাতা"  android:textColor="#000000"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/FatherMother"  android:layout_gravity="left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""  android:textColor="#000000"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secVDate" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+
+            <TextView android:id="@+id/VlblVDate" android:text="ভিজিটের তারিখ" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <EditText android:id="@+id/dtpVDate" android:layout_width="120sp" android:inputType="text" android:layout_height="wrap_content" android:focusable="false" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
+            <ImageButton android:id="@+id/btnVDate" android:layout_width="40sp" android:layout_height="40sp" android:src="@drawable/calender" android:layout_gravity="center" />
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secVstat" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+
+            <TextView android:id="@+id/VlblVstat" android:text="পরিদর্শনের অবস্থা" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <Spinner android:id="@+id/spnVstat" android:drawSelectorOnTop="true" android:layout_width="300sp" android:layout_height="wrap_content" android:layout_weight="0" android:prompt="@string/planet_prompt" android:textSize="20sp" />
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secSickStatus" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+            <TextView android:id="@+id/VlblSickStatus" android:text="শারীরিক অবস্থা" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <RadioGroup android:id="@+id/rdogrpSickStatus" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoSickStatus1" android:text="সুস্থ আছে" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoSickStatus2" android:text="অসুস্থ (কাশি, শ্বাস কষ্ট, জ্বর )"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoSickStatus3" android:text="জানিনা"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+            </RadioGroup>
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secExDate" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+
+            <TextView android:id="@+id/VlblExDate" android:text="প্রস্থান তারিখ" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <EditText android:id="@+id/dtpExDate" android:layout_width="120sp" android:inputType="text" android:layout_height="wrap_content" android:focusable="false" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
+            <ImageButton android:id="@+id/btnExDate" android:layout_width="40sp" android:layout_height="40sp" android:src="@drawable/calender" android:layout_gravity="center" />
+        </LinearLayout>
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:layout_width="fill_parent" android:paddingTop="20sp" android:layout_height="wrap_content" android:orientation="horizontal">
+            <Button android:id="@+id/cmdSave" android:layout_width="match_parent" android:layout_height="60sp"
+                android:textSize="20sp" android:text=" Save -> Continue "  android:layout_marginBottom="10sp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

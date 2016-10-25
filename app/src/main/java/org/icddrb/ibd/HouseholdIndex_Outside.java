@@ -1,0 +1,1684 @@
+package org.icddrb.ibd;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.ToneGenerator;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.os.SystemClock;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Chronometer;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import Common.Connection;
+import Common.Global;
+
+public class HouseholdIndex_Outside extends Activity {
+    Connection C;
+    Global g;
+    boolean netwoekAvailable=false;
+    ArrayList<HashMap<String, String>> mylistBari;
+    ArrayList<HashMap<String, String>> mylistChild;
+    ArrayList<HashMap<String, String>> evmylist = new ArrayList<HashMap<String, String>>();
+    SimpleAdapter mScheduleBari;
+    SimpleAdapter mScheduleChild;
+    SimpleAdapter eList;
+    String VariableID;
+    static final int DATE_DIALOG = 1;
+    private int mDay;
+    private int mMonth;
+    private int mYear;
+
+    Bundle IDbundle;
+
+    private static String CurrentVillage;
+    private static String CurrentVCode;
+
+    Location currentLocation;
+    double currentLatitude, currentLongitude;
+
+    Location currentLocationNet;
+    double currentLatitudeNet, currentLongitudeNet;
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mnuclose, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(HouseholdIndex_Outside.this);
+
+        switch (item.getItemId()) {
+            case R.id.menuClose:
+                finish();
+                return true;
+        }
+        return false;
+    }
+
+
+    //Disabled Back/Home key
+    //--------------------------------------------------------------------------------------------------
+    @Override
+    public boolean onKeyDown(int iKeyCode, KeyEvent event) {
+        if (iKeyCode == KeyEvent.KEYCODE_BACK || iKeyCode == KeyEvent.KEYCODE_HOME) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    ListView list;
+    Button cmdBlock1;
+    Button cmdBlock2;
+    Button cmdBlock3;
+    Button cmdBlock4;
+    Button cmdBlock5;
+    String Cluster;
+    String Block;
+    TextView lblBlock;
+    TextView lblWeek;
+    TextView lblPageHeading;
+    Button cmdBackToBariList;
+    Spinner VillageList;
+    Spinner BariList;
+    String WeekNo;
+
+    Button cmdRefresh;
+    Button btnInMigration;
+    Spinner spnFilterOption;
+    EditText dtpVDate;
+    CheckBox chkMWRA;
+
+    //visit data form
+    ImageButton btnVVDate;
+    EditText dtpVVDate;
+    TextView Age;
+    TextView txtDOB;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.householdindex_outside);
+        try {
+
+            C = new Connection(this);
+            g = Global.getInstance();
+            setTitle("[ Cluster: " + g.getClusterCode() + "   অতিরিক্ত পরিদর্শন ]");
+
+            turnGPSOn();
+            FindLocation();
+
+            Cluster = g.getClusterCode();
+            //Block   = "1"; //default block 1
+            Bundle B    = new Bundle();
+            B	        = getIntent().getExtras();
+            WeekNo     = B.getString("weekno");
+
+            list = (ListView) findViewById(R.id.listHHIndex);
+
+            Button cmdRefresh = (Button)findViewById(R.id.cmdRefresh);
+            cmdRefresh.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    if (spnFilterOption.getSelectedItemPosition() == 0)
+                        BariWiseChildList("1");
+                    else if (spnFilterOption.getSelectedItemPosition() == 1){
+                        BariWiseChildList("2");
+                    }
+                    else if (spnFilterOption.getSelectedItemPosition() == 2){
+                        BariWiseChildList("3");
+                    }
+                    else if (spnFilterOption.getSelectedItemPosition() == 3){
+                        BariWiseChildList("4");
+                    }
+
+                }
+            });
+
+            Button cmdAssessment = (Button)findViewById(R.id.cmdAssessment);
+            cmdAssessment.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    //Check for Internet connectivity
+                    //*******************************************************************************
+                    if (!Connection.haveNetworkConnection(HouseholdIndex_Outside.this)) {
+                        Connection.MessageBox(HouseholdIndex_Outside.this, "অন্য এলাকার শিশু Assess করার জন্য Internet থাকা আবশ্যক।");
+                        return;
+                    }
+
+                    AssessmentForm_Outside("");
+                }
+            });
+
+
+            spnFilterOption = (Spinner)findViewById(R.id.spnFilterOption);
+            spnFilterOption.setAdapter(C.getArrayAdapter("Select '1-রেফার অথবা চিকিৎসার জন্য অনুপস্থিত' union Select '2-চিকিৎসার জন্য অনুপস্থিত' union Select '3-রেফার করা শিশু' union Select '4-সকল শিশু'"));
+            spnFilterOption.setAdapter(C.getArrayAdapter("Select '1-রেফার করা শিশু' union Select '2-সকল শিশু'"));
+            spnFilterOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    if (spnFilterOption.getSelectedItemPosition() == 0)
+                        BariWiseChildList("1");
+                    else if (spnFilterOption.getSelectedItemPosition() == 1){
+                        BariWiseChildList("2");
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+
+                }
+
+            });
+
+            //BariWiseChildList();
+
+        } catch (Exception ex) {
+            Connection.MessageBox(HouseholdIndex_Outside.this, ex.getMessage());
+            return;
+        }
+
+    }
+
+    ListView listChild;
+    public void BariWiseChildList(String SearchOption) {
+        mScheduleBari = null;
+        mScheduleChild = null;
+
+        listChild = (ListView) findViewById(R.id.listHHIndex);
+        listChild.setAdapter(null);
+        mylistChild = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> map;
+
+        try {
+            String BCode = "";
+            String SQL   = "";
+
+            if(SearchOption.equals("1")) {
+                SQL = "select '' dssc, '' dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, c.vhwcluster cluster, c.vhwBlock block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                SQL += "c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                SQL += ",ifnull(c.contactno,'') contactno,'' vstat,'' sickstatus,a.week as week,a.visit as visitno from Child_Outside c, AssPneu a where c.childid=a.childid and a.vtype='3'";
+                SQL += " and (length(ifnull(c.referral_add,''))>0)";
+
+                SQL += " union select '' dssc, '' dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, c.vhwcluster cluster, c.vhwBlock block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                SQL += "c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                SQL += ",ifnull(c.contactno,'') contactno,'' vstat,'' sickstatus,a.week as week,a.visit as visitno from Child_Outside c, AssNewBorn a where c.childid=a.childid and a.vtype='3'";
+                SQL += " and (length(ifnull(c.referral_add,''))>0)";
+            }
+            else if(SearchOption.equals("2")) {
+                SQL = "select '' dssc, '' dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, c.vhwcluster cluster, c.vhwBlock block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                SQL += "c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                SQL += ",ifnull(c.contactno,'') contactno,'' vstat,'' sickstatus,a.week as week,a.visit as visitno from Child_Outside c, AssPneu a where c.childid=a.childid and a.vtype='3'";
+
+                SQL += " union select '' dssc, '' dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, c.vhwcluster cluster, c.vhwBlock block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                SQL += "c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                SQL += ",ifnull(c.contactno,'') contactno,'' vstat,'' sickstatus,a.week as week,a.visit as visitno from Child_Outside c, AssNewBorn a where c.childid=a.childid and a.vtype='3'";
+            }
+
+
+            //Active Child
+            if(spnFilterOption.getSelectedItemPosition()==0)
+            {
+
+            }
+
+            Cursor cur = C.ReadData(SQL);
+            cur.moveToFirst();
+
+            int i=0;
+            while (!cur.isAfterLast()) {
+                map = new HashMap<String, String>();
+                map.put("sl", String.valueOf(i));
+                map.put("childid", cur.getString(cur.getColumnIndex("childid")));
+                map.put("vill", cur.getString(cur.getColumnIndex("vill")));
+                map.put("bari", cur.getString(cur.getColumnIndex("bari")));
+                map.put("hh", cur.getString(cur.getColumnIndex("hh")));
+                map.put("sno", cur.getString(cur.getColumnIndex("sno")));
+                map.put("pid", cur.getString(cur.getColumnIndex("pid")));
+                map.put("cid", cur.getString(cur.getColumnIndex("cid")));
+                map.put("name", cur.getString(cur.getColumnIndex("name")));
+                map.put("sex", cur.getString(cur.getColumnIndex("sex")));
+                map.put("aged", cur.getString(cur.getColumnIndex("aged")));
+                map.put("agem", cur.getString(cur.getColumnIndex("agem")));
+                map.put("father", cur.getString(cur.getColumnIndex("father")).trim());
+                map.put("mother", cur.getString(cur.getColumnIndex("mother")).trim());
+                map.put("visit", cur.getString(cur.getColumnIndex("visit")).trim());
+                map.put("extype", cur.getString(cur.getColumnIndex("extype")).trim());
+                map.put("week", cur.getString(cur.getColumnIndex("week")).trim());
+                map.put("visitno", cur.getString(cur.getColumnIndex("visitno")).trim());
+
+                map.put("referral", cur.getString(cur.getColumnIndex("referral")).trim());
+                map.put("referral_add", cur.getString(cur.getColumnIndex("referral_add")).trim());
+                map.put("referral_foll", cur.getString(cur.getColumnIndex("referral_foll")).trim());
+                map.put("absent_sick", cur.getString(cur.getColumnIndex("absent_sick")).trim());
+
+
+                map.put("bdate", cur.getString(cur.getColumnIndex("bdate")).trim());
+                map.put("childmwra", cur.getString(cur.getColumnIndex("childmwra")).trim());
+
+                map.put("pstat", cur.getString(cur.getColumnIndex("pstat")).trim());
+                map.put("lmpdt", cur.getString(cur.getColumnIndex("lmpdt")).trim());
+
+                map.put("dssc", cur.getString(cur.getColumnIndex("dssc")).trim());
+                map.put("dssb", cur.getString(cur.getColumnIndex("dssb")).trim());
+                map.put("contactno", cur.getString(cur.getColumnIndex("contactno")).trim());
+                map.put("vstat", cur.getString(cur.getColumnIndex("vstat")).trim());
+                map.put("sickstatus", cur.getString(cur.getColumnIndex("sickstatus")).trim());
+
+                if(cur.getString(cur.getColumnIndex("childmwra")).trim().equals("c"))
+                    i+=1;
+
+                mylistChild.add(map);
+
+                cur.moveToNext();
+            }
+            cur.close();
+            mScheduleChild = new SimpleAdapter(this, mylistChild, R.layout.child_list_row_outside,
+                    new String[]{"bari"},
+                    new int[]{R.id.Bari});
+
+            //lblPageHeading.setText("  শিশুর তালিকা ( "+String.valueOf(i)+" )");
+            listChild.setAdapter(new ChildListAdapter(this));
+
+        } catch (Exception e) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(HouseholdIndex_Outside.this);
+            adb.setTitle("Message");
+            adb.setMessage(e.getMessage());
+            adb.setPositiveButton("Ok", null);
+            adb.show();
+        }
+
+    }
+
+
+    String FM;
+    public class ChildListAdapter extends BaseAdapter {
+        private Context context;
+
+        public ChildListAdapter(Context c) {
+            context = c;
+        }
+
+        public int getCount() {
+            return mScheduleChild.getCount();
+        }
+
+        public Object getItem(int position) {
+            return position;
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.child_list_row_outside, null);
+            }
+
+            TextView lblChildName = (TextView) convertView.findViewById(R.id.lblChildName);
+            TextView ChildName = (TextView) convertView.findViewById(R.id.ChildName);
+            TextView CID = (TextView) convertView.findViewById(R.id.CID);
+            TextView PID = (TextView) convertView.findViewById(R.id.PID);
+            TextView FatherMother = (TextView) convertView.findViewById(R.id.FatherMother);
+            TextView Age = (TextView) convertView.findViewById(R.id.Age);
+            TextView Sex = (TextView) convertView.findViewById(R.id.Sex);
+            TextView BariLocation = (TextView) convertView.findViewById(R.id.BariLocation);
+
+            TextView lblDSSCluster = (TextView) convertView.findViewById(R.id.lblDSSCluster);
+            TextView lblDSSBlock   = (TextView) convertView.findViewById(R.id.lblDSSBlock);
+            TextView lblContactNo   = (TextView) convertView.findViewById(R.id.lblContactNo);
+            LinearLayout secContactNo   = (LinearLayout) convertView.findViewById(R.id.secContactNo);
+            TextView lblFM_Husband = (TextView)convertView.findViewById(R.id.lblFM_Husband);
+
+            TextView lblVisitStatus = (TextView)convertView.findViewById(R.id.lblVisitStatus);
+            LinearLayout secVisitStatus = (LinearLayout)convertView.findViewById(R.id.secVisitStatus);
+
+            final HashMap<String, String> o = (HashMap<String, String>) mScheduleChild.getItem(position);
+
+            if(o.get("vstat").toString().length()>0)
+                secVisitStatus.setVisibility(View.VISIBLE);
+            else
+                secVisitStatus.setVisibility(View.GONE);
+
+            String VS = o.get("vstat").toString();
+            String SS = o.get("sickstatus").toString();
+            String SStatus = "";
+            if(SS.equals("1")) SStatus = "সুস্থ আছে";
+            else if(SS.equals("2")) SStatus = "অসুস্থ";
+            else if(SS.equals("3")) SStatus = "জানিনা";
+
+            if(VS.equals("1"))
+                lblVisitStatus.setText(": শিশু উপস্থিত ("+ SStatus +")");
+            else if(VS.equals("2"))
+                lblVisitStatus.setText(": শিশু অনুপস্থিত ("+ SStatus +")");
+            else if(VS.equals("3"))
+                lblVisitStatus.setText(": চিকিৎসার জন্য অনুপস্থিত ("+ SStatus +")");
+            else if(VS.equals("4"))
+                lblVisitStatus.setText(": বয়স উত্তীর্ণ");
+            else if(VS.equals("5"))
+                lblVisitStatus.setText(": স্থানান্তর");
+            else if(VS.equals("6"))
+                lblVisitStatus.setText(": মৃত্যুবরন");
+            else if(VS.equals("7"))
+                lblVisitStatus.setText(": সার্ভিলেন্সে থাকতে অসম্মতি");
+            else if(VS.equals("8"))
+                lblVisitStatus.setText(": VHW ছুটিতে আছে");
+            else if(VS.equals("9"))
+                lblVisitStatus.setText(": তথ্য পাওয়া জায়নি");
+            else if(VS.equals("10"))
+                lblVisitStatus.setText(": অপ্রত্যাশিত কারণ");
+            else if(VS.equals("11"))
+                lblVisitStatus.setText(": ঝড় / বৃষ্টির কারণ");
+            else if(VS.equals("12"))
+                lblVisitStatus.setText(": বন্যার কারণ");
+            else if(VS.equals("0"))
+                lblVisitStatus.setText(": পুনঃ আগমন");
+            else if(VS.equals("13"))
+                lblVisitStatus.setText(": সরকারী ছুটির দিন");
+            else if(VS.equals("15"))
+                lblVisitStatus.setText(": Training/Meeting");
+            else if(VS.equals("14"))
+                lblVisitStatus.setText(": অন্যান্য কারণ");
+
+            //CID.setText(": " + o.get("cid"));
+            CID.setText(": "+ o.get("vill")+"-"+o.get("bari")+"-"+o.get("hh")+"-"+o.get("sno"));
+            PID.setText(": "+ o.get("pid"));
+
+            FM = o.get("father");
+            if(o.get("mother").toString().length()>0)
+                FM += "/"+ o.get("mother");
+
+            FatherMother.setText(": "+ FM);
+
+            if(Integer.valueOf(o.get("aged")) <= 28)
+                Age.setText(": "+ o.get("aged")+ " দিন");
+            else
+                Age.setText(": "+ o.get("agem")+ " মাস");
+
+            double m = Integer.valueOf(o.get("aged"))/30.44;
+            double d = Integer.valueOf(o.get("aged"))%30.44;
+
+            final String AgeDayMonth = String.valueOf((int)m)+" মাস "+ String.valueOf((int)d)+"  দিন";
+
+            Sex.setText(": "+ Global.DateConvertDMY(o.get("bdate").toString()));
+
+            lblDSSCluster.setText(": " + o.get("dssc"));
+            lblDSSBlock.setText(": "+ o.get("dssb"));
+            lblContactNo.setText(": "+ o.get("contactno"));
+            if(o.get("contactno").length()>0)
+                secContactNo.setVisibility(View.VISIBLE);
+            else
+                secContactNo.setVisibility(View.GONE);
+
+
+            Button btnAdditionalFollowUp = (Button)convertView.findViewById(R.id.btnAdditionalFollowUp);
+            btnAdditionalFollowUp.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    FM = o.get("father");
+                    if(o.get("mother").toString().length()>0)
+                        FM += "/"+ o.get("mother");
+
+                    Bundle IDbundle = new Bundle();
+                    Integer aged = Integer.valueOf(o.get("aged"));
+                    double m = Integer.valueOf(aged) / 30.44;
+                    double d = Integer.valueOf(aged) % 30.44;
+                    WeekNo = o.get("week");
+
+                    final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
+
+                    IDbundle.putString("childid", o.get("childid"));
+                    IDbundle.putString("name", o.get("name"));
+                    IDbundle.putString("fm", FM);
+                    IDbundle.putString("agedm", AgeDayMonth);
+                    IDbundle.putString("cid", o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"));
+                    IDbundle.putString("pid", o.get("pid"));
+                    IDbundle.putString("aged", aged.toString());
+                    IDbundle.putString("agem", "");
+                    IDbundle.putString("bdate", o.get("bdate"));
+                    IDbundle.putString("weekno", WeekNo);
+                    IDbundle.putString("visittype", "3");
+                    IDbundle.putString("visitno", o.get("visitno"));
+                    IDbundle.putString("childpresent", "y");
+                    IDbundle.putString("child_outside_area", "y");
+                    IDbundle.putString("visitdate", "");
+
+                    //Call Assessment based on age of child
+                    if (Integer.valueOf(aged) <= 28) {
+                        Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) > 28 & Integer.valueOf(aged) <= 1825) {
+                        Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) >= 1826) {
+                        Connection.MessageBox(HouseholdIndex_Outside.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
+                        return;
+                    }
+                }
+            });
+
+            Button btnAdditionalFollowUp_R = (Button)convertView.findViewById(R.id.btnAdditionalFollowUp_R);
+            btnAdditionalFollowUp_R.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    FM = o.get("father");
+                    if(o.get("mother").toString().length()>0)
+                        FM += "/"+ o.get("mother");
+
+                    Bundle IDbundle = new Bundle();
+                    Integer aged = Integer.valueOf(o.get("aged"));
+                    double m = Integer.valueOf(aged) / 30.44;
+                    double d = Integer.valueOf(aged) % 30.44;
+                    WeekNo = o.get("week");
+
+                    final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
+
+                    IDbundle.putString("childid", o.get("childid"));
+                    IDbundle.putString("name", o.get("name"));
+                    IDbundle.putString("fm", FM);
+                    IDbundle.putString("agedm", AgeDayMonth);
+                    IDbundle.putString("cid", o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"));
+                    IDbundle.putString("pid", o.get("pid"));
+                    IDbundle.putString("aged", aged.toString());
+                    IDbundle.putString("agem", "");
+                    IDbundle.putString("bdate", o.get("bdate"));
+                    IDbundle.putString("weekno", WeekNo);
+                    IDbundle.putString("visittype", "3");
+                    IDbundle.putString("visitno", o.get("visitno"));
+                    IDbundle.putString("childpresent", "y");
+                    IDbundle.putString("child_outside_area", "y");
+                    IDbundle.putString("visitdate", "");
+
+                    //Call Assessment based on age of child
+                    if (Integer.valueOf(aged) <= 28) {
+                        Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) > 28 & Integer.valueOf(aged) <= 1825) {
+                        Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) >= 1826) {
+                        Connection.MessageBox(HouseholdIndex_Outside.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
+                        return;
+                    }
+                }
+            });
+
+            Button btnAbsent_Sick_R = (Button)convertView.findViewById(R.id.btnAbsent_Sick_R);
+            btnAbsent_Sick_R.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    FM = o.get("father");
+                    if(o.get("mother").toString().length()>0)
+                        FM += "/"+ o.get("mother");
+
+                    Bundle IDbundle = new Bundle();
+                    Integer aged = Integer.valueOf(o.get("aged"));
+                    double m = Integer.valueOf(aged) / 30.44;
+                    double d = Integer.valueOf(aged) % 30.44;
+                    WeekNo = o.get("week");
+
+                    final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
+
+                    IDbundle.putString("childid", o.get("childid"));
+                    IDbundle.putString("name", o.get("name"));
+                    IDbundle.putString("fm", FM);
+                    IDbundle.putString("agedm", AgeDayMonth);
+                    IDbundle.putString("cid", o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"));
+                    IDbundle.putString("pid", o.get("pid"));
+                    IDbundle.putString("aged", aged.toString());
+                    IDbundle.putString("agem", "");
+                    IDbundle.putString("bdate", o.get("bdate"));
+                    IDbundle.putString("weekno", WeekNo);
+                    IDbundle.putString("visittype", "3");
+                    IDbundle.putString("visitno", o.get("visitno"));
+                    IDbundle.putString("childpresent", "y");
+                    IDbundle.putString("child_outside_area", "y");
+                    IDbundle.putString("visitdate", "");
+
+                    //Call Assessment based on age of child
+                    if (Integer.valueOf(aged) <= 28) {
+                        Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) > 28 & Integer.valueOf(aged) <= 1825) {
+                        Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) >= 1826) {
+                        Connection.MessageBox(HouseholdIndex_Outside.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
+                        return;
+                    }
+                }
+            });
+
+            LinearLayout secChildNameRow = (LinearLayout)convertView.findViewById(R.id.secChildNameRow);
+            //TextView lblChildName = (TextView)convertView.findViewById(R.id.lblChildName);
+
+            btnAdditionalFollowUp.setEnabled(true);
+
+            if(o.get("visit").equals("1")) {
+                //ChildName.setTextColor(Color.GREEN);
+                if(o.get("vstat").equals("1") | o.get("vstat").equals("2") | o.get("vstat").equals("3")) {
+                    secChildNameRow.setBackgroundColor(Color.GREEN);
+                    lblChildName.setTextColor(Color.BLACK);
+                    ChildName.setTextColor(Color.BLACK);
+                }
+                else
+                {
+                    secChildNameRow.setBackgroundColor(Color.YELLOW);
+                    lblChildName.setTextColor(Color.BLACK);
+                    ChildName.setTextColor(Color.BLACK);
+                }
+            }
+            else {
+                lblChildName.setTextColor(Color.parseColor("#006699"));
+                ChildName.setTextColor(Color.parseColor("#006699"));
+                secChildNameRow.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            }
+
+            TextView childStatus = (TextView)convertView.findViewById(R.id.childStatus);
+            childStatus.setText("");
+            childStatus.setTextColor(Color.RED);
+
+            if(o.get("childmwra").equals("c")) {
+                //if (o.get("extype").equals("4") || Integer.valueOf(o.get("aged")) > 1825) {
+                if (o.get("extype").equals("5")) {
+                    lblChildName.setTextColor(Color.BLUE);
+                    ChildName.setTextColor(Color.BLUE);
+                    btnAdditionalFollowUp.setEnabled(false);
+                    childStatus.setText("স্থানান্তর");
+                } else if (o.get("extype").equals("7")) {
+                    lblChildName.setTextColor(Color.BLUE);
+                    ChildName.setTextColor(Color.BLUE);
+                    btnAdditionalFollowUp.setEnabled(false);
+                    childStatus.setText("অসম্মতি");
+                } else if (o.get("extype").equals("6")) {
+                    lblChildName.setTextColor(Color.RED);
+                    ChildName.setTextColor(Color.RED);
+                    btnAdditionalFollowUp.setEnabled(false);
+                    childStatus.setText("মৃত্যুবরন");
+                }else if (Integer.valueOf(o.get("aged")) > 1825) {
+                    lblChildName.setTextColor(Color.BLUE);
+                    ChildName.setTextColor(Color.BLUE);
+                    btnAdditionalFollowUp.setEnabled(false);
+                    childStatus.setText("বয়স উত্তীর্ণ");
+                }
+                else
+                {
+                }
+            }
+            else
+            {
+                lblChildName.setTextColor(Color.BLACK);
+                ChildName.setTextColor(Color.BLACK);
+            }
+
+            //Button btnReferral = (Button)convertView.findViewById(R.id.btnReferral);
+            //Button btnAdditionalFollowUp_R = (Button)convertView.findViewById(R.id.btnAdditionalFollowUp_R);
+            //Button btnFollowUpVisit_R = (Button)convertView.findViewById(R.id.btnFollowUpVisit_R);
+            //Button btnAbsent_Sick_R = (Button)convertView.findViewById(R.id.btnAbsent_Sick_R);
+
+
+            //btnReferral.setVisibility(View.GONE);
+            btnAdditionalFollowUp_R.setVisibility(View.GONE);
+            //btnFollowUpVisit_R.setVisibility(View.GONE);
+            btnAbsent_Sick_R.setVisibility(View.GONE);
+
+            if(o.get("referral_add").length()>0) {
+                btnAdditionalFollowUp_R.setVisibility(View.VISIBLE);
+            }
+
+            if(o.get("absent_sick").length()>0) {
+                //btnAbsent_Sick_R.setVisibility(View.VISIBLE);
+            }
+
+
+            btnAdditionalFollowUp_R.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    //ChildID+","+txtWeek.getText().toString()+","+VisitType+","+txtVisit.getSelectedItem().toString()+","+Global.DateConvertYMD(dtpVDate.getText().toString());
+                    String[] ref = o.get("referral_add").toString().split(",");
+                    Bundle IDbundle = new Bundle();
+                    IDbundle.putString("childid", o.get("childid"));
+                    IDbundle.putString("name", o.get("name"));
+                    IDbundle.putString("fm", FM);
+                    IDbundle.putString("agedm", AgeDayMonth);
+                    IDbundle.putString("cid", o.get("cid"));
+                    IDbundle.putString("pid", o.get("pid"));
+                    IDbundle.putString("aged", o.get("aged"));
+                    IDbundle.putString("agem", o.get("agem"));
+                    IDbundle.putString("bdate", o.get("bdate"));
+                    IDbundle.putString("weekno", ref[1]);
+                    IDbundle.putString("visittype", ref[2]);
+                    IDbundle.putString("visitno", ref[3]);
+                    IDbundle.putString("child_outside_area", "y");
+
+                    Intent f1 = new Intent(getApplicationContext(),NonComp.class);
+                    f1.putExtras(IDbundle);
+                    startActivity(f1);
+                }
+            });
+
+            //24 May 2016
+            /*btnAbsent_Sick_R.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    String[] ref = o.get("absent_sick").toString().split(",");
+                    Bundle IDbundle = new Bundle();
+                    IDbundle.putString("childid", o.get("childid"));
+                    IDbundle.putString("name", o.get("name"));
+                    IDbundle.putString("fm", FM);
+                    IDbundle.putString("agedm", AgeDayMonth);
+                    IDbundle.putString("cid", o.get("cid"));
+                    IDbundle.putString("pid", o.get("pid"));
+                    IDbundle.putString("aged", o.get("aged"));
+                    IDbundle.putString("agem", o.get("agem"));
+                    IDbundle.putString("bdate", o.get("bdate"));
+                    IDbundle.putString("weekno", ref[1]);
+                    IDbundle.putString("visittype", ref[2]);
+                    IDbundle.putString("visitno", ref[3]);
+                    IDbundle.putString("childpresent", "y");
+                    IDbundle.putString("child_outside_area", "n");
+                    //IDbundle.putString("visitdate", dtpVVDate.getText().toString());
+
+                    Intent f1;
+                    //Call Assessment based on age of child
+                    if(Integer.valueOf(o.get("aged"))<=28)
+                    {
+                        f1 = new Intent(getApplicationContext(),AssNewBorn.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    }
+                    else if(Integer.valueOf(o.get("aged"))>28 & Integer.valueOf(o.get("aged"))<=1825)
+                    {
+                        f1 = new Intent(getApplicationContext(),AssPneu.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    }
+                }
+            });*/
+
+            LinearLayout secCommandButton = (LinearLayout)convertView.findViewById(R.id.secCommandButton);
+            //LinearLayout secCommandButtonMWRA = (LinearLayout)convertView.findViewById(R.id.secCommandButtonMWRA);
+            LinearLayout secPregStatus = (LinearLayout)convertView.findViewById(R.id.secPregStatus);
+            LinearLayout secChildDob   = (LinearLayout)convertView.findViewById(R.id.secChildDob);
+            TextView PregStatus        = (TextView)convertView.findViewById(R.id.PregStatus);
+            TextView DOB_MWRA          = (TextView)convertView.findViewById(R.id.DOB_MWRA);
+
+            if(o.get("childmwra").equals("c")) {
+                lblChildName.setText("শিশুর নাম");
+                ChildName.setText(": " + o.get("name") + " (" + (o.get("sex").toString().equals("1") ? "ছেলে" : "মেয়ে") + ")");
+                secCommandButton.setVisibility(View.VISIBLE);
+                //secCommandButtonMWRA.setVisibility(View.GONE);
+                secPregStatus.setVisibility(View.GONE);
+                secChildDob.setVisibility(View.VISIBLE);
+                lblFM_Husband.setText("পিতা/মাতা");
+            }
+            else {
+                lblChildName.setText("MWRA");
+                lblFM_Husband.setText("স্বামী");
+                ChildName.setText(": " + o.get("name")+" ("+ String.valueOf(o.get("aged")) +" বছর)");
+                DOB_MWRA.setText(": "+ Global.DateConvertDMY(o.get("bdate").toString()));
+                secCommandButton.setVisibility(View.GONE);
+                //secCommandButtonMWRA.setVisibility(View.VISIBLE);
+                secPregStatus.setVisibility(View.VISIBLE);
+                if(o.get("pstat").equals("41")) {
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Calendar cal = Calendar.getInstance();
+                    try {
+                        cal.setTime(sdf.parse(o.get("lmpdt")));
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    cal.add(Calendar.DATE, 280); //minus number would decrement the days
+                    String D = Global.DateConvertDMY(sdf.format(cal.getTime()));
+
+                    PregStatus.setText("LMP:" + Global.DateConvertDMY(o.get("lmpdt")) + ", EDD:" + D +"");
+                    PregStatus.setTextColor(Color.GREEN);
+                }
+                else{
+                    PregStatus.setText("");
+                }
+                secChildDob.setVisibility(View.GONE);
+            }
+
+            return convertView;
+        }
+    }
+
+
+    ListView listBari;
+    public void VillageWiseBariList(Boolean heading, String Cluster, String Block,  String Village, String BariCode) {
+        mScheduleBari = null;
+        mScheduleChild = null;
+
+        listBari = (ListView) findViewById(R.id.listHHIndex);
+        listBari.setAdapter(null);
+        mylistBari = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> map;
+
+        try {
+            String BCode = ""; //BariCode.length()==0?"%":BariCode;
+            String SQL = "";
+            //BariCode = g.getBariCode().length()==0?BariCode:g.getBariCode();
+
+            if (BariCode.length() > 1) {
+                SQL = "Select vill,bari,bariname,bariloc from bari where Cluster='"+ Cluster +"' and Block='"+ Block +"' and Vill='"+ Village +"' and bari like('"+ BariCode +"') order by bari";
+            } else {
+                SQL = "Select vill,bari,bariname,bariloc from bari where Cluster='"+ Cluster +"' and Block='"+ Block +"' and Vill='"+ Village +"'  order by bari";
+            }
+            Cursor cur = C.ReadData(SQL);
+
+            cur.moveToFirst();
+            if (heading == true) {
+                //View header = getLayoutInflater().inflate(R.layout.householdindexheading, null);
+                //list.addHeaderView(header);
+            }
+
+            int i=0;
+
+            while (!cur.isAfterLast()) {
+                map = new HashMap<String, String>();
+                map.put("vill", cur.getString(0));
+                map.put("bari", cur.getString(1));
+                map.put("bariname", cur.getString(2));
+                map.put("barilocation", cur.getString(3));
+                map.put("sl", String.valueOf(i));
+                i+=1;
+                mylistBari.add(map);
+
+                cur.moveToNext();
+            }
+            cur.close();
+            mScheduleBari = new SimpleAdapter(this, mylistBari, R.layout.householdindexrow,
+                    new String[]{"bari"},
+                    new int[]{R.id.Bari});
+
+            lblPageHeading.setText("  বাড়ীর তালিকা ( "+String.valueOf(i)+" )");
+            listBari.setAdapter(new HHListAdapter(this));
+
+        } catch (Exception e) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(HouseholdIndex_Outside.this);
+            adb.setTitle("Message");
+            adb.setMessage(e.getMessage());
+            adb.setPositiveButton("Ok", null);
+            adb.show();
+        }
+
+    }
+
+
+
+    public class HHListAdapter extends BaseAdapter {
+        private Context context;
+
+        public HHListAdapter(Context c) {
+            context = c;
+        }
+
+        public int getCount() {
+            return mScheduleBari.getCount();
+        }
+
+        public Object getItem(int position) {
+            return position;
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.householdindexrow, null);
+            }
+
+
+            TextView Bari = (TextView) convertView.findViewById(R.id.Bari);
+            TextView BariN = (TextView) convertView.findViewById(R.id.BariN);
+            TextView BariLocation = (TextView) convertView.findViewById(R.id.BariLocation);
+
+            final HashMap<String, String> o = (HashMap<String, String>) mScheduleBari.getItem(position);
+
+            Bari.setText(": "+ o.get("bari"));
+            BariN.setText(o.get("bariname"));
+            BariLocation.setText(": "+ o.get("barilocation"));
+
+            LinearLayout bariListRow = (LinearLayout)convertView.findViewById(R.id.bariListRow);
+            /*if( Integer.valueOf(o.get("sl"))%2==0)
+                bariListRow.setBackgroundColor(Color.WHITE);
+            else
+                bariListRow.setBackgroundColor(Color.parseColor("#F3F3F3"));
+            */
+
+            bariListRow.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    VillageList.setEnabled(false);
+                    BariList.setEnabled(true);
+                    cmdBlock1.setEnabled(false);
+                    cmdBlock2.setEnabled(false);
+                    cmdBlock3.setEnabled(false);
+                    cmdBlock4.setEnabled(false);
+                    cmdBlock5.setEnabled(false);
+
+                    lblPageHeading.setText("Children List");
+                    BariList.setSelection(SpinnerItem_Position(BariList, o.get("bari")));
+                    //BariWiseChildList(o.get("vill"), o.get("bari"),WeekNo);
+                    cmdBackToBariList.setVisibility(View.VISIBLE);
+                    cmdRefresh.setEnabled(true);
+                    btnInMigration.setEnabled(true);
+
+                    String CurrentBariNo = "";
+                    if (BariList.getSelectedItemPosition() == 0)
+                        CurrentBariNo = "%";
+                    else {
+                        String[] B = BariList.getSelectedItem().toString().split(",");
+                        CurrentBariNo = B[0];
+                    }
+
+
+                    /*if (BariList.getSelectedItem().toString().trim().equalsIgnoreCase("all bari")) {
+                        //g.setBariCode("");
+                        if(cmdBackToBariList.isShown())
+                            BariWiseChildList();
+                        else
+                            VillageWiseBariList(false, Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3), "%");
+                    } else {
+                        //g.setBariCode(BariList.getSelectedItem().toString());
+                        if(cmdBackToBariList.isShown())
+                            BariWiseChildList();
+                        else
+                            VillageWiseBariList(false, Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo);
+                    }*/
+                }
+            });
+
+            return convertView;
+        }
+    }
+
+    public int SpinnerItem_Position(Spinner spn, String Value)
+    {
+        int pos = 0;
+        if(Value.length()!=0)
+        {
+            for(int i=0;i<spn.getCount();i++)
+            {
+                String[] b = spn.getItemAtPosition(i).toString().split(",");
+                if(spn.getItemAtPosition(i).toString().length()!=0)
+                {
+                    if(b[0].equalsIgnoreCase(Value))
+                    {
+                        pos = i;
+                        i   = spn.getCount();
+                    }
+                }
+            }
+        }
+        return pos;
+    }
+
+    private void AssessmentForm_Outside(final String Block) {
+        final Dialog dialog = new Dialog(HouseholdIndex_Outside.this);
+        dialog.setTitle(" অন্য এলাকার শিশু");
+        //dialog .requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.only_assessment_form);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.TOP;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        final EditText txtCID = (EditText) dialog.findViewById(R.id.txtCID);
+        final EditText txtSNo = (EditText) dialog.findViewById(R.id.txtSNo);
+        final EditText txtPID = (EditText) dialog.findViewById(R.id.txtPID);
+
+        Button cmdAssSave = (Button) dialog.findViewById(R.id.cmdAssSave);
+        cmdAssSave.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                if (!Connection.haveNetworkConnection(HouseholdIndex_Outside.this)) {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, "আইডি সার্চ করার জন্য ইন্টারনেট এর সংযোগ নেই।");
+                    return;
+                }
+            try {
+                //String SQL = "select top 1 Name+','+Sex+','+(cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))+','+cast(DATEDIFF(D,BDate,getdate())as varchar(5))+','+MoName+','+FaName+','+cast(DATEDIFF(d,BDate,getdate()) as varchar(10))+','+PID from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'";
+                String SQL = "";
+                SQL = "select top 1 Name+','+Sex+','+(cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))+','+cast(DATEDIFF(D,BDate,getdate())as varchar(5))+','+MoName+','+FaName+','+cast(DATEDIFF(d,BDate,getdate()) as varchar(10))+','+PID";
+                SQL += " +','+cast((Select (isnull(MAX(Visit),0)+1)VNo from AssPneu where ChildId=Child.ChildId and Week='"+ WeekNo +"' and VType='3')as varchar(2))";
+                SQL += " from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'";
+
+                String VisitNo = "";
+                final String[] childinfo = C.ReturnResult("ReturnSingleValue", SQL).split(",");
+
+                if (childinfo.length > 1) {
+
+                } else {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, "শিশুটির আইডি নম্বর সঠিক নয়।");
+                    return;
+                }
+
+                if(C.Existence("Select childid from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'"))
+                {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, "শিশুটি আপনার নিজের এলাকার শিশু।");
+                    return;
+                }
+
+                Bundle IDbundle = new Bundle();
+                Integer aged = Integer.valueOf(childinfo[6].toString());
+                double m = Integer.valueOf(aged) / 30.44;
+                double d = Integer.valueOf(aged) % 30.44;
+
+                final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
+
+                IDbundle.putString("childid", txtCID.getText().toString() + txtSNo.getText().toString());
+                IDbundle.putString("name", childinfo[0].toString());
+                IDbundle.putString("fm", childinfo[4].toString() + "," + childinfo[5].toString());
+                IDbundle.putString("agedm", AgeDayMonth);
+                IDbundle.putString("cid", txtCID.getText().toString());
+                //IDbundle.putString("pid", txtPID.getText().toString());
+                //IDbundle.putString("pid", childinfo[7].toString());
+                IDbundle.putString("pid", "");
+                IDbundle.putString("aged", aged.toString());
+                IDbundle.putString("agem", "");
+                IDbundle.putString("bdate", childinfo[2]);
+                IDbundle.putString("weekno", WeekNo);
+                IDbundle.putString("visittype", "3");
+                IDbundle.putString("visitno", childinfo[8]);
+                IDbundle.putString("childpresent", "y");
+                IDbundle.putString("child_outside_area", "y");
+
+                //Call Assessment based on age of child
+                if (Integer.valueOf(aged) <= 28) {
+                    dialog.dismiss();
+                    Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
+                    f1.putExtras(IDbundle);
+                    startActivity(f1);
+                } else if (Integer.valueOf(aged) > 28 & Integer.valueOf(aged) <= 1825) {
+                    dialog.dismiss();
+                    Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
+                    f1.putExtras(IDbundle);
+                    startActivity(f1);
+                } else if (Integer.valueOf(aged) >= 1826) {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
+                    return;
+                }
+            }
+            catch(Exception ex)
+            {
+                Connection.MessageBox(HouseholdIndex_Outside.this,ex.getMessage());
+                return;
+            }
+            }
+        });
+
+        Button cmdAssClose = (Button) dialog.findViewById(R.id.cmdAssClose);
+        cmdAssClose.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+    protected Dialog onCreateDialog(int id) {
+        final Calendar c = Calendar.getInstance();
+        switch (id) {
+            case DATE_DIALOG:
+                return new DatePickerDialog(this, mDateSetListener,g.mYear,g.mMonth-1,g.mDay);
+        }
+        return null;
+    }
+    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mYear = year;
+            mMonth = monthOfYear+1;
+            mDay = dayOfMonth;
+            if(VariableID.equals("btnVDate")) {
+                dtpVDate.setText(new StringBuilder()
+                        .append(Global.Right("00" + mDay, 2)).append("/")
+                        .append(Global.Right("00" + mMonth, 2)).append("/")
+                        .append(mYear));
+            }
+            else if(VariableID.equals("btnVVDate")) {
+                dtpVVDate.setText(new StringBuilder()
+                        .append(Global.Right("00" + mDay, 2)).append("/")
+                        .append(Global.Right("00" + mMonth, 2)).append("/")
+                        .append(mYear));
+
+                String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVVDate.getText().toString(),txtDOB.getText().toString()));
+                double m = Integer.valueOf(AgeDay)/30.44;
+                double d = Integer.valueOf(AgeDay)%30.44;
+
+                String AgeDayMonth = String.valueOf((int)m)+" মাস "+ String.valueOf((int)d)+"  দিন";
+                Age.setText(AgeDayMonth);
+            }
+
+        }
+    };
+
+    //GPS Reading
+    //.....................................................................................................
+    public void FindLocation() {
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(Context.LOCATION_SERVICE);
+
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                updateLocation(location);
+            }
+
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    void updateLocation(Location location) {
+        currentLocation = location;
+        currentLatitude = currentLocation.getLatitude();
+        currentLongitude = currentLocation.getLongitude();
+    }
+
+    Chronometer mChronometer;
+    MediaPlayer player1;
+    long currentNeededTime1=60000;
+    Vibrator vib;
+    long elapsedTime;
+    TextView txtCurrentTime;
+    TextView startMsg;
+    String Start;
+    private void StopWatch()
+    {
+        final Dialog dialog = new Dialog(HouseholdIndex_Outside.this);
+        try
+        {
+            dialog.setTitle("Clock");
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.stopwatch);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setCancelable(true);
+
+
+            //txtCurrentTime = (TextView)dialog.findViewById(R.id.txtCurrentTime);
+            //startMsg = (TextView)dialog.findViewById(R.id.startMsg);
+            //startMsg.setVisibility(View.VISIBLE);
+            Start = "2";
+
+            mChronometer = (Chronometer)dialog.findViewById(R.id.chronometer);
+            //player1 = MediaPlayer.create(mainmenu.this, R.raw.apple_ring);
+            vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+            mChronometer.start();
+            Button cmdStart = (Button)dialog.findViewById(R.id.cmdStart);
+            Button cmdStop  = (Button)dialog.findViewById(R.id.cmdStop);
+            cmdStart.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mChronometer.stop();
+                    mChronometer.setBase(SystemClock.elapsedRealtime());
+                    mChronometer.start();
+                }});
+            cmdStop.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mChronometer.stop();
+                }});
+
+            //----------------
+            dialog.show();
+
+            final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+
+            mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                @Override
+                public void onChronometerTick(Chronometer chronometer) {
+                    elapsedTime = SystemClock.elapsedRealtime()- chronometer.getBase();
+                    //txtCurrentTime.setText(String.valueOf(elapsedTime));
+                    if (elapsedTime <= currentNeededTime1  & Start=="1")
+                    {
+                        //tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
+                    }
+                    if (elapsedTime >= 3000 & elapsedTime <=3100 & Start=="2")
+                    {
+                        mChronometer.stop();
+                        mChronometer.setBase(SystemClock.elapsedRealtime());
+                        chronometer.setVisibility(View.VISIBLE);
+                        //startMsg.setVisibility(View.GONE);
+                        mChronometer.start();
+                        vib.vibrate(1000);
+                        Start = "1";
+                    }
+                    else if(elapsedTime == 30000 & Start=="1")
+                    {
+                        tg.stopTone();
+                        vib.vibrate(1000);
+                    }
+                    else if (elapsedTime > currentNeededTime1) {
+                        tg.stopTone();
+                        //tg.startTone(ToneGenerator.TONE_CDMA_KEYPAD_VOLUME_KEY_LITE);
+                        vib.vibrate(1000);
+                        mChronometer.stop();
+                        Start = "2";
+                        dialog.dismiss();
+                    }
+                    else
+                    {
+                        //if (elapsedTime <= currentNeededTime1  & Start=="1")
+                            //tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                    }
+                }
+            });
+
+        }
+        catch(Exception ex)
+        {
+            Connection.MessageBox(HouseholdIndex_Outside.this, ex.getMessage());
+            return;
+        }
+
+    }
+
+
+
+//Database backup to external SD card
+//--------------------------------------------------------------------------------------------------
+    ArrayList<String> mFileLocation = new ArrayList<String>();
+    ArrayList<String> mFileName = new ArrayList<String>();
+    protected static final int COPY_SUCCESS = 1;
+    protected static final int COPY_FAILED = 2;
+    private ProgressDialog progressDialog;
+    private SharedPreferences app_preferences;
+
+    public static final String EXT_SDCARDLOC_ForTab = "/mnt/extSdCard/";
+    public static final String EXT_SDCARDLOC = "/mnt/sdcard/external_sd/";
+    private long mil;
+    private String FName;
+    Context con;
+
+    private String readTxt(InputStream inputStream) {
+
+        System.out.println(inputStream);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        int i;
+        try {
+            i = inputStream.read();
+            while (i != -1) {
+                byteArrayOutputStream.write(i);
+                i = inputStream.read();
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return byteArrayOutputStream.toString();
+    }
+
+    private void LoadFileList() {
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        AssetManager am = this.getAssets();
+        try {
+            InputStream is = am.open("fileshuman.json");
+            //InputStream is = am.open("files_hbis.json");
+            //InputStream is = am.open("files_Zoonotic.json");
+//			InputStream is = am.open("files.json");
+            //InputStream is = am.open("filesmidline.json");
+            //InputStream is = am.open("filesScvb.json");
+
+            String a = readTxt(is);
+            JSONObject rootObject = new JSONObject(a);
+            JSONArray rootArrayOfLetters = rootObject.getJSONArray("files");
+            for (int lCount = 0; lCount < rootArrayOfLetters.length(); lCount++) {
+                JSONArray mFileArray = rootArrayOfLetters.getJSONArray(lCount);
+
+                JSONObject mFileNameObeject = mFileArray.getJSONObject(0);
+                mFileName.add(mFileNameObeject.getString("name"));
+
+                JSONObject mFileLocObeject = mFileArray.getJSONObject(1);
+                mFileLocation.add(mFileLocObeject.getString("location"));
+
+                //Log.e("fileNameObeject.getString",
+                //        "" + mFileNameObeject.getString("name"));
+                //Log.e("fileNameObeject.getString",
+                //        "" + mFileLocObeject.getString("location"));
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static String getSdCardPath() {
+        //	return Environment.getExternalStoragePublicDirectory(Environment.getRootDirectory()).getAbsolutePath();
+        return Environment.getExternalStorageDirectory().getAbsolutePath();//EXT_SDCARDLOC_ForTab + "/";
+    }
+    private void takeBackup() {
+        // TODO Auto-generated method stub
+        mil = System.currentTimeMillis();
+        //FName = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(mil), TimeUnit.MILLISECONDS.toMinutes(mil) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(mil)), TimeUnit.MILLISECONDS.toSeconds(mil) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mil)));
+
+        progressDialog = ProgressDialog.show(HouseholdIndex_Outside.this, "Copying...", "Please wait while finish transfering the files to external sdcard",true);
+        //final ProgressDialog progDailog = ProgressDialog.show(HouseholdIndex.this, "", "অপেক্ষা করুন ...", true);
+        progressDialog.setCancelable(true);
+
+        new Thread()
+        {
+
+            public void run()
+            {
+                SharedPreferences.Editor editor = app_preferences
+                        .edit();
+                editor.putString("last_backup", mil+"");
+                editor.commit(); // Very important
+
+                for(int i=0;i<mFileLocation.size();i++){
+                    try {
+                        copyFileToLocation(mFileName.get(i), mFileLocation.get(i));
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Message msg = new Message();
+                        msg.what = COPY_FAILED;
+                        //handler.sendMessage(msg);
+                    }
+                }
+                Message msg = new Message();
+                msg.what = COPY_SUCCESS;
+                //handler.sendMessage(msg);
+            }
+        }.start();
+
+    }
+
+    public void copyFileToLocation(String fileName, String srcloc)
+            throws IOException {
+
+        final Calendar c = Calendar.getInstance();
+        int dateYear = c.get(Calendar.YEAR);
+        int dateMonth = c.get(Calendar.MONTH) + 1;
+        int dateDay = c.get(Calendar.DAY_OF_MONTH);
+
+        InputStream databaseInput = null;
+
+        String inFileName = srcloc + fileName;
+
+        String dDirName = dateDay + "-" + dateMonth + "-" + dateYear;
+
+        String outDir = "";
+        String outDatedDir = "";
+        String outDatedMilDir = "";
+        String outFileName = "";
+
+
+		/*outDir = getSdCardPath() + "icddrbDB/";
+
+		 outDatedDir = getSdCardPath() + "icddrbDB/" + dDirName;
+
+		outDatedMilDir = getSdCardPath() + "icddrbDB/" + dDirName + "/"
+				+ mil;
+
+		outFileName = getSdCardPath() + "icddrbDB/" + dDirName + "/" + mil
+				+ "/" + fileName;*/
+
+
+        if (IsTablet() == true) {
+            outDir = EXT_SDCARDLOC_ForTab + "icddrbDB/";
+
+            outDatedDir = EXT_SDCARDLOC_ForTab + "icddrbDB/" + dDirName;
+
+            outDatedMilDir = EXT_SDCARDLOC_ForTab + "icddrbDB/" + dDirName + "/"
+                    + mil;
+
+            outFileName = EXT_SDCARDLOC_ForTab + "icddrbDB/" + dDirName + "/" + mil
+                    + "/" + fileName;
+        } else {
+            //get to mobile
+            outDir = EXT_SDCARDLOC + "icddrbDB/";
+
+            outDatedDir = EXT_SDCARDLOC + "icddrbDB/" + dDirName;
+
+            outDatedMilDir = EXT_SDCARDLOC + "icddrbDB/" + dDirName + "/"
+                    + mil;
+
+            outFileName = EXT_SDCARDLOC + "icddrbDB/" + dDirName + "/" + mil
+                    + "/" + fileName;
+
+            File dir = new File(outDir);
+            File dDir = new File(outDatedDir);
+            if (dir.exists()) {
+                if (dDir.exists()) {
+
+                } else {
+                    if (dDir.mkdirs()) {
+                        Log.e("making", outDatedDir + "dir");
+                    }
+                }
+            } else {
+                if (dir.mkdirs()) {
+                    Log.e("making", "dir");
+                    if (dDir.mkdirs()) {
+                        Log.e("making", outDatedDir + "dir");
+                    }
+                }
+            }
+            File dmDir = new File(outDatedMilDir);
+            if (dmDir.exists()) {
+                File file = new File(outFileName);
+                if (file.exists()) {
+                    if (file.delete()) {
+                        Log.e("deleting", "file");
+                    }
+                }
+            } else {
+                if (dmDir.mkdirs()) {
+                    Log.e("making", outDatedMilDir + "dir");
+                }
+            }
+
+            OutputStream databaseOutput = new FileOutputStream(outFileName);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            File f = new File(inFileName);
+            if (f.exists()) {
+                databaseInput = new FileInputStream(f);
+                while ((length = databaseInput.read(buffer)) > 0) {
+                    databaseOutput.write(buffer, 0, length);
+                    databaseOutput.flush();
+                    Log.e("writing to ", outDatedMilDir + "");
+                }
+                databaseInput.close();
+
+                databaseOutput.flush();
+                databaseOutput.close();
+            }
+
+        }
+    }
+
+
+    private boolean IsTablet()
+    {
+        try {
+            // Compute screen size
+            DisplayMetrics dm = con.getResources().getDisplayMetrics();
+
+            float screenWidth  = dm.widthPixels / dm.xdpi;
+
+            float screenHeight = dm.heightPixels / dm.ydpi;
+
+            double size = Math.sqrt(Math.pow(screenWidth, 2) +
+
+                    Math.pow(screenHeight, 2));
+
+            return size >= 6;
+
+        }
+        catch(Throwable t) {
+
+            //Log.e("Failed to compute screen size", "Error");
+
+            return false;
+
+        }
+    }
+
+
+    // Method to turn on GPS
+    public void turnGPSOn(){
+        try
+        {
+            String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+            if(!provider.contains("gps")){ //if gps is disabled
+                final Intent poke = new Intent();
+                poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+                poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+                poke.setData(Uri.parse("3"));
+                sendBroadcast(poke);
+            }
+        }
+        catch (Exception e) {
+
+        }
+    }
+
+    // Method to turn off the GPS
+    public void turnGPSOff(){
+        String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+        if(provider.contains("gps")){ //if gps is enabled
+            final Intent poke = new Intent();
+            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+            poke.setData(Uri.parse("3"));
+            sendBroadcast(poke);
+        }
+    }
+
+    // turning off the GPS if its in on state. to avoid the battery drain.
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        turnGPSOff();
+    }
+
+
+
+
+
+
+
+
+
+    private void VisitForm_Additional(final String FM,final String childid, final String name,final  String AgeDayMonth,final  String cid, final String pid,final  String aged,final  String agem,final  String bdate,final String WeekNo,final  String VType,final  String Present)
+    {
+        final Dialog dialog = new Dialog(HouseholdIndex_Outside.this);
+        dialog.setTitle("Form: ভিজিট");
+        //dialog .requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.visitdate_form);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+        if(VType.equals("3"))
+            dialog.setTitle("অতিরিক্ত পরিদর্শন");
+        else if(VType.equals("2"))
+            dialog.setTitle("ফলোআপ");
+
+        Age    = (TextView)dialog.findViewById(R.id.Age);
+        txtDOB = (TextView)dialog.findViewById(R.id.txtDOB);
+        Age.setText(AgeDayMonth);
+        txtDOB.setText(Global.DateConvertDMY(bdate));
+        dtpVVDate = (EditText) dialog.findViewById(R.id.dtpVVDate);
+        dtpVVDate.setText(Global.DateNowDMY());
+
+        ImageButton btnVVDate = (ImageButton) dialog.findViewById(R.id.btnVVDate);
+        btnVVDate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                VariableID = "btnVVDate";
+                showDialog(DATE_DIALOG);
+            }
+        });
+
+        Button cmdSave = (Button) dialog.findViewById(R.id.cmdSave);
+        cmdSave.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                String DV = Global.DateValidate(dtpVVDate.getText().toString());
+                if(DV.length()!=0)
+                {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, DV);
+                    dtpVVDate.requestFocus();
+                    return;
+                }
+
+                else if(Global.DateDifferenceDays(dtpVVDate.getText().toString(), txtDOB.getText().toString())<0)
+                {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, "ভিজিটের তারিখ অবশ্যই জন্ম তারিখের সমান অথবা বড় হতে হবে।");
+                    dtpVVDate.requestFocus();
+                    return;
+                }
+
+                else if(Global.DateDifferenceDays(dtpVVDate.getText().toString(), Global.DateConvertDMY(g.getWeekStartDate()))<0)
+                {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
+                    dtpVVDate.requestFocus();
+                    return;
+                }
+
+                else if(Global.DateDifferenceDays(Global.DateConvertDMY(g.getWeekEndDate()),dtpVVDate.getText().toString())<0)
+                {
+                    Connection.MessageBox(HouseholdIndex_Outside.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
+                    dtpVVDate.requestFocus();
+                    return;
+                }
+
+                String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVVDate.getText().toString(),txtDOB.getText().toString()));
+                double m = Integer.valueOf(AgeDay)/30.44;
+                double d = Integer.valueOf(AgeDay)%30.44;
+
+                final String AgeDayMonth = String.valueOf((int)m)+" মাস "+ String.valueOf((int)d)+"  দিন";
+
+                Bundle IDbundle = new Bundle();
+                IDbundle.putString("childid", childid);
+                IDbundle.putString("name", name);
+                IDbundle.putString("fm", FM);
+                IDbundle.putString("agedm", AgeDayMonth);
+                IDbundle.putString("cid", cid);
+                IDbundle.putString("pid", pid);
+                IDbundle.putString("aged", AgeDay);
+                IDbundle.putString("agem", agem);
+                IDbundle.putString("bdate", bdate);
+                IDbundle.putString("weekno", WeekNo);
+                IDbundle.putString("visittype", VType);
+                IDbundle.putString("visitno", "");
+                IDbundle.putString("childpresent", "y");
+                IDbundle.putString("visitdate", dtpVVDate.getText().toString());
+                IDbundle.putString("child_outside_area", "n");
+
+                //Call Assessment based on age of child
+                if(Integer.valueOf(AgeDay)<=28)
+                {
+                    dialog.dismiss();
+                    Intent f1 = new Intent(getApplicationContext(),AssNewBorn.class);
+                    f1.putExtras(IDbundle);
+                    startActivity(f1);
+                }
+                else if(Integer.valueOf(AgeDay)>28 & Integer.valueOf(AgeDay)<=1825)
+                {
+                    dialog.dismiss();
+                    Intent f1 = new Intent(getApplicationContext(),AssPneu.class);
+                    f1.putExtras(IDbundle);
+                    startActivity(f1);
+                }
+                else if(Integer.valueOf(AgeDay)>=1826)
+                {
+                    Connection.MessageBox(HouseholdIndex_Outside.this,"শিশুর বয়স ৫ বৎসরের বেশী.");
+                    return;
+                }
+
+            }
+        });
+
+
+        Button cmdClose = (Button) dialog.findViewById(R.id.cmdClose);
+        cmdClose.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                dialog.cancel();
+            }
+        });
+
+
+    dialog.show();
+
+    }
+
+}
