@@ -32,6 +32,9 @@ public class Global {
 	public static String DatabaseFolder = "IBDSurveillance";
 	public static String DatabaseName   = "IBDSurveillance.db";
 
+	public static String ProjectName    = "IBDSurveillance";
+	public static String zipDatabaseName= "IBDSurveillance.zip";
+
 	//Global Variables
 	//private String _UserID;
 	//public void setUserID(String UserID){this._UserID = UserID;}
@@ -210,8 +213,23 @@ public class Global {
         
         return M;
     }
-    
-    //Date now
+
+	public static String CurrentDay()
+	{
+		Calendar c = Calendar.getInstance();
+		int D = c.get(Calendar.DAY_OF_MONTH);
+
+		String DD = Right("00"+String.valueOf(D),2);
+
+		return DD;
+	}
+
+	public static String CurrentDMY()
+	{
+		return CurrentDay()+CurrentMonth()+CurrentYear();
+	}
+
+	//Date now
     //...........................................................................................................
     //Format: YYYY-MM-DD
     public static String DateNowYMD()

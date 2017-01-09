@@ -413,6 +413,22 @@ public class HouseholdIndex extends Activity {
                                     VariableList = "ChildId,Vill,Bari";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Child", "ChildRemove", VariableList, "ChildId,Vill,Bari");
 
+                                    //AssPneu remote based on server data, Table: AssPneu_Audit
+                                    SQLStr = "Select ChildId, Week, VType, Visit from AssPneu_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    VariableList = "ChildId, Week, VType, Visit";
+                                    Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssPneu", "AssPneu_Audit", VariableList, "ChildId, Week, VType, Visit");
+
+                                    //AssNewBorn remote based on server data, Table: AssNewBorn_Audit
+                                    SQLStr = "Select ChildId, Week, VType, Visit from AssNewBorn_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    VariableList = "ChildId, Week, VType, Visit";
+                                    Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssNewBorn", "AssNewBorn_Audit", VariableList, "ChildId, Week, VType, Visit");
+
+                                    //Visits remote based on server data, Table: Visits_Audit
+                                    SQLStr = "Select a.ChildId, a.Week, a.VDate from Visits_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    VariableList = "ChildId, Week, VDate";
+                                    Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Visits", "Visits_Audit", VariableList, "ChildId, Week, VDate");
+
+
                                     //Data Update on local device
                                     //-------------------------------------------------------------------
 
@@ -466,6 +482,9 @@ public class HouseholdIndex extends Activity {
 
 
 
+                                    //Upload Database to Server : 09 Nov 2016
+                                    C.DatabaseUploadZip(Cluster);
+
                                     Connection.MessageBox(HouseholdIndex.this, "তথ্য ডাটাবেজ সার্ভারে সম্পূর্ণ ভাবে আপলোড হয়েছে। ");
                                     //End-----------------------------------------------------------------
 
@@ -518,19 +537,23 @@ public class HouseholdIndex extends Activity {
                                     //----------------------------------------------------------------------------------
 
                                     //CodeList
+                                    /*
                                     TableName = "CodeList";
                                     SQLStr = "select FName, VarName, VarCode, VarDes from CodeList";
                                     VariableList = "FName, VarName, VarCode, VarDes";
                                     Res = C.DownloadJSON(SQLStr, TableName, VariableList, "FName, VarName, VarCode");
+                                    */
 
                                     //MigChild
+                                    C.Save("Delete from MigChild");
                                     TableName = "MigChild";
                                     SQLStr = "select ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, " +
                                             "EnDate, ExType, ExDate from MigChild";
                                     VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate";
-                                    Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId");
+                                    Res = C.DownloadJSON_InsertOnly(SQLStr, TableName, VariableList, "ChildId");
 
                                     //End-----------------------------------------------------------------
+
 
                                 } catch (Exception e) {
 

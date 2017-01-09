@@ -7,7 +7,7 @@
     <item android:id="@+id/menuSyncEDDList" android:title=" Sync EDD List" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuSyncDSSBari" android:title=" Sync DSS Bari" android:showAsAction="ifRoom|withText"/>
     <!--<item android:id="@+id/menuDatabaseBackup" android:title=" Backup Database" android:showAsAction="ifRoom|withText"/>-->
-    <item android:id="@+id/menuMasterData" android:title=" Sync Migration,Code List" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/menuMasterData" android:title=" Sync Migration" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuClusterBlock" android:title=" Sync Cluster,Block" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuReport" android:title=" Web Reports" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuVHWReport" android:title=" VHW Reports" android:showAsAction="ifRoom|withText"/>

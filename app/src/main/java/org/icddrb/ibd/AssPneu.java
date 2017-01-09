@@ -640,6 +640,22 @@ public class AssPneu extends Activity {
                 txtVisit.setVisibility(View.GONE);
                 txtVisit.setSelection(0);
             }
+            //follow-up visit
+            else if(VisitType.equals("2"))
+            {
+                VlblVisit.setVisibility(View.VISIBLE);
+                txtVisit.setVisibility(View.VISIBLE);
+                secVDate.setVisibility(View.VISIBLE);
+            }
+            //additional visit
+            else if(VisitType.equals("3"))
+            {
+                VlblVisit.setVisibility(View.VISIBLE);
+                txtVisit.setVisibility(View.VISIBLE);
+                secVDate.setVisibility(View.VISIBLE);
+                txtVisit.setSelection(1);
+                txtVisit.setEnabled(false);
+            }
             else
             {
                 VlblVisit.setVisibility(View.VISIBLE);
