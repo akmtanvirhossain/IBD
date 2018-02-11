@@ -65,7 +65,7 @@ public class LoginActivity extends Activity{
             //Need to update date every time whenever shared updated system
             //Format: DDMMYYYY
             //*********************************************************************
-            SystemUpdateDT = "10112016";
+            SystemUpdateDT = "02012018";
             lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
             //Check for Internet connectivity
@@ -130,11 +130,11 @@ public class LoginActivity extends Activity{
             //C.Save("Update child set extype='',exdate='' where childid='32602887188'");
 
             //download from 300 week
-            if(netwoekAvailable & !C.Existence("Select Week from weeklyvstdt where Week=300")) {
+            if(netwoekAvailable & !C.Existence("Select Week from weeklyvstdt where Week=250")) {
                 TableName = "WeeklyVstDt";
                 SQLStr = "Select Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +
                         "(cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate" +
-                        " from WeeklyVstDt where week >= 300";
+                        " from WeeklyVstDt where week >= 250";
                 VariableList = "Week, StDate, EnDate";
                 Res = C.DownloadJSON(SQLStr, "WeeklyVstDt", "Week, StDate, EnDate", "Week");
             }
@@ -159,7 +159,7 @@ public class LoginActivity extends Activity{
             }
 
             uid.setAdapter(C.getArrayAdapter("Select l.UserId||'-'||v.VHWNAME from Login l,VHWs v where l.userid=cast(v.vhw as varchar(10))"));
-            weekNo.setAdapter(C.getArrayAdapter("Select week from WeeklyVstDt order by week desc limit 100"));
+            weekNo.setAdapter(C.getArrayAdapter("Select week from WeeklyVstDt order by week desc limit 300"));
             String Week  = C.ReturnSingleValue("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)");
             weekNo.setSelection(Global.SpinnerItemPosition(weekNo,Week.length(),Week));
 

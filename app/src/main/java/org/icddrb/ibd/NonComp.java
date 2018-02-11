@@ -155,6 +155,7 @@ public class NonComp extends Activity {
     RadioButton rdoPrescrip1;
     RadioButton rdoPrescrip2;
     RadioButton rdoPrescrip3;
+    RadioButton rdoPrescrip4;
     LinearLayout seclbl22;
     LinearLayout secRefA;
     TextView VlblRefA;
@@ -599,6 +600,7 @@ public class NonComp extends Activity {
             rdoPrescrip1 = (RadioButton) findViewById(R.id.rdoPrescrip1);
             rdoPrescrip2 = (RadioButton) findViewById(R.id.rdoPrescrip2);
             rdoPrescrip3 = (RadioButton) findViewById(R.id.rdoPrescrip3);
+            rdoPrescrip4 = (RadioButton) findViewById(R.id.rdoPrescrip4);
             seclbl22=(LinearLayout)findViewById(R.id.seclbl22);
             secRefA=(LinearLayout)findViewById(R.id.secRefA);
             VlblRefA=(TextView) findViewById(R.id.VlblRefA);

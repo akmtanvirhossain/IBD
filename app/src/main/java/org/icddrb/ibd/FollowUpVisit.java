@@ -538,7 +538,8 @@ public class FollowUpVisit extends Activity {
         {
 
             RadioButton rb;
-            Cursor cur = C.ReadData("Select CID as cid,PID as pid,Week as week,VDate as vdate,VStat as vstat,ifnull(SickStatus,'') as sickstatus,ifnull(ExDate,'') as exdate from "+ TableName +"  Where ChildId='"+ ChildId +"' and Week='"+ Week +"'");
+            Cursor cur = C.ReadData("Select CID as cid,PID as pid,Week as week,VDate as vdate,VStat as vstat,ifnull(SickStatus,'') as sickstatus,ifnull(ExDate,'') as exdate " +
+                    "from "+ TableName +"  Where ChildId='"+ ChildId +"' and Week='"+ Week +"' group by childid,week order by min(vstat)");
             cur.moveToFirst();
             while(!cur.isAfterLast())
             {

@@ -1501,26 +1501,26 @@ public class Connection extends SQLiteOpenHelper {
 
             //MDSSVill
             //--------------------------------------------------------------------------------------
-            Res = DownloadJSON("Select Vill, Vname, UCode, UName, Cluster, Status, OldUnion from MDSSVill","MDSSVill","Vill, Vname, UCode, UName, Cluster, Status, OldUnion","Vill");
+            Res = DownloadJSON_InsertOnly("Select Vill, Vname, UCode, UName, Cluster, Status, OldUnion from MDSSVill","MDSSVill","Vill, Vname, UCode, UName, Cluster, Status, OldUnion","Vill");
 
             //Cluster
             //--------------------------------------------------------------------------------------
-            Res = DownloadJSON("Select Cluster, UpdateDT, DeviceSetting from Cluster Where Cluster='"+ Cluster +"'","Cluster","Cluster, UpdateDT, DeviceSetting","Cluster");
+            Res = DownloadJSON_InsertOnly("Select Cluster, UpdateDT, DeviceSetting from Cluster Where Cluster='"+ Cluster +"'","Cluster","Cluster, UpdateDT, DeviceSetting","Cluster");
 
             //Weekly Visit Schedule
             //--------------------------------------------------------------------------------------
             SQLStr = "Select top 5 Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +
                     "(cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate" +
                     " from WeeklyVstDt where week <=(select week from WeeklyVstDt where GETDATE() between cast(stdate as datetime) and cast(endate as datetime)) order by Week desc";
-            Res = DownloadJSON(SQLStr,"WeeklyVstDt","Week, StDate, EnDate","Week");
+            Res = DownloadJSON_InsertOnly(SQLStr,"WeeklyVstDt","Week, StDate, EnDate","Week");
 
             //Code List
             //--------------------------------------------------------------------------------------
-            Res = DownloadJSON("Select FName, VarName, VarCode, VarDes from CodeList","CodeList","FName, VarName, VarCode, VarDes","FName, VarName, VarCode");
+            Res = DownloadJSON_InsertOnly("Select FName, VarName, VarCode, VarDes from CodeList","CodeList","FName, VarName, VarCode, VarDes","FName, VarName, VarCode");
 
             //VHWs
             //--------------------------------------------------------------------------------------
-            Res = DownloadJSON("Select Cluster, VHW, VHWNAME, Active, JoinDt, ExitDt, SystemUpdateDT,BariChar from VHWs Where Active='1' and Cluster='"+ Cluster +"' and VHW='"+ VHWCode +"'","VHWs","Cluster, VHW, VHWNAME, Active, JoinDt, ExitDt, SystemUpdateDT","VHW,Active");
+            Res = DownloadJSON_InsertOnly("Select Cluster, VHW, VHWNAME, Active, JoinDt, ExitDt, SystemUpdateDT,BariChar from VHWs Where Active='1' and Cluster='"+ Cluster +"' and VHW='"+ VHWCode +"'","VHWs","Cluster, VHW, VHWNAME, Active, JoinDt, ExitDt, SystemUpdateDT","VHW,Active");
 
             //Bari
             //--------------------------------------------------------------------------------------
@@ -1528,7 +1528,7 @@ public class Connection extends SQLiteOpenHelper {
             VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, UploadDT";
             SQLStr = "Select Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, UploadDT" +
                     " from Bari where Cluster = '"+ Cluster +"'";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"Vill, Bari");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"Vill, Bari");
 
             //DSS Bari
             //--------------------------------------------------------------------------------------
@@ -1536,7 +1536,7 @@ public class Connection extends SQLiteOpenHelper {
             VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId";
             SQLStr  = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
             SQLStr += " from DSSBari d,Bari b where d.Vill+d.Bari=b.vill+b.bari and b.Cluster='"+ Cluster +"'";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"Vill, Bari");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"Vill, Bari");
 
             //Visits
             //--------------------------------------------------------------------------------------
@@ -1546,9 +1546,9 @@ public class Connection extends SQLiteOpenHelper {
             SQLStr += " (Select ChildId, PID, CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate,";
             SQLStr += " VStat, SickStatus, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2)) ExDate,";
             SQLStr += " v.Lat, v.Lon, v.EnDt, v.UserId, v.Upload, v.UploadDT,rank() over (partition by childid order by week desc)total";
-            SQLStr += " from Visits v, Bari b where left(v.ChildId,7)=b.Vill+b.Bari and b.Cluster='"+ Cluster +"')a";
+            SQLStr += " from Visits v, Bari b where left(v.CID,7)=b.Vill+b.Bari and b.Cluster='"+ Cluster +"')a";
             SQLStr += " where total  between 1 and 5";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"ChildId,Week");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId,Week");
 
             //Child
             //--------------------------------------------------------------------------------------
@@ -1560,7 +1560,7 @@ public class Connection extends SQLiteOpenHelper {
 
             TableName = "Child";
             VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, EnDt, UserId, Upload, UploadDt";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"ChildId");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId");
 
             //MWRA
             //--------------------------------------------------------------------------------------
@@ -1571,7 +1571,7 @@ public class Connection extends SQLiteOpenHelper {
 
             TableName = "MWRA";
             VariableList = "MwraId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate,PStat,LMPDt, EnDt";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"MwraId");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"MwraId");
 
             //AssNewBorn
             //--------------------------------------------------------------------------------------
@@ -1583,7 +1583,7 @@ public class Connection extends SQLiteOpenHelper {
 
             TableName = "AssNewBorn";
             VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
 
             //AssPneu
             //--------------------------------------------------------------------------------------
@@ -1598,7 +1598,7 @@ public class Connection extends SQLiteOpenHelper {
 
             TableName = "AssPneu";
             VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
 
             //NonComp
             //--------------------------------------------------------------------------------------
@@ -1610,7 +1610,7 @@ public class Connection extends SQLiteOpenHelper {
 
             TableName = "NonComp";
             VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
-            Res = DownloadJSON(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
+            Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
 
 
         } catch (Exception e) {

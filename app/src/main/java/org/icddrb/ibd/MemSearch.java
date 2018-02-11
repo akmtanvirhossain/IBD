@@ -1,58 +1,27 @@
 package org.icddrb.ibd;
 
-        import android.app.Activity;
-        import android.app.AlertDialog;
-        import android.app.DatePickerDialog;
-        import android.app.Dialog;
-        import android.app.ProgressDialog;
-        import android.app.TimePickerDialog;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.database.Cursor;
-        import android.location.Location;
-        import android.os.Bundle;
-        import android.view.KeyEvent;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.view.WindowManager;
-        import android.webkit.WebSettings;
-        import android.webkit.WebView;
-        import android.webkit.WebViewClient;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.BaseAdapter;
-        import android.widget.Button;
-        import android.widget.CheckBox;
-        import android.widget.DatePicker;
-        import android.widget.EditText;
-        import android.widget.GridView;
-        import android.widget.ImageButton;
-        import android.widget.LinearLayout;
-        import android.widget.RadioButton;
-        import android.widget.RadioGroup;
-        import android.widget.SimpleAdapter;
-        import android.widget.Spinner;
-        import android.widget.TextView;
-        import android.widget.TimePicker;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.location.Location;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
-        import java.util.ArrayList;
-        import java.util.Calendar;
-        import java.util.HashMap;
-        import java.util.List;
-
-        import Common.Connection;
-        import Common.Global;
+import Common.Connection;
+import Common.Global;
 
 /**
  * Created by user on 18/03/2015.
  */
 
-public class WebReports extends Activity {
+public class MemSearch extends Activity {
     boolean netwoekAvailable = false;
     Location currentLocation;
     double currentLatitude, currentLongitude;
@@ -80,7 +49,7 @@ public class WebReports extends Activity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(WebReports.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(MemSearch.this);
         switch (item.getItemId()) {
             case R.id.menuClose:
                 adb.setMessage("আপনি কি এই ফর্ম থেকে বের হতে চান?");
@@ -128,7 +97,7 @@ public class WebReports extends Activity {
             webSettings.setJavaScriptEnabled(true);
 
             //wv.loadUrl("http://beta.html5test.com/");
-            wv.loadUrl("http://mchd.icddrb.org/ibdweb");
+            wv.loadUrl("http://mchd.icddrb.org/dss/mem_search.aspx");
 
             // Force links and redirects to open in the WebView instead of in a browser
             wv.setWebViewClient(new WebViewClient());
@@ -341,7 +310,7 @@ public class WebReports extends Activity {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             //PNC Section End
         } catch (Exception e) {
-            Connection.MessageBox(WebReports.this, e.getMessage());
+            Connection.MessageBox(MemSearch.this, e.getMessage());
             return;
         }
     }

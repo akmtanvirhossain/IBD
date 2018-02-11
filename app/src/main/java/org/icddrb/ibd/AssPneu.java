@@ -565,7 +565,7 @@ public class AssPneu extends Activity {
             VlblWeek = (TextView) findViewById(R.id.VlblWeek);
 
             txtWeek = (Spinner) findViewById(R.id.txtWeek);
-            txtWeek.setAdapter(C.getArrayAdapter("select week from WeeklyVstDt order by CAST(week as int) desc limit 100"));
+            txtWeek.setAdapter(C.getArrayAdapter("select week from WeeklyVstDt order by CAST(week as int) desc limit 300"));
             txtWeek.setSelection(Global.SpinnerItemPosition(txtWeek, 3, WeekNo));
             lblVisit=(TextView) findViewById(R.id.lblVisit);
 
@@ -2985,14 +2985,14 @@ public class AssPneu extends Activity {
 
             if (txtRSlip.getText().toString().length() != 0 & secRSlip.isShown()) {
                 String RFNo;
-                RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE   RSlip = '" + txtRSlip.getText() + "' and childid<>'"+ ChildID +"'");
+                RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and childid<>'"+ ChildID +"'");
                 if (RFNo.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
                     Connection.MessageBox(AssPneu.this, "এই রেফারাল স্লিপ নং পূর্বে নবজাতকে-এ ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
                     return;
                 }
                 String R2;
-                R2 = C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '" + txtRSlip.getText() + "' and childid<>'"+ txtChildId.getText().toString() +"'");
+                R2 = C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and childid<>'"+ txtChildId.getText().toString() +"'");
                 if (R2.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
                     Connection.MessageBox(AssPneu.this, "এই রেফারাল স্লিপ নং পূর্বে (০-৫৯ মাস)-এ  ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
@@ -3169,7 +3169,7 @@ public class AssPneu extends Activity {
                 SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
                 SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,";
                 SQLStr += "(cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate,VHW, VHWCluster, VHWBlock, Referral, c.EnDt, c.UserId, c.Upload, c.UploadDt";
-                SQLStr += " from Child c Where Vill+Bari+HH+SNo='" + ChildID + "'";
+                SQLStr += " from Child c Where ChildId='"+ ChildID +"'"; // Vill+Bari+HH+SNo='" + ChildID + "'";
 
                 TableName = "Child";
                 VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, EnDt, UserId, Upload, UploadDt";

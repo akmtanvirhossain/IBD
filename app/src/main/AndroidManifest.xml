@@ -45,6 +45,7 @@
         <activity android:name=".DSSMember" android:label="Member List (DSS)"></activity>
         <activity android:name=".WebReports" android:label="Reports"></activity>
         <activity android:name=".VHWReports" android:label="VHW Reports"></activity>
+        <activity android:name=".MemSearch" android:label="Search DSS Member"></activity>
     </application>
 
 </manifest>

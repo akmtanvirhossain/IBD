@@ -1021,6 +1021,7 @@ public class HouseholdIndex_Outside extends Activity {
                 String SQL = "";
                 SQL = "select top 1 Name+','+Sex+','+(cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))+','+cast(DATEDIFF(D,BDate,getdate())as varchar(5))+','+MoName+','+FaName+','+cast(DATEDIFF(d,BDate,getdate()) as varchar(10))+','+PID";
                 SQL += " +','+cast((Select (isnull(MAX(Visit),0)+1)VNo from AssPneu where ChildId=Child.ChildId and Week='"+ WeekNo +"' and VType='3')as varchar(2))";
+                SQL += " +','+childid";
                 SQL += " from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'";
 
                 String VisitNo = "";
@@ -1046,13 +1047,16 @@ public class HouseholdIndex_Outside extends Activity {
 
                 final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
 
+                //IDbundle.putString("childid", txtCID.getText().toString() + txtSNo.getText().toString());
                 IDbundle.putString("childid", txtCID.getText().toString() + txtSNo.getText().toString());
+                IDbundle.putString("childid", childinfo[9].toString());
                 IDbundle.putString("name", childinfo[0].toString());
                 IDbundle.putString("fm", childinfo[4].toString() + "," + childinfo[5].toString());
                 IDbundle.putString("agedm", AgeDayMonth);
                 IDbundle.putString("cid", txtCID.getText().toString());
                 //IDbundle.putString("pid", txtPID.getText().toString());
                 //IDbundle.putString("pid", childinfo[7].toString());
+
                 IDbundle.putString("pid", "");
                 IDbundle.putString("aged", aged.toString());
                 IDbundle.putString("agem", "");

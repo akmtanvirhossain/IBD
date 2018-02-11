@@ -11,6 +11,7 @@
     <item android:id="@+id/menuClusterBlock" android:title=" Sync Cluster,Block" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuReport" android:title=" Web Reports" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuVHWReport" android:title=" VHW Reports" android:showAsAction="ifRoom|withText"/>
-    <!--<item android:id="@+id/menuTest" android:title=" TestMenu" android:showAsAction="ifRoom|withText"/>-->
+
+    <item android:id="@+id/menuMemberSearch" android:title=" DSS Member" android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menuExit" android:title=" Exit" android:icon="@drawable/exit1" android:showAsAction="ifRoom|withText"/>
 </menu>
