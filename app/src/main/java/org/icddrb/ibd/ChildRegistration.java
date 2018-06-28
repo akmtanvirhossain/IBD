@@ -385,7 +385,7 @@ public class ChildRegistration extends Activity {
                 txtMoName.setEnabled(false);
                 txtFaName.setText(B.getString("father"));
                 spnEnType.setSelection(2);
-                spnEnType.setEnabled(false);
+                spnEnType.setEnabled(true);
             }
             else
             {

@@ -2308,14 +2308,16 @@ public class AssNewBorn extends Activity {
             if (txtRSlip.getText().toString().length() != 0 & secRSlip.isShown()) {
                 String RFNo;
                 //RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE  ChildId='" + ChildID + "' and Week='" + txtWeek.getSelectedItem().toString() + "' and  and VType=' "+ VisitType + "' and Visit='" + txtVisit.getSelectedItem().toString() + "' and RSlip = '" + txtRSlip.getText() + "'");
-                RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and ChildId <> '"+ ChildID +"'");
+                //RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and ChildId <> '"+ ChildID +"'");
+                RFNo = C.ReturnSingleValue("Select rslip from AssNewBorn where rslip='"+ txtRSlip.getText().toString() +"' and childid||week||vtype||visit not in('"+ (ChildID+txtWeek.getSelectedItem().toString()+VisitType+txtVisit.getSelectedItem().toString()) +"') limit 1");
                 if (RFNo.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
                     Connection.MessageBox(AssNewBorn.this, "এই রেফারাল স্লিপ নং পূর্বে নবজাতকে-এ ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
                     return;
                 }
                 String R2;
-                R2 = C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and ChildId <> '"+ ChildID +"'");
+                //R2 = C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and ChildId <> '"+ ChildID +"'");
+                R2 = C.ReturnSingleValue("Select rslip from AssPneu where rslip='"+ txtRSlip.getText().toString() +"' and childid||week||vtype||visit not in('"+ (ChildID+txtWeek.getSelectedItem().toString()+VisitType+txtVisit.getSelectedItem().toString()) +"') limit 1");
                 if (R2.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
                     Connection.MessageBox(AssNewBorn.this, "এই রেফারাল স্লিপ নং পূর্বে (০-৫৯ মাস)-এ  ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();

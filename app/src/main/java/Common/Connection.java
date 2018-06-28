@@ -38,12 +38,13 @@ public class Connection extends SQLiteOpenHelper {
 
     // Todo table name
     private static final String TABLE_TODO = "todo_items";
-
+    private static Context ud_context;
     private Context dbContext;
 
     public Connection(Context context) {
         super(context, DBLocation, null, DATABASE_VERSION);
         dbContext=context;
+        ud_context = context;
 
         try
         {
@@ -753,7 +754,6 @@ public class Connection extends SQLiteOpenHelper {
         String resp = "";
 
         try{
-
             DownloadDataJSON dload = new DownloadDataJSON();
             response=dload.execute(SQL).get();
 
@@ -767,6 +767,12 @@ public class Connection extends SQLiteOpenHelper {
             String VarList[] = ColumnList.split(",");
 
             List<String> dataStatus = new ArrayList<>();
+            DataClassProperty dd;
+            String DataList = "";
+            List<DataClassProperty> dataTemp = new ArrayList<DataClassProperty>();
+            String UID = "";
+            int varPos_modifyDate = 0;
+            String modifyDate = "";
 
             for(int i=0; i<responseData.getdata().size(); i++)
             {
@@ -776,18 +782,24 @@ public class Connection extends SQLiteOpenHelper {
                 SQL="";
                 WhereClause="";
                 varPos=0;
+                UID = "";
                 for(int j=0; j< UField.length; j++)
                 {
                     varPos = VarPosition(UField[j].toString(),VarList);
                     if(j==0)
                     {
                         WhereClause = UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+                        UID += VarData[varPos].toString();
                     }
                     else
                     {
                         WhereClause += " and "+ UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+                        UID += VarData[varPos].toString();
                     }
                 }
+
+                //varPos_modifyDate = VarPosition("modifyDate", VarList);
+                //modifyDate = VarData[varPos_modifyDate].toString();
 
                 //Update command
                 if(Existence("Select "+ VarList[0] +" from "+ TableName +" Where "+ WhereClause))
@@ -835,14 +847,191 @@ public class Connection extends SQLiteOpenHelper {
                     Save(SQL);
                 }
 
-                dataStatus.add(WhereClause);
+                /*String CLUSTER = getCLUSTER();
+
+                //Populate class with data for sync_management
+                //------------------------------------------------------------------------------
+                DataList = TableName + "^" + UID + "^" + CLUSTER + "^" + modifyDate;
+                dd = new DataClassProperty();
+                dd.setdatalist(DataList);
+                dd.setuniquefieldwithdata("" +
+                        "TableName='" + TableName + "' and " +
+                        "UniqueID='" + UID + "' and " +
+                        "UserId='" + CLUSTER + "' and " +
+                        "modifyDate='" + modifyDate + "'");
+                dataTemp.add(dd);*/
+            }
+
+            //Status back to server
+            if(dataTemp.size()>0)
+            {
+                //Update data to Server on sync management
+                //------------------------------------------------------------------------------
+                /*DataClass dt = new DataClass();
+                dt.settablename("Sync_Management");
+                dt.setcolumnlist("TableName, UniqueID, UserId, modifyDate");
+                dt.setdata(dataTemp);
+
+                Gson gson1 = new Gson();
+                String json1 = gson1.toJson(dt);
+                String resp1 = "";
+
+                UploadDataJSON u = new UploadDataJSON();
+
+                try {
+                    resp1 = u.execute(json1).get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
             }
 
 
-            //Status back to server
-            if(dataStatus.size()>0)
-            {
+        } catch (Exception e) {
+            resp = e.getMessage();
+            e.printStackTrace();
+        }
 
+        return resp;
+    }
+
+    public  String DownloadJSON_ModifyDate(String SQL,String TableName,String ColumnList, String UniqueField)
+    {
+        String WhereClause="";
+        int varPos=0;
+
+        String response = "";
+        String resp = "";
+
+        try{
+            DownloadDataJSON dload = new DownloadDataJSON();
+            response=dload.execute(SQL).get();
+
+            //Process Response
+            downloadClass d = new downloadClass();
+            Gson gson = new Gson();
+            Type collType = new TypeToken<downloadClass>(){}.getType();
+            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+
+            String UField[]  = UniqueField.split(",");
+            String VarList[] = ColumnList.split(",");
+
+            List<String> dataStatus = new ArrayList<>();
+            DataClassProperty dd;
+            String DataList = "";
+            List<DataClassProperty> dataTemp = new ArrayList<DataClassProperty>();
+            String UID = "";
+            int varPos_modifyDate = 0;
+            String modifyDate = "";
+
+            for(int i=0; i<responseData.getdata().size(); i++)
+            {
+                String VarData[] = split(responseData.getdata().get(i).toString(),'^');
+
+                //Generate where clause
+                SQL="";
+                WhereClause="";
+                varPos=0;
+                UID = "";
+                for(int j=0; j< UField.length; j++)
+                {
+                    varPos = VarPosition(UField[j].toString(),VarList);
+                    if(j==0)
+                    {
+                        WhereClause = UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+                        UID += VarData[varPos].toString();
+                    }
+                    else
+                    {
+                        WhereClause += " and "+ UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+                        UID += VarData[varPos].toString();
+                    }
+                }
+
+                varPos_modifyDate = VarPosition("modifyDate", VarList);
+                modifyDate = VarData[varPos_modifyDate].toString();
+
+                //Update command
+                if(Existence("Select "+ VarList[0] +" from "+ TableName +" Where "+ WhereClause))
+                {
+                    for(int r=0;r<VarList.length;r++)
+                    {
+                        if(r==0)
+                        {
+                            SQL = "Update "+ TableName +" Set ";
+                            SQL+= VarList[r] + " = '"+ VarData[r].toString() +"'";
+                        }
+                        else
+                        {
+                            if(r == VarData.length-1)
+                            {
+                                SQL+= ","+ VarList[r] + " = '"+ VarData[r].toString() +"'";
+                                SQL += " Where "+ WhereClause;
+                            }
+                            else
+                            {
+                                SQL+= ","+ VarList[r] + " = '"+ VarData[r].toString() +"'";
+                            }
+                        }
+                    }
+
+                    Save(SQL);
+                }
+                //Insert command
+                else
+                {
+                    for(int r=0;r<VarList.length;r++)
+                    {
+                        if(r==0)
+                        {
+                            SQL = "Insert into "+ TableName +"("+ ColumnList +")Values(";
+                            SQL+= "'"+ VarData[r].toString() +"'";
+                        }
+                        else
+                        {
+                            SQL+= ",'"+ VarData[r].toString() +"'";
+                        }
+                    }
+                    SQL += ")";
+
+                    Save(SQL);
+                }
+
+                String CLUSTER = getCLUSTER();
+
+                //Populate class with data for sync_management
+                //------------------------------------------------------------------------------
+                DataList = TableName + "^" + UID + "^" + CLUSTER + "^" + modifyDate;
+                dd = new DataClassProperty();
+                dd.setdatalist(DataList);
+                dd.setuniquefieldwithdata("" +
+                        "TableName='" + TableName + "' and " +
+                        "UniqueID='" + UID + "' and " +
+                        "UserId='" + CLUSTER + "' and " +
+                        "modifyDate='" + modifyDate + "'");
+                dataTemp.add(dd);
+            }
+
+            //Status back to server
+            if(dataTemp.size()>0)
+            {
+                //Update data to Server on sync management
+                //------------------------------------------------------------------------------
+                DataClass dt = new DataClass();
+                dt.settablename("Sync_Management");
+                dt.setcolumnlist("TableName, UniqueID, UserId, modifyDate");
+                dt.setdata(dataTemp);
+
+                Gson gson1 = new Gson();
+                String json1 = gson1.toJson(dt);
+                String resp1 = "";
+
+                UploadDataJSON u = new UploadDataJSON();
+
+                try {
+                    resp1 = u.execute(json1).get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
 
@@ -2206,4 +2395,250 @@ public class Connection extends SQLiteOpenHelper {
         }
     }
 
+    public void Sync_Download_DatabaseTab(String TableName, String VariableList, String UniqueField, String CLUSTER, String WhereClause) {
+        String SQL = "";
+        String Res = "";
+
+        //Generate Unique ID field
+        //------------------------------------------------------------------------------------------
+        String[] U = UniqueField.split(",");
+        String UID = "";
+        for (int i = 0; i < U.length; i++) {
+            if (i == 0)
+                UID = "cast(t." + U[i] + " as varchar(50))";
+            else
+                UID += "+cast(t." + U[i] + " as varchar(50))";
+        }
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "Select Count(*)totalRec from " + TableName + " as t";
+        SQL += " where not exists(select * from Sync_Management where";
+        SQL += " lower(TableName)  = lower('" + TableName + "') and";
+        SQL += " UniqueID   = " + UID + " and";
+        SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+
+        SQL += " UserId   ='" + CLUSTER + "')";
+        if (WhereClause.length() > 0) {
+            SQL += " and " + WhereClause;
+        }
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 400;
+        Integer totalBatch = 1;
+
+        if (batchSize == 0) {
+            totalBatch = 1;
+            batchSize = totalRecords;
+        } else if (batchSize > 0) {
+            totalBatch = totalRecords / batchSize;
+            if (totalRecords % batchSize > 0)
+                totalBatch += 1;
+        }
+
+        //Execute batch download
+        //------------------------------------------------------------------------------------------
+        try {
+            for (int i = 0; i < totalBatch; i++) {
+                SQL = "Select top " + batchSize + " " + VariableList.replace("modifyDate","convert(varchar(19),modifydate,120)") + " from " + TableName + " as t";
+                SQL += " where not exists(select * from Sync_Management where";
+                SQL += " lower(TableName)  = lower('" + TableName + "') and";
+                SQL += " UniqueID   = " + UID + " and";
+                SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+                SQL += " UserId   ='" + CLUSTER + "')";
+                if (WhereClause.length() > 0) {
+                    SQL += " and " + WhereClause;
+                }
+
+                Res = DownloadJSON_ModifyDate(SQL, TableName, VariableList, UniqueField);
+            }
+        }catch(Exception ex){
+
+        }
+    }
+
+
+    public void Sync_Download_Child(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "select count(ChildId)totalrec" +
+                " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='"+ CLUSTER +"'\n" +
+                " and not exists(select tablename from Sync_Management where lower(tableName)='child' and UniqueID=c.ChildId and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),c.modifydate,120))";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 0;
+        Integer totalBatch = 1;
+
+        if (batchSize == 0) {
+            totalBatch = 1;
+            batchSize = totalRecords;
+        } else if (batchSize > 0) {
+            totalBatch = totalRecords / batchSize;
+            if (totalRecords % batchSize > 0)
+                totalBatch += 1;
+        }
+
+        //Execute batch download
+        //------------------------------------------------------------------------------------------
+        try {
+            for (int i = 0; i < totalBatch; i++) {
+                SQL = "select top " + batchSize + " ChildId, C.Vill, C.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, \n" +
+                        " (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate, ExType, (case when len(ExType)=0 then null else (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))end)ExDate, \n" +
+                        " (cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo, c.modifydate\n" +
+                        " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='"+ CLUSTER +"'\n" +
+                        " and not exists(select tablename from Sync_Management where lower(tableName)='child' and UniqueID=c.ChildId and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),c.modifydate,120))";
+
+                Res = DownloadJSON_ModifyDate(SQL,
+                        "child",
+                        "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo,modifydate",
+                        "ChildId");
+            }
+        }catch(Exception ex){
+
+        }
+    }
+
+    public void Sync_Download_Bari(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "Select count(Vill)total from Bari b where Cluster='"+ CLUSTER +"'\n" +
+                " and not exists(select tablename from Sync_Management where lower(tableName)='bari' and UniqueID=b.vill+b.bari and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),b.modifydate,120))";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 200;
+        Integer totalBatch = 1;
+
+        if (batchSize == 0) {
+            totalBatch = 1;
+            batchSize = totalRecords;
+        } else if (batchSize > 0) {
+            totalBatch = totalRecords / batchSize;
+            if (totalRecords % batchSize > 0)
+                totalBatch += 1;
+        }
+
+        //Execute batch download
+        //------------------------------------------------------------------------------------------
+        try {
+            for (int i = 0; i < totalBatch; i++) {
+                SQL = "Select top "+ batchSize +" Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate from Bari b where Cluster='"+ CLUSTER +"'" +
+                        " and not exists(select tablename from Sync_Management where lower(tableName)='bari' and UniqueID=b.vill+b.bari and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),b.modifydate,120))";
+                Res = DownloadJSON_ModifyDate(SQL,
+                        "bari",
+                        "Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate",
+                        "vill,bari");
+            }
+        }catch(Exception ex){
+
+        }
+    }
+
+    public static void SyncDataService(String CLUSTER)
+    {
+        try {
+            Connection C = new Connection(ud_context);
+
+
+            String SQL = "";
+            SQL = "Create table DatabaseTable(TableName varchar (50),TableScript varchar(500),ColumnList varchar(500)," +
+                    "UniqueID varchar (500),Sync_Upload char (1),Sync_Download char (1),BatchSize int,modifyDate varchar(20)," +
+                    "Constraint pk_DatabaseTable Primary Key(TableName))";
+            C.CreateTable("DatabaseTable",SQL);
+
+            //Reqular data sync
+            //--------------------------------------------------------------------------------------
+            String TableName,VariableList,UniqueField;
+            TableName = "DatabaseTable";
+            VariableList = "TableName, TableScript, ColumnList, UniqueID, Sync_Upload, Sync_Download, BatchSize, modifyDate";
+            UniqueField = "TableName";
+            C.Sync_Download_DatabaseTab(TableName, VariableList, UniqueField,CLUSTER,"");
+
+            C.TableStructureSync("bari");
+            C.TableStructureSync("child");
+
+            //C.Sync_DatabaseStructure(UniqueID);
+            C.Sync_Download_Bari(CLUSTER);
+            C.Sync_Download_Child(CLUSTER);
+
+
+
+            if(!C.Existence("Select * from MDSSVill where vill='327'")) {
+                C.Save("Insert into MDSSVill(vill,vname,ucode,uname,cluster,status,oldunion)Values('327','Gorai West-1','17','Gorai','05','N',''))");
+            }
+            if(!C.Existence("Select * from MDSSVill where vill='328'")) {
+                C.Save("Insert into MDSSVill(vill,vname,ucode,uname,cluster,status,oldunion)Values('328','Gorai West-2','17','Gorai','05','N',''))");
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+    }
+
+    //TableStructureSync
+    public void TableStructureSync(String TableName) {
+        //Creating Table if not exists
+        String tableScript  = ReturnSingleValue("Select TableScript from DatabaseTable where lower(TableName)='"+ TableName.toLowerCase() +"'");
+        CreateTable(TableName, tableScript);
+
+        //Local database
+        String[] local = GetColumnListArray(TableName);
+
+        //Server database
+        String[] Server = ReturnSingleValue("select ColumnList from DatabaseTable where lower(TableName)='"+ TableName.toLowerCase() +"'").toString().split(",");
+
+        String[] C;
+        Boolean matched = false;
+        String newVariable = "";
+
+        //matched database columns(local and server)
+        for (int i = 0; i < Server.length; i++) {
+            matched = false;
+            for (int j = 0; j < local.length; j++) {
+                newVariable = Server[i].toString();
+                if (Server[i].toString().toLowerCase().equals(local[j].toString().toLowerCase())) {
+                    matched = true;
+                    j = local.length;
+                }
+            }
+            if (matched == false) {
+                Save("Alter table " + TableName + " add column " + newVariable + " varchar(50) default ''");
+            }
+        }
+    }
+
+    //Zilla Code from table: zilla
+    MySharedPreferences sp;
+    public String getCLUSTER(){
+        return sp.getValue(ud_context, "cluster");
+    }
 }

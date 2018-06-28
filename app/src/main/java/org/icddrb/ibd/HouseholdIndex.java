@@ -123,17 +123,6 @@ public class HouseholdIndex extends Activity {
         AlertDialog.Builder adb = new AlertDialog.Builder(HouseholdIndex.this);
 
         switch (item.getItemId()) {
-/*
-            case R.id.menuTest:
-                Bundle IDbundle = new Bundle();
-                IDbundle.putString("weekno", WeekNo);
-
-                Intent f3 = new Intent(getApplicationContext(),HouseholdIndex_Outside.class);
-                f3.putExtras(IDbundle);
-                startActivity(f3);
-                return true;
-*/
-
             case R.id.menuMemberSearch:
                 Intent f = new Intent(getApplicationContext(),MemSearch.class);
                 startActivity(f);
@@ -354,10 +343,11 @@ public class HouseholdIndex extends Activity {
 
                                     //Download update from Server
                                     //3-Update Bari Information
-                                    TableName = "Bari";
+                                    /*TableName = "Bari";
                                     SQLStr = "Select Vill,Bari,Cluster,Block,BariName,BariLoc from Bari where Cluster='"+ Cluster +"' and Upload='3'";
                                     VariableList = "Vill,Bari,Cluster,Block,BariName,BariLoc";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "Vill,Bari");
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "Vill,Bari");*/
+                                    C.Sync_Download_Bari(Cluster);
 
                                     //Upload
                                     //----------------------------------------------------------------------------------
@@ -443,13 +433,15 @@ public class HouseholdIndex extends Activity {
                                     //-------------------------------------------------------------------
 
                                     //Child
-                                    TableName = "Child";
+                                    /*TableName = "Child";
                                     VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo";
                                     SQLStr  = "select ChildId, C.Vill, C.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, ";
                                     SQLStr += " (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate, ExType, (case when len(ExType)=0 then null else (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))end)ExDate, ";
                                     SQLStr += " (cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo";
                                     SQLStr += " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='"+ Cluster +"' and c.Upload='3'";
                                     Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"ChildId");
+                                    */
+                                    C.Sync_Download_Child(Cluster);
 
                                     //Visit
                                     TableName = "Visits";
@@ -1250,10 +1242,8 @@ public class HouseholdIndex extends Activity {
                     SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
-                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='"+ Village +"' ";
-                    //SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else c.extype end))=0)";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end)<=date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                     SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
@@ -1265,7 +1255,6 @@ public class HouseholdIndex extends Activity {
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='"+ Village +"' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) < date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
@@ -1361,7 +1350,6 @@ public class HouseholdIndex extends Activity {
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
-                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='"+ Village +"' ";
@@ -1373,7 +1361,6 @@ public class HouseholdIndex extends Activity {
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
-                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='"+ Village +"' ";
@@ -1390,7 +1377,6 @@ public class HouseholdIndex extends Activity {
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
-                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='"+ Village +"' ";
@@ -1403,7 +1389,6 @@ public class HouseholdIndex extends Activity {
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
-                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='"+ Village +"' ";

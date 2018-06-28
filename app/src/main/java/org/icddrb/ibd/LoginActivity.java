@@ -33,6 +33,7 @@ import Common.DataClassProperty;
 import Common.Global;
 import Common.UploadData;
 import Common.UploadDataJSON;
+import Utility.MySharedPreferences;
 
 public class LoginActivity extends Activity{
     Connection C;
@@ -45,6 +46,7 @@ public class LoginActivity extends Activity{
     String   SystemUpdateDT="";
     private  String Password="";
     private String Cluster;
+    MySharedPreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class LoginActivity extends Activity{
             setContentView(R.layout.login);
             C = new Connection(this);
             g = Global.getInstance();
+            sp = new MySharedPreferences();
+            sp.save(this,"cluster","");
 
             final Spinner uid      = (Spinner)findViewById(R.id.userId);
             final Spinner weekNo   = (Spinner)findViewById(R.id.weekNo);
@@ -65,7 +69,7 @@ public class LoginActivity extends Activity{
             //Need to update date every time whenever shared updated system
             //Format: DDMMYYYY
             //*********************************************************************
-            SystemUpdateDT = "02012018";
+            SystemUpdateDT = "18022018";
             lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
             //Check for Internet connectivity
@@ -111,6 +115,13 @@ public class LoginActivity extends Activity{
 
             Cluster = C.ReturnSingleValue("select Cluster from Cluster");
             g.setClusterCode(Cluster);
+            sp.save(this,"cluster",Cluster);
+
+            if (netwoekAvailable)
+            {
+                Intent syncService = new Intent(this, Sync_Service.class);
+                startService(syncService);
+            }
 
             /*String TableName = "WeeklyVstDt";
             String SQLStr = "Select top 20 Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +

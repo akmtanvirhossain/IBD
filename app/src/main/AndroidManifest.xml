@@ -46,6 +46,8 @@
         <activity android:name=".WebReports" android:label="Reports"></activity>
         <activity android:name=".VHWReports" android:label="VHW Reports"></activity>
         <activity android:name=".MemSearch" android:label="Search DSS Member"></activity>
+
+        <service android:name=".Sync_Service" />
     </application>
 
 </manifest>
