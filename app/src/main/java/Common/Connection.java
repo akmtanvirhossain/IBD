@@ -2139,6 +2139,78 @@ public class Connection extends SQLiteOpenHelper {
         }
     }
 
+
+    public void Sync_Download_Vill(String TableName, String VariableList, String UniqueField, String Cluster) {
+        //Retrieve sync parameter
+        //------------------------------------------------------------------------------------------
+        //String[] SyncParam = Sync_Parameter(TableName);
+
+        /*String SQLStr = SyncParam[0];
+        String VariableList = SyncParam[1];
+        String UniqueField = SyncParam[2];
+        String SQL_VariableList = SyncParam[3];*/
+        String Res = "";
+        String SQL = "";
+
+        //Generate Unique ID field
+        //------------------------------------------------------------------------------------------
+        String[] U = UniqueField.split(",");
+        String UID = "";
+        //String UID_Sync = "";
+        for (int i = 0; i < U.length; i++) {
+            if (i == 0)
+                UID = "cast(t." + U[i] + " as varchar(50))";
+            else
+                UID += "+cast(t." + U[i] + " as varchar(50))";
+        }
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "Select Count(*)totalRec from " + TableName + " as t";
+        SQL += " where not exists(select * from Sync_Management where";
+        SQL += " lower(TableName)  = lower('" + TableName + "') and";
+        SQL += " UniqueID   = " + UID + " and";
+        SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and" +
+                " UserId   ='" + Cluster + "')";
+
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        //0(zero) means all selected data
+        Integer batchSize = 200;
+        Integer totalBatch = 1;
+
+        if (batchSize == 0) {
+            totalBatch = 1;
+            batchSize = totalRecords;
+        } else if (batchSize > 0) {
+            totalBatch = totalRecords / batchSize;
+            if (totalRecords % batchSize > 0)
+                totalBatch += 1;
+        }
+
+        //Execute batch download
+        //------------------------------------------------------------------------------------------
+        for (int i = 0; i < totalBatch; i++) {
+            SQL = "Select top " + batchSize + " " + VariableList + " from " + TableName + " as t";
+            SQL += " where not exists(select * from Sync_Management where";
+            SQL += " lower(TableName)  = lower('" + TableName + "') and";
+            SQL += " UniqueID   = " + UID + " and";
+            SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+            SQL += " UserId   ='" + Cluster + "')";
+
+            Res = DownloadJSON_Update_Sync_Management(SQL, TableName, VariableList, UniqueField, Cluster);
+        }
+    }
+
+
     //done
     //download data from server and include those id's into Table: Sync_Management
     private String DownloadJSON_Update_Sync_Management(String SQL, String TableName, String ColumnList, String UniqueField, String UserId) {

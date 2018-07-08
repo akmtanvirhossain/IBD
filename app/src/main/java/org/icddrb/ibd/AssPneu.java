@@ -2766,13 +2766,14 @@ public class AssPneu extends Activity {
 
                 if(!rdoAsses2.isChecked())
                 {
-                    if ((Temp < 96.0) & (!rdoCSPne1.isChecked()) && (chkTemp.isChecked() == false)) {
+//                    if ((Temp < 96.0) & (!rdoCSPne1.isChecked()) && (chkTemp.isChecked() == false)) {
+                    if ((Temp < 96.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked())) {
                         Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ৯৬.০ এর কম, সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                         return;
                     }
                 }
 
-                if ((Temp > 101.0) & (!rdoCSPne1.isChecked()) && (chkTemp.isChecked()==false))
+                if ((Temp > 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked()))
                 {
                     Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                     return;
@@ -2873,6 +2874,8 @@ public class AssPneu extends Activity {
                 }
             }
             //================================================================
+            String a1=txttemp.getText().toString();
+            Float Temp9 =  Float.parseFloat(a1.length()==0?"0":a1);
             if(!rdoAsses1.isChecked() & !rdoAsses2.isChecked())
             {
                 Connection.MessageBox(AssPneu.this, "শিশুকে পরীক্ষা করেছেন হ্যাঁ/না সিলেক্ট করা হয় নাই");
@@ -2883,11 +2886,11 @@ public class AssPneu extends Activity {
                 Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের  উপর্সগ  হ্যাঁ  এবং কোন লক্ষণ নেই  হ্যাঁ  হতে পারবে না.");
                 return;
             }
-            else if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (rdoCNPne2.isChecked()))
-            {
-                Connection.MessageBox(AssPneu.this, "কোন লক্ষণ নেই  হ্যাঁ এবং  নিউমোনিয়া নয়  না হতে পারবে না");
-                return;
-            }
+//            else if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
+//            {
+//                Connection.MessageBox(AssPneu.this, "কোন লক্ষণ নেই  হ্যাঁ এবং  নিউমোনিয়া নয়  না হতে পারবে না");
+//                return;
+//            }
             else if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone2.isChecked()) && (rdoCough1.isChecked()))
             {
                 Connection.MessageBox(AssPneu.this, "মা বলেছে কাশি  তাহলে কাশি এবং শ্বাস কষ্টের সব  উপর্সগ  না  হতে পারবে না.");
@@ -2938,9 +2941,17 @@ public class AssPneu extends Activity {
                 Connection.MessageBox(AssPneu.this, "রেফার এর লক্ষণগুলো না  কিন্তু রেফার করা  হয়েছে   হতে পারবে না");
                 return;
             }
+            if (Temp9 > 96.0 && (!chkTemp.isChecked())) {
+                if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
+                {
+                    Connection.MessageBox(AssPneu.this, "কোন লক্ষণ নেই  হ্যাঁ এবং  নিউমোনিয়া নয়  না হতে পারবে না");
+                    return;
+                }
+            }
+
             String a=txttemp.getText().toString();
             Float Temp =  Float.parseFloat(a.length()==0?"0":a);
-            if ((Temp >= 99.5) && (chkTemp.isChecked()==false)) {
+            if ((Temp >= 99.5) && (!chkTemp.isChecked())) {
                 if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
                     Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
                     return;

@@ -169,6 +169,8 @@ public class HouseholdIndex extends Activity {
                                     String VariableList;
                                     String UniqueField;
 
+
+
                                     //Status on Server
                                     //3-Update Block
                                     //4-Update Cluster and Block
@@ -334,6 +336,14 @@ public class HouseholdIndex extends Activity {
                                     String TableName;
                                     String VariableList;
                                     String UniqueField;
+
+                                    Log.e("Alerm","*********** Amare Dake ken ********");
+
+                                    TableName     = "MDSSVill";
+                                    VariableList  = "Vill, Vname, UCode, UName, Cluster, Status, OldUnion";
+                                    UniqueField   = "Vill";
+                                    C.Sync_Download_Vill(TableName,VariableList,UniqueField,g.getClusterCode());
+
 
                                     //CID Update(CID_Update_Log)
                                     TableName     = "CID_Update_Log";
