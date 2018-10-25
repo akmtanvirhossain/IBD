@@ -170,7 +170,6 @@ public class HouseholdIndex extends Activity {
                                     String UniqueField;
 
 
-
                                     //Status on Server
                                     //3-Update Block
                                     //4-Update Cluster and Block
@@ -198,7 +197,6 @@ public class HouseholdIndex extends Activity {
                                     //4-Update Cluster and Block
                                     String ServerVal  = C.ReturnResult("ReturnSingleValue","Select Count(*)Total from Bari where Cluster='"+ Cluster +"' and Upload='4'");
                                     if(Integer.valueOf(ServerVal)>0) {
-
                                         //DSS Bari
                                         //--------------------------------------------------------------------------------------
                                         TableName = "DSSBari";
@@ -344,7 +342,6 @@ public class HouseholdIndex extends Activity {
                                     UniqueField   = "Vill";
                                     C.Sync_Download_Vill(TableName,VariableList,UniqueField,g.getClusterCode());
 
-
                                     //CID Update(CID_Update_Log)
                                     TableName     = "CID_Update_Log";
                                     VariableList  = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
@@ -424,12 +421,12 @@ public class HouseholdIndex extends Activity {
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Child", "ChildRemove", VariableList, "ChildId,Vill,Bari");
 
                                     //AssPneu remote based on server data, Table: AssPneu_Audit
-                                    SQLStr = "Select ChildId, Week, VType, Visit from AssPneu_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    SQLStr = "Select a.ChildId, Week, VType, Visit from AssPneu_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VType, Visit";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssPneu", "AssPneu_Audit", VariableList, "ChildId, Week, VType, Visit");
 
                                     //AssNewBorn remote based on server data, Table: AssNewBorn_Audit
-                                    SQLStr = "Select ChildId, Week, VType, Visit from AssNewBorn_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    SQLStr = "Select a.ChildId, Week, VType, Visit from AssNewBorn_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VType, Visit";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssNewBorn", "AssNewBorn_Audit", VariableList, "ChildId, Week, VType, Visit");
 
