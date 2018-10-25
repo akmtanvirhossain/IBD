@@ -2276,6 +2276,10 @@ public class HouseholdIndex extends Activity {
                     Connection.MessageBox(HouseholdIndex.this, "বাড়ীর নাম খালি রাখা যাবে না।");
                     return;
                 }
+                else if (txtBari.getText().length() < 4) {
+                    Connection.MessageBox(HouseholdIndex.this, "বাড়ী নম্বর ৪ সংখ্যার কম হবেনা");
+                    return;
+                }
                 //else if(Global.Right(txtBari.getText().toString(), 3).matches("[a-zA-z]{1}"))
                 //{
                 //    Connection.MessageBox(HouseholdIndex.this, "বাড়ীর নম্বর সঠিক নয়");
@@ -2325,7 +2329,10 @@ public class HouseholdIndex extends Activity {
                                 Connection.MessageBox(HouseholdIndex.this,"বাড়ী নম্বর "+ txtBari.getText().toString() +" ডাটাবেজে আছে।");
                                 return;
                             }
-
+                            else if (txtBari.getText().length() < 4) {
+                                Connection.MessageBox(HouseholdIndex.this, "বাড়ী নম্বর ৪ সংখ্যার কম হবেনা");
+                                return;
+                            }
                             //Update Bari File
                             SQL = "Update Bari Set upload='2',";
                             SQL += " Bari='" + txtBari.getText() + "',BariName='" + txtBName.getText() + "',BariLoc='" + txtBLoc.getText() + "',Block='"+ txtBlock.getSelectedItem().toString() +"',Upload='2'";

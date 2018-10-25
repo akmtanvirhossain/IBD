@@ -634,12 +634,14 @@ public class AssPneu extends Activity {
 
             VlblVisit = (TextView) findViewById(R.id.VlblVisit);
             secVDate = (LinearLayout) findViewById(R.id.secVDate);
+
             if(VisitType.equals("1"))
             {
                 VlblVisit.setVisibility(View.GONE);
                 txtVisit.setVisibility(View.GONE);
                 txtVisit.setSelection(0);
             }
+
             //follow-up visit
             else if(VisitType.equals("2"))
             {
@@ -647,13 +649,15 @@ public class AssPneu extends Activity {
                 txtVisit.setVisibility(View.VISIBLE);
                 secVDate.setVisibility(View.VISIBLE);
             }
+
             //additional visit
             else if(VisitType.equals("3"))
             {
                 VlblVisit.setVisibility(View.VISIBLE);
                 txtVisit.setVisibility(View.VISIBLE);
                 secVDate.setVisibility(View.VISIBLE);
-                txtVisit.setSelection(1);
+                //txtVisit.setSelection(1);
+                txtVisit.setSelection(Global.SpinnerItemPosition(txtVisit,1,VisitNo));
                 txtVisit.setEnabled(false);
             }
             else

@@ -23,6 +23,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.os.Bundle;
@@ -419,7 +420,11 @@ public class ChildRegistration extends Activity {
                     return;
                 }
             }
+            if (txtPID.getText().toString().equals(txtMoPNO.getText().toString())) {
+                Connection.MessageBox(ChildRegistration.this, "মায়ের সিরিয়াল নাম্বার এবং সদস্যের সিরিয়াল নাম্বার একই রকম হবে না।");
+                return;
 
+            }
 
             if (txtHH.getText().toString().length() == 0) {
                 Connection.MessageBox(ChildRegistration.this, "Required field:Household No.");
@@ -463,6 +468,7 @@ public class ChildRegistration extends Activity {
                 Connection.MessageBox(ChildRegistration.this, "Required field:মায়ের নাম .");
                 txtMoName.requestFocus();
                 return;
+
             } else if (txtFaName.getText().toString().length() == 0 & secFaName.isShown()) {
                 Connection.MessageBox(ChildRegistration.this, "Required field:পিতার নাম.");
                 txtFaName.requestFocus();
@@ -472,7 +478,6 @@ public class ChildRegistration extends Activity {
                 txtMoPNO.requestFocus();
                 return;
             }
-
             if (txtPID.getText().toString().length() > 0){
                 if (!C.Existence("select vill from mdssvill where vill='" + Global.Left(txtPID.getText().toString(), 3) + "'")) {
                     Connection.MessageBox(ChildRegistration.this, "শিশুর স্থায়ী ID নং. সঠিক নয়");
