@@ -420,7 +420,7 @@ public class ChildRegistration extends Activity {
                     return;
                 }
             }
-            if (txtPID.getText().toString().equals(txtMoPNO.getText().toString())) {
+            if ((txtPID.getText().toString().equals(txtMoPNO.getText().toString()) & (!txtPID.getText().toString().equals("") & !txtMoPNO.getText().toString().equals("")))) {
                 Connection.MessageBox(ChildRegistration.this, "মায়ের সিরিয়াল নাম্বার এবং সদস্যের সিরিয়াল নাম্বার একই রকম হবে না।");
                 return;
 
