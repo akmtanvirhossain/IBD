@@ -658,7 +658,7 @@ public class AssPneu extends Activity {
                 secVDate.setVisibility(View.VISIBLE);
                 //txtVisit.setSelection(1);
                 txtVisit.setSelection(Global.SpinnerItemPosition(txtVisit,1,VisitNo));
-                txtVisit.setEnabled(false);
+                //txtVisit.setEnabled(false);
             }
             else
             {
@@ -2252,7 +2252,7 @@ public class AssPneu extends Activity {
             txtVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    //ClearForm();
+                    ClearForm();
                     DataSearch(ChildID, WeekNo, VisitType, txtVisit.getSelectedItem().toString());
                 }
 
@@ -3627,10 +3627,75 @@ public class AssPneu extends Activity {
                 cur.moveToNext();
             }
             cur.close();
+
+            DataSearchPhone(ChildId);
         } catch (Exception e) {
             Connection.MessageBox(AssPneu.this, e.getMessage());
             return;
         }
+    }
+
+    private void ClearForm()
+    {
+        dtpVDate.setText("");
+        rdogrpCough.clearCheck();
+                rdogrpDBrea.clearCheck();
+        rdogrpFever.clearCheck();
+                spnOthCom1.setSelection(0);
+        spnOthCom2.setSelection(0);
+                spnOthCom3.setSelection(0);
+        rdogrpAsses.clearCheck();
+                txtRR1.setText("");
+        chkRR.setChecked(false);
+                txtRR2.setText("");
+        chkTemp.setChecked(false);
+                chkFever.setChecked(false);
+        dtpCoughDt.setText("");
+                dtpDBreaDt.setText("");
+        dtpFeverDt.setText("");
+                rdogrpConv.clearCheck();
+        rdogrpFBrea.clearCheck();
+                rdogrpCInd.clearCheck();
+        rdogrpLeth.clearCheck();
+                rdogrpUCon.clearCheck();
+        rdogrpDrink.clearCheck();
+                rdogrpVomit.clearCheck();
+        rdogrpNone.clearCheck();
+                rdogrpCSPne.clearCheck();
+        rdogrpCPPne.clearCheck();
+                rdogrpCNPne.clearCheck();
+        rdogrpTSPne.clearCheck();
+                rdogrpTPPne.clearCheck();
+        rdogrpTNPne.clearCheck();
+                rdogrpLFever.clearCheck();
+        rdogrpCLFever.clearCheck();
+                rdogrpTLFever.clearCheck();
+        rdogrpMFever.clearCheck();
+                rdogrpCMFever.clearCheck();
+        rdogrpTMFever.clearCheck();
+                rdogrpHFever.clearCheck();
+        rdogrpCHFever.clearCheck();
+                rdogrpTHFever.clearCheck();
+        rdogrpNeck.clearCheck();
+                rdogrpFonta.clearCheck();
+        rdogrpConv2.clearCheck();
+                rdogrpLeth2.clearCheck();
+        rdogrpUcon2.clearCheck();
+                rdogrpDrink2.clearCheck();
+        rdogrpVomit2.clearCheck();
+                rdogrpCMenin.clearCheck();
+        rdogrpTMenin.clearCheck();
+                rdogrpRef.clearCheck();
+        txtRSlip.setText("");
+                txtPhone.setText("");
+        rdogrpComp.clearCheck();
+                rdogrpReason.clearCheck();
+        spnTPlace.setSelection(0);
+                txtTPlaceC.setText("");
+        txtTAbsDur.setText("");
+                rdogrpTAbsIn.clearCheck();
+        rdogrpHos.clearCheck();
+
     }
 
     private void DataSearchName(String CID)

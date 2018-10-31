@@ -335,8 +335,6 @@ public class HouseholdIndex extends Activity {
                                     String VariableList;
                                     String UniqueField;
 
-                                    Log.e("Alerm","*********** Amare Dake ken ********");
-
                                     TableName     = "MDSSVill";
                                     VariableList  = "Vill, Vname, UCode, UName, Cluster, Status, OldUnion";
                                     UniqueField   = "Vill";

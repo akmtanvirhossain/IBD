@@ -886,7 +886,7 @@ public class ChildRegistration extends Activity {
     private void MigrationData(String Village, String Name,final Dialog d,final ListView evlist, String Search)
     {
         String SQL = "";
-        SQL = "Select childid as childid, hh as hh, Sno as Sno,PID Pno,Name as Name,Sex as sex, bdate as bdate,moname as mother,mopno as mopno,faname as father,ExDate as ExDate,ifnull(ContactNo,'') as contactno from MigChild where Vill='"+ Village +"' and (Name like('"+ Name +"%') or PID like('"+ Name + "%'))order by name asc";
+        SQL = "Select childid as childid, vill as vill, bari as bari, hh as hh, Sno as Sno,PID Pno,Name as Name,Sex as sex, bdate as bdate,moname as mother,mopno as mopno,faname as father,ExDate as ExDate,ifnull(ContactNo,'') as contactno from MigChild where Vill='"+ Village +"' and (Name like('"+ Name +"%') or PID like('"+ Name + "%'))order by name asc";
 
         Cursor cur1 = C.ReadData(SQL);
 
@@ -899,6 +899,9 @@ public class ChildRegistration extends Activity {
         {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("childid",   cur1.getString(cur1.getColumnIndex("childid")));
+            map.put("vill",   cur1.getString(cur1.getColumnIndex("vill")));
+            map.put("bari",   cur1.getString(cur1.getColumnIndex("bari")));
+
             map.put("hh",   cur1.getString(cur1.getColumnIndex("hh")));
             map.put("sno",  cur1.getString(cur1.getColumnIndex("Sno")));
             map.put("pno",  cur1.getString(cur1.getColumnIndex("Pno")));
@@ -1003,7 +1006,8 @@ public class ChildRegistration extends Activity {
             lblFatherMother.setText(": "+ FM);
 
             //lblFatherMother.setText(": "+ o.get("father"));
-            lblCID.setText(": "+ o.get("childid"));
+            lblCID.setText(": "+ o.get("vill") + o.get("bari")+o.get("hh")+o.get("sno"));
+            //lblCID.setText(": "+ o.get("childid"));
             lblPID.setText(": "+ o.get("pno"));
 
             LinearLayout mig_row = (LinearLayout)convertView.findViewById(R.id.mig_row);
