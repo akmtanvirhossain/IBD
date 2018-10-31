@@ -2776,10 +2776,10 @@ public class AssPneu extends Activity {
                         return;
                     }
                 }
-
-                if ((Temp > 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked()))
+//                if ((Temp > 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked())) change 31-10-18 shahidul
+                if ((Temp >= 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ আথবা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                     return;
                 }
 
@@ -2945,13 +2945,13 @@ public class AssPneu extends Activity {
                 Connection.MessageBox(AssPneu.this, "রেফার এর লক্ষণগুলো না  কিন্তু রেফার করা  হয়েছে   হতে পারবে না");
                 return;
             }
-            if (Temp9 > 96.0 && (!chkTemp.isChecked())) {
-                if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
-                {
-                    Connection.MessageBox(AssPneu.this, "কোন লক্ষণ নেই  হ্যাঁ এবং  নিউমোনিয়া নয়  না হতে পারবে না");
-                    return;
-                }
-            }
+//            if (Temp9 > 96.0 && (!chkTemp.isChecked())) { block 31-10-2018 shahidul code include in <2month
+//                if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
+//                {
+//                    Connection.MessageBox(AssPneu.this, "কোন লক্ষণ নেই  হ্যাঁ এবং  নিউমোনিয়া নয়  না হতে পারবে না");
+//                    return;
+//                }
+//            }
 
             String a=txttemp.getText().toString();
             Float Temp =  Float.parseFloat(a.length()==0?"0":a);
