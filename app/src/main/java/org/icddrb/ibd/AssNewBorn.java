@@ -1847,7 +1847,8 @@ public class AssNewBorn extends Activity {
                     }
                 }
             }
-
+            String var = txtRR1.getText().toString();
+            Integer rr4 = Integer.parseInt(var.length() == 0 ? "0" : var);
             if(!rdoNoCry1.isChecked() & !rdoNoCry2.isChecked() & secNoCry.isShown())
             {
                 Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শিশু কাঁদছে না/শ্বাস-প্রশ্বাস নিচ্ছে না)");
@@ -1861,21 +1862,26 @@ public class AssNewBorn extends Activity {
                 rdoGasp1.requestFocus();
                 return;
             }
-
             else if(!rdoSBrea1.isChecked() & !rdoSBrea2.isChecked() & secSBrea.isShown())
             {
                 Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (ধীর শ্বাস)");
                 rdoSBrea1.requestFocus();
                 return;
             }
-
+//            update_Shahidul 11-Dec-2018
+            else if(rdoSBrea1.isChecked() & (rr4>=30))
+            {
+                Connection.MessageBox(AssNewBorn.this, "শ্বাসের হার ৩০ বা তার চেয়ে বেশী ,সুতরাং ধীর শ্বাস হ্যাঁ হবে না");
+                rdoSBrea1.requestFocus();
+                return;
+            }
+//            --------------------------------------------------------------------------
             else if(!rdoBirthAs1.isChecked() & !rdoBirthAs2.isChecked() & secBirthAs.isShown())
             {
                 Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মকালীন শ্বাস কষ্ট)");
                 rdoBirthAs1.requestFocus();
                 return;
             }
-
             else if(!rdoConv1.isChecked() & !rdoConv2.isChecked() & secConv.isShown())
             {
                 Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (খিঁচুনী হতে দেখা)");

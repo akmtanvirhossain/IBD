@@ -2447,13 +2447,16 @@ public class AssPneu extends Activity {
                     }
                 }
             }
-
-            if (!rdoConv1.isChecked() & !rdoConv2.isChecked() & secConv.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (খিঁচুনী)");
+//            update_Shahidul 11-Dec-2018
+//            if (!rdoConv1.isChecked() & !rdoConv2.isChecked() & secConv.isShown()) {
+            String t=txttemp.getText().toString();
+            Float Tempt =  Float.parseFloat(t.length()==0?"0":t);
+            if (!rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
+                Connection.MessageBox(AssPneu.this, "জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
                 rdoConv1.requestFocus();
                 return;
             }
-
+//            ------------------------------------------------------------------
             else if (!rdoFBrea1.isChecked() & !rdoFBrea2.isChecked() & secFBrea.isShown()) {
                 Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (দ্রুত শ্বাস)");
                 rdoFBrea1.requestFocus();
@@ -2530,6 +2533,19 @@ public class AssPneu extends Activity {
                 rdoCNPne1.requestFocus();
                 return;
             }
+//            update_shahidul 11-Dec-2018
+
+            else if (rdoFBrea2.isChecked() & rdoCPPne1.isChecked() & rdoTPPne1.isChecked() & rdoRef3.isChecked() & (Tempt < 99.5)) {
+                Connection.MessageBox(AssPneu.this, "* শ্রেনী বিভাগ সম্ভাব্য নিউমোনিয়া, দদ্রুত শ্বাস না হতে পারবেনা");
+                rdoCNPne1.requestFocus();
+                return;
+            }
+//            else if (rdoConv2.isChecked() & rdoConv21.isChecked()) {
+//                Connection.MessageBox(AssPneu.this, "শ্রেনী বিভাগ সম্ভাব্য নিউমোনিয়া, দদ্রুত শ্বাস না হতে পারবেনা");
+//                rdoCNPne1.requestFocus();
+//                return;
+//            }
+//            ----------------------------------------------------
             else if (!rdoTSPne1.isChecked() & !rdoTSPne2.isChecked() & secTSPne.isShown()) {
                 Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
                 rdoTSPne1.requestFocus();
