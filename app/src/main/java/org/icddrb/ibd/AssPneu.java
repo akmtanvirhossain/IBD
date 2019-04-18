@@ -2451,8 +2451,9 @@ public class AssPneu extends Activity {
 //            if (!rdoConv1.isChecked() & !rdoConv2.isChecked() & secConv.isShown()) {
             String t=txttemp.getText().toString();
             Float Tempt =  Float.parseFloat(t.length()==0?"0":t);
-            if (!rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
-                Connection.MessageBox(AssPneu.this, "জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
+//            if (!rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
+            if ((rdoCough1.isChecked() || rdoDBrea1.isChecked()) & rdoFever1.isChecked() & !rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
+                Connection.MessageBox(AssPneu.this, "মমায়ের অভিযোগ কাশি/শ্বাসকষ্ট + জ্বর, জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
                 rdoConv1.requestFocus();
                 return;
             }
