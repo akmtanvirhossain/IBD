@@ -2662,8 +2662,6 @@ public class Connection extends SQLiteOpenHelper {
             C.Sync_Download_Bari(CLUSTER);
             C.Sync_Download_Child(CLUSTER);
 
-
-
             if(!C.Existence("Select * from MDSSVill where vill='327'")) {
                 C.Save("Insert into MDSSVill(vill,vname,ucode,uname,cluster,status,oldunion)Values('327','Gorai West-1','17','Gorai','05','N',''))");
             }
