@@ -413,22 +413,22 @@ public class HouseholdIndex extends Activity {
 
                                     //Delete
                                     //-------------------------------------------------------------------
-                                    //Child remote based on server data, Table: ChildRemove
+                                    //Child remove based on server data, Table: ChildRemove
                                     SQLStr = "select ChildId,c.Vill,c.Bari from ChildRemove c,Bari b where c.vill+c.bari=b.Vill+b.bari and b.Cluster='"+ Cluster +"' and c.Upload='1'";
                                     VariableList = "ChildId,Vill,Bari";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Child", "ChildRemove", VariableList, "ChildId,Vill,Bari");
 
-                                    //AssPneu remote based on server data, Table: AssPneu_Audit
+                                    //AssPneu remove based on server data, Table: AssPneu_Audit
                                     SQLStr = "Select a.ChildId, Week, VType, Visit from AssPneu_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VType, Visit";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssPneu", "AssPneu_Audit", VariableList, "ChildId, Week, VType, Visit");
 
-                                    //AssNewBorn remote based on server data, Table: AssNewBorn_Audit
+                                    //AssNewBorn remove based on server data, Table: AssNewBorn_Audit
                                     SQLStr = "Select a.ChildId, Week, VType, Visit from AssNewBorn_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VType, Visit";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssNewBorn", "AssNewBorn_Audit", VariableList, "ChildId, Week, VType, Visit");
 
-                                    //Visits remote based on server data, Table: Visits_Audit
+                                    //Visits remove based on server data, Table: Visits_Audit
                                     SQLStr = "Select a.ChildId, a.Week, a.VDate from Visits_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VDate";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Visits", "Visits_Audit", VariableList, "ChildId, Week, VDate");

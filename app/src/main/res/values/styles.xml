@@ -51,7 +51,17 @@
 	    <item name="android:padding">5sp</item>
 	    <item name="android:textSize">20sp</item>
 	</style>
-	
+
+    <style name="formHeading">
+        <item name="android:layout_marginTop">0sp</item>
+        <item name="android:paddingTop">20sp</item>
+        <item name="android:paddingBottom">10sp</item>
+        <item name="android:background">@color/form_heading_back_color</item>
+        <item name="android:textColor">@color/form_heading_font_color</item>
+        <item name="android:paddingRight">10sp</item>
+        <item name="android:paddingLeft">10sp</item>
+    </style>
+
 	<style name="CKButton" parent="android:style/Widget.Button">
 	  	<item name="android:textSize">19sp</item>
 	  	<item name="android:layout_margin">0dip</item>
