@@ -2656,6 +2656,9 @@ public class Connection extends SQLiteOpenHelper {
             UniqueField = "TableName";
             C.Sync_Download_DatabaseTab(TableName, VariableList, UniqueField,CLUSTER,"");
 
+            SQL = "Create table RSV(ChildID varchar (18),CID varchar (11),PID varchar (8),Week varchar (3),VDate datetime,VType varchar (1),Visit varchar (1),SlNo varchar (1),Temp varchar (5),dtpCoughDt datetime,dtpDBreaDt datetime,DeepColdDt datetime,SoreThroatDt datetime,RSVsuitable varchar (1),RSVlisted varchar (1),RSVlistedDt datetime,Reason varchar (50),StartTime varchar (5),EndTime varchar (5),DeviceID varchar (10),EntryUser varchar (10),Lat varchar (20),Lon varchar (20),EnDt datetime,Upload int,modifyDate datetime,Constraint pk_RSV Primary Key(ChildID,Week,VType,Visit))";
+            C.CreateTable("RSV",SQL);
+
             C.TableStructureSync("bari");
             C.TableStructureSync("child");
 
