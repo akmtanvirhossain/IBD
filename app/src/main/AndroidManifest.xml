@@ -41,6 +41,7 @@
 
         <activity android:name=".AssNewBorn" android:label="এসেসমেন্ট (নবজাতক - ০ থেকে ২৮ দিন)"></activity>
         <activity android:name=".AssPneu" android:label="এসেসমেন্ট (২৯ দিন থেকে ৫৯ মাস)"></activity>
+        <activity android:name=".RSV" android:label="আর এস ভি কমিউনিটি গবেষণা"></activity>
         <activity android:name=".NonComp" android:label="রেফারেলের ফলাফল"></activity>
         <activity android:name=".DSSMember" android:label="Member List (DSS)"></activity>
         <activity android:name=".WebReports" android:label="Reports"></activity>

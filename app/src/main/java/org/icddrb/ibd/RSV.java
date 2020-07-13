@@ -58,7 +58,7 @@
  import android.support.v4.content.ContextCompat;
  import android.support.v7.app.AppCompatActivity;
 
- public class RSV extends AppCompatActivity {
+ public class RSV extends Activity {
     //Disabled Back/Home key
     //--------------------------------------------------------------------------------------------------
     @Override 
@@ -94,6 +94,9 @@
     View lineChildID;
     TextView VlblChildID;
     EditText txtChildID;
+
+
+
     LinearLayout secCID;
     View lineCID;
     TextView VlblCID;
@@ -168,6 +171,11 @@
     TextView VlblReason;
     EditText txtReason;
 
+    TextView txtFMName;
+    TextView txtName;
+    TextView Age;
+    TextView Dob;
+
     static int MODULEID   = 0;
     static int LANGUAGEID = 0;
     static String TableName;
@@ -181,7 +189,9 @@
     static String CHILDID = "";
     static String WEEK = "";
     static String VTYPE = "";
-    static String VISIT = "";
+    static String VISITDate = "";
+    static String BDATE = "";
+    static String VISIT = "",FMName="",CHName="",PID="",AgeDM="",AgeD="",AgeM="",TEMP="";
 
  public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
@@ -194,18 +204,28 @@
          g = Global.getInstance();
 
          STARTTIME = g.CurrentTime24();
-         DEVICEID  = sp.getValue(this, "deviceid");
-         ENTRYUSER = sp.getValue(this, "userid");
+         DEVICEID  = g.getUserId();
+         ENTRYUSER = g.getUserId();
 
          IDbundle = getIntent().getExtras();
-         CHILDID = IDbundle.getString("ChildID");
-         WEEK = IDbundle.getString("Week");
-         VTYPE = IDbundle.getString("VType");
-         VISIT = IDbundle.getString("Visit");
+         CHILDID=IDbundle.getString("childid");
+         PID=IDbundle.getString("pid");
+         WEEK=IDbundle.getString("weekno");
+         FMName=IDbundle.getString("fm");
+         AgeD=IDbundle.getString("aged");
+         AgeM=IDbundle.getString("agem");
+         AgeDM=IDbundle.getString("agedm");
+         BDATE=IDbundle.getString("bdate");
+         CHName=IDbundle.getString("name");
+         VTYPE=IDbundle.getString("visittype");
+         VISIT=IDbundle.getString("visitno");
+         VISITDate=IDbundle.getString("visitdate");
+         TEMP=IDbundle.getString("temp");
 
          TableName = "RSV";
-         MODULEID = 0;
-         LANGUAGEID = Integer.parseInt(sp.getValue(this, "languageid"));
+
+//         MODULEID = 0;
+//         LANGUAGEID = Integer.parseInt(sp.getValue(this, "languageid"));
          lblHeading = (TextView)findViewById(R.id.lblHeading);
 
          ImageButton cmdBack = (ImageButton) findViewById(R.id.cmdBack);
@@ -221,6 +241,7 @@
                      }});
                  adb.show();
              }});
+
 
         Initialization();
 //        Connection.LocalizeLanguage(RSV.this, MODULEID, LANGUAGEID);
@@ -312,6 +333,19 @@
  {
    try
      {
+//         ------------------------------------------------
+
+         txtName=(TextView) findViewById(R.id.txtName);
+         txtName.setText(CHName);
+         txtName.setEnabled(false);
+         txtFMName=(TextView) findViewById(R.id.txtFMName);
+         txtFMName.setText(FMName);
+         Age = (TextView)findViewById(R.id.Age);
+         Age.setText(": "+ (AgeDM));
+         Dob = (TextView)findViewById(R.id.Dob);
+         Dob.setText(": "+ Global.DateConvertDMY(BDATE));
+
+//         ------------------------------------------------
          seclbl1=(LinearLayout)findViewById(R.id.seclbl1);
          linelbl1=(View)findViewById(R.id.linelbl1);
          seclbl2=(LinearLayout)findViewById(R.id.seclbl2);
@@ -320,22 +354,41 @@
          lineChildID=(View)findViewById(R.id.lineChildID);
          VlblChildID=(TextView) findViewById(R.id.VlblChildID);
          txtChildID=(EditText) findViewById(R.id.txtChildID);
+         txtChildID.setText(CHILDID);
+         txtChildID.setEnabled(false);
+
+
          secCID=(LinearLayout)findViewById(R.id.secCID);
          lineCID=(View)findViewById(R.id.lineCID);
          VlblCID=(TextView) findViewById(R.id.VlblCID);
          txtCID=(EditText) findViewById(R.id.txtCID);
          secPID=(LinearLayout)findViewById(R.id.secPID);
-         linePID=(View)findViewById(R.id.linePID);
+//         linePID=(View)findViewById(R.id.linePID);
          VlblPID=(TextView) findViewById(R.id.VlblPID);
          txtPID=(EditText) findViewById(R.id.txtPID);
+         txtPID.setText(PID);
          secWeek=(LinearLayout)findViewById(R.id.secWeek);
          lineWeek=(View)findViewById(R.id.lineWeek);
          VlblWeek=(TextView) findViewById(R.id.VlblWeek);
          txtWeek=(EditText) findViewById(R.id.txtWeek);
+         txtWeek.setText(WEEK);
+         txtWeek.setEnabled(false);
          secVDate=(LinearLayout)findViewById(R.id.secVDate);
          lineVDate=(View)findViewById(R.id.lineVDate);
          VlblVDate=(TextView) findViewById(R.id.VlblVDate);
          dtpVDate=(EditText) findViewById(R.id.dtpVDate);
+
+         if(IDbundle.getString("visitdate")==null)
+         {
+             dtpVDate.setText(Global.DateNowDMY());
+         }
+         else {
+             if (IDbundle.getString("visitdate").toString().length() == 0)
+                 dtpVDate.setText(Global.DateNowDMY());
+             else
+                 dtpVDate.setText(IDbundle.getString("visitdate"));
+         }
+
          secVType=(LinearLayout)findViewById(R.id.secVType);
          lineVType=(View)findViewById(R.id.lineVType);
          VlblVType = (TextView) findViewById(R.id.VlblVType);
@@ -343,18 +396,40 @@
          rdoVType1 = (RadioButton) findViewById(R.id.rdoVType1);
          rdoVType2 = (RadioButton) findViewById(R.id.rdoVType2);
          rdoVType3 = (RadioButton) findViewById(R.id.rdoVType3);
+
+
+        if (VTYPE.equals("1")) {
+            rdoVType1.setChecked(true);
+        }
+        else if (VTYPE.equals("2"))
+        {
+            rdoVType2.setChecked(true);
+        }
+        else if (VTYPE.equals("3"))
+        {
+            rdoVType3.setChecked(true);
+        }
+
+
          secVisit=(LinearLayout)findViewById(R.id.secVisit);
          lineVisit=(View)findViewById(R.id.lineVisit);
          VlblVisit=(TextView) findViewById(R.id.VlblVisit);
          txtVisit=(EditText) findViewById(R.id.txtVisit);
+         txtVisit.setText(VISIT);
+         txtVisit.setEnabled(false);
          secSlNo=(LinearLayout)findViewById(R.id.secSlNo);
          lineSlNo=(View)findViewById(R.id.lineSlNo);
          VlblSlNo=(TextView) findViewById(R.id.VlblSlNo);
          txtSlNo=(EditText) findViewById(R.id.txtSlNo);
+
+//         txtSlNo.setText(SlNumber(CHILDID,WEEK,VTYPE,VISIT));
+
          secTemp=(LinearLayout)findViewById(R.id.secTemp);
          lineTemp=(View)findViewById(R.id.lineTemp);
          VlblTemp=(TextView) findViewById(R.id.VlblTemp);
          txtTemp=(EditText) findViewById(R.id.txtTemp);
+         txtTemp.setText(TEMP);
+         txtTemp.setEnabled(false);
          seclbl3=(LinearLayout)findViewById(R.id.seclbl3);
          linelbl3=(View)findViewById(R.id.linelbl3);
          secdtpCoughDt=(LinearLayout)findViewById(R.id.secdtpCoughDt);
@@ -493,39 +568,39 @@
              ValidationMsg += "\nRequired field: Child ID.";
              secChildID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
            }
-         if(secChildID.isShown() & (Integer.valueOf(txtChildID.getText().toString().length()==0 ? "1" : txtChildID.getText().toString()) < 1 || Integer.valueOf(txtChildID.getText().toString().length()==0 ? "9999999999999999" : txtChildID.getText().toString()) > 9999999))
-           {
-             ValidationMsg += "\nValue should be between 1 and 9999999999999999(Child ID).";
-             secChildID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-           }
-         if(txtCID.getText().toString().length()==0 & secCID.isShown())
-           {
-             ValidationMsg += "\nRequired field: শিশুর চলতি ID নং.";
-             secCID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-           }
-         if(secCID.isShown() & (Integer.valueOf(txtCID.getText().toString().length()==0 ? "1" : txtCID.getText().toString()) < 1 || Integer.valueOf(txtCID.getText().toString().length()==0 ? "99999999999" : txtCID.getText().toString()) > 999999999))
-           {
-             ValidationMsg += "\nValue should be between 1 and 99999999999(শিশুর চলতি ID নং).";
-             secCID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-           }
-         if(txtPID.getText().toString().length()==0 & secPID.isShown())
-           {
-             ValidationMsg += "\nRequired field: শিশুর স্থায়ী ID নং.";
-             secPID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-           }
-         if(secPID.isShown() & (Integer.valueOf(txtPID.getText().toString().length()==0 ? "1" : txtPID.getText().toString()) < 1 || Integer.valueOf(txtPID.getText().toString().length()==0 ? "99999999" : txtPID.getText().toString()) > 99999999))
-           {
-             ValidationMsg += "\nValue should be between 1 and 99999999(শিশুর স্থায়ী ID নং).";
-             secPID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-           }
+//         if(secChildID.isShown() & (Integer.valueOf(txtChildID.getText().toString().length()==0 ? "1" : txtChildID.getText().toString()) < 1 || Integer.valueOf(txtChildID.getText().toString().length()==0 ? "9999999999999999" : txtChildID.getText().toString()) > 9999999))
+//           {
+//             ValidationMsg += "\nValue should be between 1 and 99999999999(Child ID).";
+//             secChildID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+//           }
+//         if(txtCID.getText().toString().length()==0 & secCID.isShown())
+//           {
+//             ValidationMsg += "\nRequired field: শিশুর চলতি ID নং.";
+//             secCID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+//           }
+//         if(secCID.isShown() & (Integer.valueOf(txtCID.getText().toString().length()==0 ? "1" : txtCID.getText().toString()) < 1 || Integer.valueOf(txtCID.getText().toString().length()==0 ? "99999999999" : txtCID.getText().toString()) > 999999999))
+//           {
+//             ValidationMsg += "\nValue should be between 1 and 99999999999(শিশুর চলতি ID নং).";
+//             secCID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+//           }
+//         if(txtPID.getText().toString().length()==0 & secPID.isShown())
+//           {
+//             ValidationMsg += "\nRequired field: শিশুর স্থায়ী ID নং.";
+//             secPID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+//           }
+//         if(secPID.isShown() & (Integer.valueOf(txtPID.getText().toString().length()==0 ? "1" : txtPID.getText().toString()) < 1 || Integer.valueOf(txtPID.getText().toString().length()==0 ? "99999999" : txtPID.getText().toString()) > 99999999))
+//           {
+//             ValidationMsg += "\nValue should be between 1 and 99999999(শিশুর স্থায়ী ID নং).";
+//             secPID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+//           }
          if(txtWeek.getText().toString().length()==0 & secWeek.isShown())
            {
              ValidationMsg += "\nRequired field: সপ্তাহ.";
              secWeek.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
            }
-         if(secWeek.isShown() & (Integer.valueOf(txtWeek.getText().toString().length()==0 ? "1" : txtWeek.getText().toString()) < 1 || Integer.valueOf(txtWeek.getText().toString().length()==0 ? "312" : txtWeek.getText().toString()) > 312))
+         if(secWeek.isShown() & (Integer.valueOf(txtWeek.getText().toString().length()==0 ? "1" : txtWeek.getText().toString()) < 1 || Integer.valueOf(txtWeek.getText().toString().length()==0 ? "999" : txtWeek.getText().toString()) > 999))
            {
-             ValidationMsg += "\nValue should be between 1 and 312(সপ্তাহ).";
+             ValidationMsg += "\nValue should be between 1 and 999(সপ্তাহ).";
              secWeek.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
            }
          DV = Global.DateValidate(dtpVDate.getText().toString());
@@ -544,7 +619,7 @@
              ValidationMsg += "\nRequired field: পরিদর্শন সংখ্যা.";
              secVisit.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
            }
-         if(secVisit.isShown() & (Integer.valueOf(txtVisit.getText().toString().length()==0 ? "1" : txtVisit.getText().toString()) < 1 || Integer.valueOf(txtVisit.getText().toString().length()==0 ? "9" : txtVisit.getText().toString()) > 9))
+         if(secVisit.isShown() & (Integer.valueOf(txtVisit.getText().toString().length()==0 ? "1" : txtVisit.getText().toString()) < 0 || Integer.valueOf(txtVisit.getText().toString().length()==0 ? "9" : txtVisit.getText().toString()) > 9))
            {
              ValidationMsg += "\nValue should be between 1 and 9(পরিদর্শন সংখ্যা).";
              secVisit.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
@@ -777,7 +852,11 @@
     }
   };
 
-
+//     private String SlNumber(String ChildID, String Week, String VType, String Visit)
+//     {
+//         String M = C.ReturnSingleValue("Select cast(ifnull(max(SlNo,0))+1 as varchar(1))SlNumber from RSV ChildID='"+ ChildID +"' and Week='"+ Week +"' and VType='"+ VType +"' and Visit='"+ Visit +"'");
+//         return M;
+//     }
  
  // turning off the GPS if its in on state. to avoid the battery drain.
  @Override

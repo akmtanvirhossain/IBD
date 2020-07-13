@@ -512,6 +512,7 @@ public class AssPneu extends Activity {
     String DOB;
     TextView txtFMName;
     TextView txtPID;
+    String AgeDM;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -537,6 +538,31 @@ public class AssPneu extends Activity {
             Child_Outside_Area = B.getString("child_outside_area");
 
             VisitStatus = VisitStatus==null?"":VisitStatus;
+            AgeDM = AgeM+" মাস "+ AgeD+"  দিন";
+
+//            Button cmdRSV   = (Button)findViewById(R.id.cmdRSV);
+//            cmdRSV.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View arg0) {
+//
+//                    Bundle IDbundle = new Bundle();
+//                    Intent f1 = new Intent(getApplicationContext(),RSV.class);
+//                    IDbundle.putString("childid", ChildID);
+//                    IDbundle.putString("pid", txtPID.getText().toString());
+//                    IDbundle.putString("weekno", WeekNo);
+//                    IDbundle.putString("fm", txtFMName.getText().toString());
+//                    IDbundle.putString("aged", AgeD);
+//                    IDbundle.putString("agem", AgeM);
+//                    IDbundle.putString("agedm", AgeDM);
+//                    IDbundle.putString("bdate", DOB);
+//                    IDbundle.putString("name", txtName.getText().toString());
+//                    IDbundle.putString("visittype", VisitType);
+//                    IDbundle.putString("visitno", "0");
+//                    IDbundle.putString("visitdate", dtpVDate.getText().toString());
+//                    IDbundle.putString("childpresent", "n");
+//                    f1.putExtras(IDbundle);
+//                    startActivity(f1);
+//                }
+//            });
 
             txtPID = (TextView)findViewById(R.id.txtPID);
             txtPID.setText(B.getString("pid"));
@@ -3232,7 +3258,35 @@ public class AssPneu extends Activity {
                 //Save Assessment for Under 5 Child
             }
 
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK, returnIntent);
+//            finish();
+           //
+            //******************RSV
+            Bundle IDbundle = new Bundle();
+            Intent f1;
+            IDbundle.putString("childid", ChildID);
+            IDbundle.putString("pid", txtPID.getText().toString());
+            IDbundle.putString("weekno", WeekNo);
+            IDbundle.putString("fm", txtFMName.getText().toString());
+            IDbundle.putString("aged", AgeD);
+            IDbundle.putString("agem", AgeM);
+            IDbundle.putString("agedm", AgeDM);
+            IDbundle.putString("bdate", DOB);
+            IDbundle.putString("name", txtName.getText().toString());
+            IDbundle.putString("visittype", VisitType);
+            IDbundle.putString("visitno", "0");
+            IDbundle.putString("visitdate", dtpVDate.getText().toString());
+            IDbundle.putString("temp", txttemp.getText().toString());
+            f1 = new Intent(getApplicationContext(), RSV.class);
+            f1.putExtras(IDbundle);
+            startActivityForResult(f1, 1);
+            //******************RSV
             Connection.MessageBox(AssPneu.this, "Saved Successfully");
+
+
+
+
         } catch (Exception e) {
             Connection.MessageBox(AssPneu.this, e.getMessage());
             return;

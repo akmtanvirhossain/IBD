@@ -9,7 +9,7 @@
         android:background="@color/theme_color">
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal">
             <ImageButton android:id="@+id/cmdBack" android:background="@color/pageHeadingBack" android:src="@drawable/back" android:layout_width="50sp" android:layout_height="match_parent"/>
-            <TextView android:id="@+id/lblHeading" android:text="data form name"  android:paddingLeft="10sp" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center_vertical" android:textColor="@color/pageHeading"/>
+            <TextView android:id="@+id/lblHeading" android:text="আর এস ভি কমিউনিটি গবেষণা"  android:paddingLeft="10sp" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center_vertical" android:textColor="@color/pageHeading"/>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
     <ScrollView
@@ -17,32 +17,61 @@
         android:layout_weight="1"
         android:layout_height="0dp">
     <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
-    <LinearLayout android:id="@+id/seclbl1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+    <LinearLayout android:id="@+id/seclbl1" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
         <TextView android:id="@+id/lblHlbl1" android:text="আর এস ভি কমিউনিটি গবেষণা" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/formHeading"/>
     </LinearLayout>
-    <View android:id="@+id/linelbl1" android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+    <View android:id="@+id/linelbl1" android:visibility="gone"  android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
     <LinearLayout android:id="@+id/seclbl2" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-        <TextView android:id="@+id/lblHlbl2" android:text=" (০-২৪ মাস) বয়সী শিশুর চিহ্ন নিরুপন, শ্রেণি বিভাগ ও গবেষণা রেকর্ড ফরম:" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/rowHeading"/>
+
+        <TextView android:id="@+id/lblHlbl2" style="@style/rowHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00B7FB" android:text=" (০-২৪ মাস) বয়সী শিশুর চিহ্ন নিরুপন, শ্রেণি বিভাগ ও গবেষণা রেকর্ড ফরম:" />
     </LinearLayout>
     <View android:id="@+id/linelbl2" android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
-    <LinearLayout android:id="@+id/secChildID" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
-        <TextView android:id="@+id/lblChildID" android:text="" android:layout_width="40sp" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/VlblChildID" android:text="Child ID" android:layout_width="250sp" android:layout_height="wrap_content"  />
-         <EditText android:id="@+id/txtChildID" android:maxLength="16" android:layout_width="60sp" android:inputType="number" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" />
-    </LinearLayout>
+
+        <LinearLayout android:id="@+id/secChildID" style="@style/rowStyle0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:background="#74FFC107" android:orientation="horizontal">
+            <!--        <TextView android:id="@+id/lblChildID" android:text="" android:layout_width="40sp" android:layout_height="wrap_content" />-->
+            <TextView android:id="@+id/VlblChildID" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Child ID" />
+            <EditText android:id="@+id/txtChildID" style="@style/customEdit" android:layout_width="160sp" android:layout_height="wrap_content" android:layout_marginRight="10sp" android:inputType="number" android:maxLength="16" />
+            <TextView android:id="@+id/VlblPID" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PID" />
+            <EditText  android:id="@+id/txtPID" style="@style/customEdit" android:layout_width="160sp" android:layout_height="wrap_content" android:layout_marginRight="10sp" android:inputType="number" android:maxLength="8" />
+        </LinearLayout>
     <View android:id="@+id/lineChildID" android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
     <LinearLayout android:id="@+id/secCID" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
         <TextView android:id="@+id/lblCID" android:text="" android:layout_width="40sp" android:layout_height="wrap_content" />
         <TextView android:id="@+id/VlblCID" android:text="শিশুর চলতি ID নং" android:layout_width="250sp" android:layout_height="wrap_content"  />
-         <EditText android:id="@+id/txtCID" android:maxLength="11" android:layout_width="60sp" android:inputType="number" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" />
+        <EditText android:id="@+id/txtCID" style="@style/customEdit" android:layout_width="160sp" android:layout_height="wrap_content" android:layout_marginRight="10sp" android:inputType="number" android:maxLength="11" />
     </LinearLayout>
     <View android:id="@+id/lineCID" android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
-    <LinearLayout android:id="@+id/secPID" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
-        <TextView android:id="@+id/lblPID" android:text="" android:layout_width="40sp" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/VlblPID" android:text="শিশুর স্থায়ী ID নং" android:layout_width="250sp" android:layout_height="wrap_content"  />
-         <EditText android:id="@+id/txtPID" android:maxLength="8" android:layout_width="60sp" android:inputType="number" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" />
-    </LinearLayout>
-    <View android:id="@+id/linePID" android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+<!--    <LinearLayout android:id="@+id/secPID" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">-->
+<!--        <TextView android:id="@+id/lblPID" android:text="" android:layout_width="40sp" android:layout_height="wrap_content" />-->
+<!--        <TextView android:id="@+id/VlblPID" android:text="PID" android:layout_width="250sp" android:layout_height="wrap_content"  />-->
+<!--        <EditText android:id="@+id/txtPID" style="@style/customEdit" android:layout_width="160sp" android:layout_height="wrap_content" android:layout_marginRight="10sp" android:inputType="number" android:maxLength="8" />-->
+<!--    </LinearLayout>-->
+<!--    <View android:id="@+id/linePID" android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />-->
+
+        <LinearLayout android:id="@+id/secName" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+            <TextView android:id="@+id/VlblName" android:text="শিশুর নাম" android:layout_width="130sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/txtName" android:layout_width="250sp" android:inputType="text" android:layout_height="wrap_content"  android:layout_marginRight="10sp" android:textSize="20sp" />
+        </LinearLayout>
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secName1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+            <TextView android:id="@+id/VlblName1" android:text="পিতা/মাতা" android:layout_width="130sp" android:layout_height="wrap_content" android:textSize="20sp" />
+            <TextView android:id="@+id/txtFMName" android:layout_width="wrap_content" android:inputType="text" android:layout_height="wrap_content"  android:layout_marginRight="10sp" android:textSize="20sp" />
+        </LinearLayout>
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+            <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:text="বয়স" android:textColor="#000000" android:textSize="18sp" />
+            <TextView android:id="@+id/Age"  android:textColor="#000000" android:layout_width="200sp"  android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:text="" android:textSize="18sp" />
+            <TextView android:layout_width="90sp" android:layout_height="wrap_content"  android:layout_gravity="center_vertical" android:text="জন্ম তারিখ" android:textColor="#000000" android:textSize="18sp" />
+            <TextView android:id="@+id/Dob"  android:textColor="#000000" android:layout_width="wrap_content"  android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:text="" android:textSize="18sp" />
+        </LinearLayout>
+
+        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+
     <LinearLayout android:id="@+id/secWeek" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
         <TextView android:id="@+id/lblWeek" android:text="" android:layout_width="40sp" android:layout_height="wrap_content" />
         <TextView android:id="@+id/VlblWeek" android:text="সপ্তাহ" android:layout_width="250sp" android:layout_height="wrap_content"  />
