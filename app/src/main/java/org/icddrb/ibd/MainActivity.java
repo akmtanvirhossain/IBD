@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
 
-
         switch (position) {
             case 1:
                 //HouseholdList(true);
