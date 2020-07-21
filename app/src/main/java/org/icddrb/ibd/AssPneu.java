@@ -165,6 +165,12 @@ public class AssPneu extends Activity {
     TextView Vlbltemp;
     EditText txttemp;
 
+    LinearLayout secTemp1;
+    RadioGroup rdogrpTemp1;
+    RadioButton rdoTemp1;
+    RadioButton rdoTemp2;
+    RadioButton rdoTemp3;
+
 
     LinearLayout secFeverChk_lbl;
     CheckBox chkFever;
@@ -323,6 +329,7 @@ public class AssPneu extends Activity {
 
     RadioButton rdoLFever1;
     RadioButton rdoLFever2;
+    RadioButton rdoLFever3;
     LinearLayout secCLFever;
     TextView VlblCLFever;
     RadioGroup rdogrpCLFever;
@@ -341,6 +348,7 @@ public class AssPneu extends Activity {
 
     RadioButton rdoMFever1;
     RadioButton rdoMFever2;
+    RadioButton rdoMFever3;
     LinearLayout secCMFever;
     TextView VlblCMFever;
     RadioGroup rdogrpCMFever;
@@ -359,6 +367,7 @@ public class AssPneu extends Activity {
 
     RadioButton rdoHFever1;
     RadioButton rdoHFever2;
+    RadioButton rdoHFever3;
     LinearLayout secCHFever;
     TextView VlblCHFever;
     RadioGroup rdogrpCHFever;
@@ -566,6 +575,11 @@ public class AssPneu extends Activity {
 //                    startActivity(f1);
 //                }
 //            });
+            secTemp1=(LinearLayout) findViewById(R.id.secTemp1) ;
+            rdogrpTemp1=(RadioGroup)findViewById(R.id.rdogrpTemp1) ;
+            rdoTemp1=(RadioButton)findViewById(R.id.rdoTemp1) ;
+            rdoTemp2=(RadioButton)findViewById(R.id.rdoTemp2) ;
+            rdoTemp3=(RadioButton)findViewById(R.id.rdoTemp3) ;
 
             txtPID = (TextView)findViewById(R.id.txtPID);
             txtPID.setText(B.getString("pid"));
@@ -1192,6 +1206,158 @@ public class AssPneu extends Activity {
                 @Override
                 public void onTextChanged(CharSequence s, int start,
                                           int before, int count) {
+                }
+            });
+
+            rdogrpTemp1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup,int radioButtonID) {
+                    if(rdoTemp1.isChecked()){
+                        txttemp.setEnabled(true);
+                        txttemp.requestFocus();
+                    }
+                    else if(rdoTemp2.isChecked()){
+                        txttemp.setEnabled(false);
+                        txttemp.setText("");
+
+                        secFeverDt.setVisibility(View.GONE);
+                        dtpFeverDt.setText("");
+                        secFever_lbl.setVisibility(View.GONE);
+
+                        secFeverChk_lbl.setVisibility(View.GONE);
+
+                        secLFever.setVisibility(View.GONE);
+                        rdogrpLFever.clearCheck();
+                        secCLFever.setVisibility(View.GONE);
+                        rdogrpCLFever.clearCheck();
+                        secTLFever.setVisibility(View.GONE);
+                        rdogrpTLFever.clearCheck();
+
+                        secMFever.setVisibility(View.GONE);
+                        rdogrpMFever.clearCheck();
+                        secCMFever.setVisibility(View.GONE);
+                        rdogrpCMFever.clearCheck();
+                        secTMFever.setVisibility(View.GONE);
+                        rdogrpTMFever.clearCheck();
+
+                        secHFever.setVisibility(View.GONE);
+                        rdogrpHFever.clearCheck();
+                        secCHFever.setVisibility(View.GONE);
+                        rdogrpCHFever.clearCheck();
+                        secTHFever.setVisibility(View.GONE);
+                        rdogrpTHFever.clearCheck();
+
+                        secFSick_lbl.setVisibility(View.GONE);
+                        secNeck.setVisibility(View.GONE);
+                        rdogrpNeck.clearCheck();
+                        secFonta.setVisibility(View.GONE);
+                        rdogrpFonta.clearCheck();
+                        secConv2.setVisibility(View.GONE);
+                        rdogrpConv2.clearCheck();
+                        secLeth2.setVisibility(View.GONE);
+                        rdogrpLeth2.clearCheck();
+                        secUcon2.setVisibility(View.GONE);
+                        rdogrpUcon2.clearCheck();
+                        secDrink2.setVisibility(View.GONE);
+                        rdogrpDrink2.clearCheck();
+                        secVomit2.setVisibility(View.GONE);
+                        rdogrpVomit2.clearCheck();
+                        secCMenin.setVisibility(View.GONE);
+                        rdogrpCMenin.clearCheck();
+                        secTMenin.setVisibility(View.GONE);
+                        rdogrpTMenin.clearCheck();
+
+                    }
+                    else if(rdoTemp3.isChecked()){
+                        txttemp.setEnabled(false);
+                        txttemp.setText("");
+                        secFeverDt.setVisibility(View.VISIBLE);
+                        dtpFeverDt.setText("");
+                        rdogrpLFever.clearCheck();
+                        rdoLFever1.setEnabled(true);
+                        rdoLFever2.setEnabled(true);
+                        secFever_lbl.setVisibility(View.VISIBLE);
+                        secLFever.setVisibility(View.VISIBLE);
+                        rdoFever1.setEnabled(true);
+                        rdoFever2.setEnabled(true);
+
+                        secCLFever.setVisibility(View.VISIBLE);
+                        rdogrpCLFever.clearCheck();
+                        rdoCLFever1.setEnabled(true);
+                        rdoCLFever2.setEnabled(true);
+                        secTLFever.setVisibility(View.VISIBLE);
+                        rdogrpTLFever.clearCheck();
+                        rdoTLFever1.setEnabled(true);
+                        rdoTLFever2.setEnabled(true);
+                        secMFever.setVisibility(View.VISIBLE);
+                        rdogrpMFever.clearCheck();
+                        rdoMFever1.setEnabled(true);
+                        rdoMFever2.setEnabled(true);
+                        secCMFever.setVisibility(View.VISIBLE);
+                        rdogrpCMFever.clearCheck();
+                        rdoCMFever1.setEnabled(true);
+                        rdoCMFever2.setEnabled(true);
+                        secTMFever.setVisibility(View.VISIBLE);
+                        rdogrpTMFever.clearCheck();
+                        rdoTMFever1.setEnabled(true);
+                        rdoTMFever2.setEnabled(true);
+                        secHFever.setVisibility(View.VISIBLE);
+                        rdogrpHFever.clearCheck();
+                        rdoHFever1.setEnabled(true);
+                        rdoHFever2.setEnabled(true);
+                        secCHFever.setVisibility(View.VISIBLE);
+                        rdogrpCHFever.clearCheck();
+                        rdoCHFever1.setEnabled(true);
+                        rdoCHFever2.setEnabled(true);
+                        secTHFever.setVisibility(View.VISIBLE);
+                        rdogrpTHFever.clearCheck();
+                        rdoTHFever1.setEnabled(true);
+                        rdoTHFever2.setEnabled(true);
+                        secFSick_lbl.setVisibility(View.VISIBLE);
+                        secNeck.setVisibility(View.VISIBLE);
+                        rdogrpNeck.clearCheck();
+                        rdoNeck1.setEnabled(true);
+                        rdoNeck2.setEnabled(true);
+                        secFonta.setVisibility(View.VISIBLE);
+                        rdogrpFonta.clearCheck();
+                        rdoFonta1.setEnabled(true);
+                        rdoFonta2.setEnabled(true);
+                        secConv2.setVisibility(View.VISIBLE);
+                        rdogrpConv2.clearCheck();
+                        rdoConv21.setEnabled(true);
+                        rdoConv22.setEnabled(true);
+                        secLeth2.setVisibility(View.VISIBLE);
+                        rdogrpLeth2.clearCheck();
+                        rdoLeth21.setEnabled(true);
+                        rdoLeth22.setEnabled(true);
+                        secUcon2.setVisibility(View.VISIBLE);
+                        rdogrpUcon2.clearCheck();
+                        rdoUcon21.setEnabled(true);
+                        rdoUcon22.setEnabled(true);
+                        secDrink2.setVisibility(View.VISIBLE);
+                        rdogrpDrink2.clearCheck();
+                        rdoDrink21.setEnabled(true);
+                        rdoDrink22.setEnabled(true);
+                        secVomit2.setVisibility(View.VISIBLE);
+                        rdogrpVomit2.clearCheck();
+                        rdoVomit21.setEnabled(true);
+                        rdoVomit22.setEnabled(true);
+                        secCMenin.setVisibility(View.VISIBLE);
+                        rdogrpCMenin.clearCheck();
+                        rdoCMenin1.setEnabled(true);
+                        rdoCMenin2.setEnabled(true);
+                        secTMenin.setVisibility(View.VISIBLE);
+                        rdogrpTMenin.clearCheck();
+                        rdoTMenin1.setEnabled(true);
+                        rdoTMenin2.setEnabled(true);
+                    }
+                    else{
+                        txttemp.setEnabled(true);
+                    }
+                }
+
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    return;
                 }
             });
 
@@ -1912,6 +2078,7 @@ public class AssPneu extends Activity {
 
             rdoLFever1 = (RadioButton) findViewById(R.id.rdoLFever1);
             rdoLFever2 = (RadioButton) findViewById(R.id.rdoLFever2);
+            rdoLFever3 = (RadioButton) findViewById(R.id.rdoLFever3);
             secCLFever = (LinearLayout) findViewById(R.id.secCLFever);
             VlblCLFever = (TextView) findViewById(R.id.VlblCLFever);
             rdogrpCLFever = (RadioGroup) findViewById(R.id.rdogrpCLFever);
@@ -1930,6 +2097,7 @@ public class AssPneu extends Activity {
 
             rdoMFever1 = (RadioButton) findViewById(R.id.rdoMFever1);
             rdoMFever2 = (RadioButton) findViewById(R.id.rdoMFever2);
+            rdoMFever3 = (RadioButton) findViewById(R.id.rdoMFever3);
             secCMFever = (LinearLayout) findViewById(R.id.secCMFever);
             VlblCMFever = (TextView) findViewById(R.id.VlblCMFever);
             rdogrpCMFever = (RadioGroup) findViewById(R.id.rdogrpCMFever);
@@ -1948,6 +2116,7 @@ public class AssPneu extends Activity {
 
             rdoHFever1 = (RadioButton) findViewById(R.id.rdoHFever1);
             rdoHFever2 = (RadioButton) findViewById(R.id.rdoHFever2);
+            rdoHFever3 = (RadioButton) findViewById(R.id.rdoHFever3);
             secCHFever = (LinearLayout) findViewById(R.id.secCHFever);
             VlblCHFever = (TextView) findViewById(R.id.VlblCHFever);
             rdogrpCHFever = (RadioGroup) findViewById(R.id.rdogrpCHFever);
@@ -2446,7 +2615,7 @@ public class AssPneu extends Activity {
                 return;
             }
 
-            if (!chkTemp.isChecked())
+            /*if (!chkTemp.isChecked())
             {
                 if (txttemp.getText().toString().length() == 0 & sectemp.isShown()) {
                     Connection.MessageBox(AssPneu.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
@@ -2462,6 +2631,21 @@ public class AssPneu extends Activity {
                     }
                 }
 
+            }*/
+            if(rdoTemp1.isChecked()){
+                if (txttemp.getText().toString().length() == 0 & sectemp.isShown()) {
+                    Connection.MessageBox(AssPneu.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
+                    txttemp.requestFocus();
+                    return;
+                }
+                else
+                {
+                    if (sectemp.isShown() & (Double.valueOf(txttemp.getText().toString().length() == 0 ? "0.0" : txttemp.getText().toString()) < 92 || Double.valueOf(txttemp.getText().toString().length() == 0 ? "999" : txttemp.getText().toString()) > 108.0)) {
+                        Connection.MessageBox(AssPneu.this, "Current Temperature should be between 92 - 108");
+                        txttemp.requestFocus();
+                        return;
+                    }
+                }
             }
 
             if (!rdoCough1.isChecked() & !rdoCough2.isChecked() & secCough.isShown()) {
@@ -2550,7 +2734,7 @@ public class AssPneu extends Activity {
             Float Tempt =  Float.parseFloat(t.length()==0?"0":t);
 //            if (!rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
             if ((rdoCough1.isChecked() || rdoDBrea1.isChecked()) & rdoFever1.isChecked() & !rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
-                Connection.MessageBox(AssPneu.this, "মমায়ের অভিযোগ কাশি/শ্বাসকষ্ট + জ্বর, জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
+                Connection.MessageBox(AssPneu.this, "মায়ের অভিযোগ কাশি/শ্বাসকষ্ট + জ্বর, জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
                 rdoConv1.requestFocus();
                 return;
             }
@@ -2634,8 +2818,8 @@ public class AssPneu extends Activity {
             }
 //            update_shahidul 11-Dec-2018
 
-            else if (rdoFBrea2.isChecked() & rdoCPPne1.isChecked() & rdoTPPne1.isChecked() & rdoRef3.isChecked() & (Tempt < 99.5)) {
-                Connection.MessageBox(AssPneu.this, "* শ্রেনী বিভাগ সম্ভাব্য নিউমোনিয়া, দদ্রুত শ্বাস না হতে পারবেনা");
+            else if (rdoFBrea2.isChecked() & rdoCPPne1.isChecked() & rdoTPPne1.isChecked() & rdoRef3.isChecked() & (Tempt < 99.5) & rdoTemp1.isChecked()) {
+                Connection.MessageBox(AssPneu.this, "* শ্রেনী বিভাগ সম্ভাব্য নিউমোনিয়া, দ্রুত শ্বাস না হতে পারবেনা");
                 rdoCNPne1.requestFocus();
                 return;
             }
@@ -2679,7 +2863,7 @@ public class AssPneu extends Activity {
                 rdoTPPne1.requestFocus();
                 return;
             }
-            else if (!rdoLFever1.isChecked() & !rdoLFever2.isChecked() & secLFever.isShown()) {
+            else if (!rdoLFever1.isChecked() & !rdoLFever2.isChecked() & !rdoLFever3.isChecked() & secLFever.isShown()) {
                 Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ৯৯.৫ ফাঃ - ১০০.৩ ফাঃ)");
                 rdoLFever1.requestFocus();
                 return;
@@ -2697,7 +2881,7 @@ public class AssPneu extends Activity {
                 return;
             }
 
-            else if (!rdoMFever1.isChecked() & !rdoMFever2.isChecked() & secMFever.isShown()) {
+            else if (!rdoMFever1.isChecked() & !rdoMFever2.isChecked() & !rdoMFever3.isChecked() & secMFever.isShown()) {
                 Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০০.৪  ফাঃ -  ১০১.৯  ফাঃ)");
                 rdoMFever1.requestFocus();
                 return;
@@ -2715,7 +2899,7 @@ public class AssPneu extends Activity {
                 return;
             }
 
-            else if (!rdoHFever1.isChecked() & !rdoHFever2.isChecked() & secHFever.isShown()) {
+            else if (!rdoHFever1.isChecked() & !rdoHFever2.isChecked() & !rdoHFever3.isChecked() & secHFever.isShown()) {
                 Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০২  ফাঃ অথবা বেশী)");
                 rdoHFever1.requestFocus();
                 return;
@@ -2883,21 +3067,29 @@ public class AssPneu extends Activity {
                 String a=txttemp.getText().toString();
                 Float Temp =  Float.parseFloat(a.length()==0?"0":a);
 
-                if(!rdoAsses2.isChecked())
+                if(!rdoAsses2.isChecked() & rdoTemp1.isChecked())
                 {
-//                    if ((Temp < 96.0) & (!rdoCSPne1.isChecked()) && (chkTemp.isChecked() == false)) {
-                    if ((Temp < 96.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked())) {
+                    /*if ((Temp < 96.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked())) {
+                        Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ৯৬.০ এর কম, সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                        return;
+                    }*/
+                    //21 Jul 2020
+                    if ((Temp < 96.0) & (!rdoCSPne1.isChecked())) {
                         Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ৯৬.০ এর কম, সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                         return;
                     }
                 }
-//                if ((Temp > 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked())) change 31-10-18 shahidul
-                if ((Temp >= 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked()))
+                /*if ((Temp >= 101.0) & (!rdoCSPne1.isChecked()) && (!chkTemp.isChecked()))
+                {
+                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ আথবা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                    return;
+                }*/
+
+                if ((Temp >= 101.0) & (!rdoCSPne1.isChecked()) && rdoTemp1.isChecked())
                 {
                     Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ আথবা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                     return;
                 }
-
             }
             else if (d>60 & d<=365)
             {
@@ -3070,7 +3262,33 @@ public class AssPneu extends Activity {
 
             String a=txttemp.getText().toString();
             Float Temp =  Float.parseFloat(a.length()==0?"0":a);
-            if ((Temp >= 99.5) && (!chkTemp.isChecked())) {
+            /*if ((Temp >= 99.5) && (!chkTemp.isChecked())) {
+                if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
+                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
+                    return;
+                }
+                //25 04 2016
+                else if (rdoLeth1.isChecked() & !rdoLeth21.isChecked()) {
+                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে শিশুটি নেতিয়ে পড়েছে থাকলে জ্বরের উপর্সগ শিশুটি নেতিয়ে পড়েছে হ্যাঁ হবে");
+                    return;
+                }
+                else if (rdoUCon1.isChecked() & !rdoUcon21.isChecked()) {
+                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে অজ্ঞান থাকলে জ্বরের উপর্সগ অজ্ঞান হ্যাঁ হবে");
+                    return;
+                }
+                else if (rdoDrink1.isChecked() & !rdoDrink21.isChecked()) {
+                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'বুকের দুধ বা পানি পান না করতে পারলে' থাকলে জ্বরের উপর্সগ 'বুকের দুধ বা পানি পান না করতে পারলে' হ্যাঁ হবে");
+                    return;
+                }
+                else if (rdoVomit1.isChecked() & !rdoVomit21.isChecked()) {
+                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
+                    return;
+                }
+
+            }*/
+
+            //21 Jul 2020
+            if ((Temp >= 99.5) && (rdoTemp1.isChecked())) {
                 if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
                     Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
                     return;
@@ -3094,6 +3312,7 @@ public class AssPneu extends Activity {
                 }
 
             }
+
             if (!rdoConv2.isChecked() || !rdoFBrea2.isChecked() || !rdoCInd2.isChecked() || !rdoLeth2.isChecked() || !rdoUCon2.isChecked() || !rdoDrink2.isChecked() || !rdoVomit2.isChecked() || !rdoNone2.isChecked()) {
                 if(rdoCSPne1.isChecked() & !rdoTSPne1.isChecked())
                 {
@@ -3155,7 +3374,19 @@ public class AssPneu extends Activity {
             //RadioButton rbVType = (RadioButton) findViewById(rdogrpVType.getCheckedRadioButtonId());
             //SQL += "VType = '" + (rbVType == null ? "" : (Global.Left(rbVType.getText().toString(), 1))) + "',";
             SQL += "Visit = '" + txtVisit.getSelectedItem().toString() + "',";
-            SQL +="tempDk = '"+ (chkTemp.isChecked()?"1":"2") +"',";
+
+            //SQL +="tempDk = '"+ (chkTemp.isChecked()?"1":"2") +"',";
+
+            //21 Jul 2020
+            if(rdoTemp1.isChecked())
+                SQL +="tempDk = '2',";
+            else if(rdoTemp2.isChecked())
+                SQL +="tempDk = '1',";
+            else if(rdoTemp3.isChecked())
+                SQL +="tempDk = '3',";
+            else
+                SQL +="tempDk = '',";
+
             SQL += "temp = '" + txttemp.getText().toString() + "',";
             RadioButton rbCough = (RadioButton) findViewById(rdogrpCough.getCheckedRadioButtonId());
             SQL += "Cough = '" + (rbCough == null ? "" : (Global.Left(rbCough.getText().toString(), 1))) + "',";
@@ -3204,6 +3435,7 @@ public class AssPneu extends Activity {
             SQL += "TNPne = '" + (rbTNPne == null ? "" : (Global.Left(rbTNPne.getText()	.toString(), 1))) + "',";
             RadioButton rbLFever = (RadioButton) findViewById(rdogrpLFever.getCheckedRadioButtonId());
             SQL += "LFever = '"	+ (rbLFever == null ? "" : (Global.Left(rbLFever.getText().toString(), 1))) + "',";
+
             RadioButton rbCLFever = (RadioButton) findViewById(rdogrpCLFever.getCheckedRadioButtonId());
             SQL += "CLFever = '" + (rbCLFever == null ? "" : (Global.Left(rbCLFever.getText().toString(), 1))) + "',";
             RadioButton rbTLFever = (RadioButton) findViewById(rdogrpTLFever.getCheckedRadioButtonId());
@@ -3436,14 +3668,24 @@ public class AssPneu extends Activity {
 */
                 //txtVisit.setText(cur.getString(cur.getColumnIndex("Visit")));
 
-                if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
+                /*if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
                 {
                     chkTemp.setChecked(true);
                 }
                 else if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
                 {
                     chkTemp.setChecked(false);
-                }
+                }*/
+
+                //21 Jul 2020
+                if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
+                    rdoTemp1.setChecked(true);
+                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
+                    rdoTemp2.setChecked(true);
+                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("3"))
+                    rdoTemp3.setChecked(true);
+                else
+                    rdogrpTemp1.clearCheck();
 
                 txttemp.setText(cur.getString(cur.getColumnIndex("temp")));
 

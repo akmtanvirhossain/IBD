@@ -158,13 +158,20 @@
             <EditText android:id="@+id/txtRR2" android:maxLength="3" android:layout_width="60sp" android:inputType="number" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
         </LinearLayout>
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
+        <LinearLayout android:id="@+id/secTemp1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+            <RadioGroup android:id="@+id/rdogrpTemp1" android:layout_marginLeft="40sp" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoTemp1" android:text="তাপমাত্রা নেওয়া সাম্ভব হয়েছে" android:layout_height="wrap_content" android:layout_width="wrap_content" android:checked="false" />
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoTemp2" android:text="তাপমাত্রা নেওয়া সাম্ভব হয় নাই"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:checked="false" />
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoTemp3" android:text="জিজ্ঞাসা করে ধারণা পাওয়া গিয়েছে"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:checked="false" />
+            </RadioGroup>
+        </LinearLayout>
         <LinearLayout android:id="@+id/sectemp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
             <TextView android:id="@+id/Vlbltemp" android:text="তাপমাত্রা " android:layout_width="98dp" android:layout_height="wrap_content" android:textSize="20sp" />
             <TextView android:id="@+id/VlbltempF" android:layout_width="wrap_content"  android:layout_height="wrap_content"  android:text="ফাঃ" android:textSize="20sp" />
             <EditText android:id="@+id/txttemp" android:maxLength="5" android:layout_width="130sp" android:inputType="numberDecimal" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
-            <CheckBox	android:id="@+id/chkTemp" android:layout_marginBottom="10sp" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            <CheckBox android:id="@+id/chkTemp" android:visibility="gone" android:layout_marginBottom="10sp" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:checked="false" />
-            <TextView android:id="@+id/VlblchkTemp" android:layout_width="wrap_content"  android:layout_height="wrap_content"  android:text="তাপমাত্রা নেওয়া সাম্ভব হয় নাই" android:textSize="20sp" />
+            <TextView android:id="@+id/VlblchkTemp" android:visibility="gone" android:layout_width="wrap_content"  android:layout_height="wrap_content"  android:text="তাপমাত্রা নেওয়া সাম্ভব হয় নাই" android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -257,7 +264,7 @@
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
         <LinearLayout android:id="@+id/secCInd" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
             <TextView android:id="@+id/VlblCInd" android:text="বুকের নীচের অংশ ডেবে যাওয়া" android:layout_width="380sp" android:layout_height="wrap_content" android:textSize="20sp" />
-            <RadioGroup android:id="@+id/rdogrpCInd" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
+            <RadioGroup android:id="@+id/rdogrpCInd" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoCInd1" android:text="1-হ্যাঁ" android:layout_height="wrap_content" android:layout_width="wrap_content" android:checked="false" />
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoCInd2" android:text="2-না"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
 <!--                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoCInd3" android:text="3-জানি না"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>-->
@@ -450,10 +457,11 @@
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
         <LinearLayout android:id="@+id/secLFever" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
             <TextView android:id="@+id/VlblLFever" android:text="তাপমাত্রা ৯৯.৫ ফাঃ - ১০০.৩ ফাঃ" android:layout_width="380sp" android:layout_height="wrap_content" android:textSize="20sp" />
-            <RadioGroup android:id="@+id/rdogrpLFever" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
+            <RadioGroup android:id="@+id/rdogrpLFever" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
 
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoLFever1" android:text="1-হ্যাঁ" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoLFever2" android:text="2-না"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoLFever3" android:text="3-জানিনা"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
             </RadioGroup>
         </LinearLayout>
 
@@ -480,10 +488,11 @@
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#006699" />
         <LinearLayout android:id="@+id/secMFever" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
             <TextView android:id="@+id/VlblMFever" android:text="তাপমাত্রা ১০০.৪  ফাঃ -  ১০১.৯  ফাঃ" android:layout_width="380sp" android:layout_height="wrap_content" android:textSize="20sp" />
-            <RadioGroup android:id="@+id/rdogrpMFever" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
+            <RadioGroup android:id="@+id/rdogrpMFever" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
 
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoMFever1" android:text="1-হ্যাঁ" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoMFever2" android:text="2-না"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoMFever3" android:text="3-জানিনা"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
             </RadioGroup>
         </LinearLayout>
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
@@ -508,10 +517,11 @@
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#006699" />
         <LinearLayout android:id="@+id/secHFever" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
             <TextView android:id="@+id/VlblHFever" android:text="তাপমাত্রা ১০২  ফাঃ অথবা বেশী" android:layout_width="380sp" android:layout_height="wrap_content" android:textSize="20sp" />
-            <RadioGroup android:id="@+id/rdogrpHFever" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
+            <RadioGroup android:id="@+id/rdogrpHFever" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp">
 
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoHFever1" android:text="1-হ্যাঁ" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
                 <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoHFever2" android:text="2-না"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+                <RadioButton android:paddingRight="10dp" android:textSize="20sp" android:id="@+id/rdoHFever3" android:text="3-জানিনা"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
             </RadioGroup>
         </LinearLayout>
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
