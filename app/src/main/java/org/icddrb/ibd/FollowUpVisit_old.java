@@ -5,14 +5,7 @@ package org.icddrb.ibd;
  */
 
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import android.app.*;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -25,38 +18,36 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.view.KeyEvent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ArrayAdapter;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
-import Common.*;
+import Common.Connection;
+import Common.Global;
 
-public class FollowUpVisit extends Activity {
+public class FollowUpVisit_old extends Activity {
     boolean netwoekAvailable=false;
     Location currentLocation;
     double currentLatitude,currentLongitude;
@@ -78,7 +69,7 @@ public class FollowUpVisit extends Activity {
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(FollowUpVisit.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(FollowUpVisit_old.this);
         switch (item.getItemId()) {
             case R.id.menuClose:
                 adb.setTitle("Close");
@@ -243,11 +234,7 @@ public class FollowUpVisit extends Activity {
             listVstat.add("13-সরকারী ছুটির দিন");
             listVstat.add("15-Training/Meeting");
             listVstat.add("14-অন্যান্য কারণ");
-            listVstat.add("16-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
-            listVstat.add("17-ফোন কল রিসিভ: সাক্ষাতকার দিতে রাজি নন");
-            listVstat.add("18-ফোন কল রিসিভ করেনি");
-            listVstat.add("19-ফোন সুইচ অফ");
-            listVstat.add("20-ভুল নম্বর");
+
 
             ArrayAdapter<String> adptrVstat= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVstat);
             spnVstat.setAdapter(adptrVstat);
@@ -284,7 +271,7 @@ public class FollowUpVisit extends Activity {
                         secExDate.setVisibility(View.GONE);
                         dtpExDate.setText("");
 
-                    } else if (spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("2") | spnData.equalsIgnoreCase("3") | spnData.equalsIgnoreCase("16")) {
+                    } else if (spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("2") | spnData.equalsIgnoreCase("3")) {
                         secSickStatus.setVisibility(View.VISIBLE);
                         secExDate.setVisibility(View.GONE);
 
@@ -346,7 +333,7 @@ public class FollowUpVisit extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(FollowUpVisit.this, e.getMessage());
+            Connection.MessageBox(FollowUpVisit_old.this, e.getMessage());
             return;
         }
     }
@@ -359,20 +346,20 @@ public class FollowUpVisit extends Activity {
             DV = Global.DateValidate(dtpVDate.getText().toString());
             if(DV.length()!=0 & secVDate.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, DV);
+                Connection.MessageBox(FollowUpVisit_old.this, DV);
                 dtpVDate.requestFocus();
                 return;
             }
             else if(spnVstat.getSelectedItemPosition()==0  & secVstat.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, "পরিদর্শনের অবস্থা কি সিলেক্ট করুন।");
+                Connection.MessageBox(FollowUpVisit_old.this, "পরিদর্শনের অবস্থা কি সিলেক্ট করুন।");
                 spnVstat.requestFocus();
                 return;
             }
 
             else if(!rdoSickStatus1.isChecked() & !rdoSickStatus2.isChecked() & !rdoSickStatus3.isChecked() & secSickStatus.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, "শারীরিক অবস্থা কি সিলেক্ট করুন।");
+                Connection.MessageBox(FollowUpVisit_old.this, "শারীরিক অবস্থা কি সিলেক্ট করুন।");
                 rdoSickStatus1.requestFocus();
                 return;
             }
@@ -380,27 +367,27 @@ public class FollowUpVisit extends Activity {
             DV = Global.DateValidate(dtpExDate.getText().toString());
             if(DV.length()!=0 & secExDate.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, DV);
+                Connection.MessageBox(FollowUpVisit_old.this, DV);
                 dtpExDate.requestFocus();
                 return;
             }
 
             if(Global.DateDifferenceDays(dtpVDate.getText().toString(), txtDOB.getText().toString())<0)
             {
-                Connection.MessageBox(FollowUpVisit.this, "ভিজিটের তারিখ অবশ্যই জন্ম তারিখের সমান অথবা বড় হতে হবে।");
+                Connection.MessageBox(FollowUpVisit_old.this, "ভিজিটের তারিখ অবশ্যই জন্ম তারিখের সমান অথবা বড় হতে হবে।");
                 dtpVDate.requestFocus();
                 return;
             }
 
             if(Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(g.getWeekStartDate()))<0)
             {
-                Connection.MessageBox(FollowUpVisit.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
+                Connection.MessageBox(FollowUpVisit_old.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
                         dtpVDate.requestFocus();
                 return;
             }
             if(Global.DateDifferenceDays(Global.DateConvertDMY(g.getWeekEndDate()),dtpVDate.getText().toString())<0)
             {
-                Connection.MessageBox(FollowUpVisit.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
+                Connection.MessageBox(FollowUpVisit_old.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
                 dtpVDate.requestFocus();
                 return;
             }
@@ -411,12 +398,12 @@ public class FollowUpVisit extends Activity {
 
             if(rdoSickStatus3.isChecked() & !VisitStatus.equals("2"))
             {
-                Connection.MessageBox(FollowUpVisit.this, "শিশু অনুপস্থিত থাকলেই শুধুমাএ অসুস্থ্যতার অবস্থা জানি না হতে পারে.");
+                Connection.MessageBox(FollowUpVisit_old.this, "শিশু অনুপস্থিত থাকলেই শুধুমাএ অসুস্থ্যতার অবস্থা জানি না হতে পারে.");
                 return;
             }
             else if(!rdoSickStatus2.isChecked() & VisitStatus.equals("3"))
             {
-                Connection.MessageBox(FollowUpVisit.this, "শিশু চিকিৎসার জন্য অনুপস্থিত থাকলে অসুস্থ্যতার অবস্থা - অসুস্থ (কাশি, শ্বাস কষ্ট, জ্বর ) হতে হবে ।");
+                Connection.MessageBox(FollowUpVisit_old.this, "শিশু চিকিৎসার জন্য অনুপস্থিত থাকলে অসুস্থ্যতার অবস্থা - অসুস্থ (কাশি, শ্বাস কষ্ট, জ্বর ) হতে হবে ।");
                 return;
             }
 
@@ -462,7 +449,7 @@ public class FollowUpVisit extends Activity {
             {
                 C.Save("Update Child set upload='2',ExType='',ExDate='' Where ChildId='"+ ChildID +"'");
             }
-            Connection.MessageBox(FollowUpVisit.this, "Saved Successfully");
+            Connection.MessageBox(FollowUpVisit_old.this, "Saved Successfully");
 
             finish();
 
@@ -533,7 +520,7 @@ public class FollowUpVisit extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(FollowUpVisit.this, e.getMessage());
+            Connection.MessageBox(FollowUpVisit_old.this, e.getMessage());
             return;
         }
     }
@@ -578,7 +565,7 @@ public class FollowUpVisit extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(FollowUpVisit.this, e.getMessage());
+            Connection.MessageBox(FollowUpVisit_old.this, e.getMessage());
             return;
         }
     }

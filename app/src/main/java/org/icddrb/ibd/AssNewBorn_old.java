@@ -3,75 +3,58 @@ package org.icddrb.ibd;
 /**
  * Created by TanvirHossain on 24/11/2015.
  */
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import android.app.*;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ArrayAdapter;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 import Common.Connection;
 import Common.Global;
 
 
-public class AssNewBorn extends Activity {
+public class AssNewBorn_old extends Activity {
     boolean netwoekAvailable=false;
     Location currentLocation;
     double currentLatitude,currentLongitude;
@@ -95,7 +78,7 @@ public class AssNewBorn extends Activity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(AssNewBorn.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(AssNewBorn_old.this);
         switch (item.getItemId()) {
             case R.id.menuClose:
                 adb.setTitle("Close");
@@ -267,9 +250,6 @@ public class AssNewBorn extends Activity {
     LinearLayout secRR1;
     TextView VlblRR1;
     EditText txtRR1;
-
-    CheckBox chkRR;
-
     LinearLayout secRR2;
     TextView VlblRR2;
     EditText txtRR2;
@@ -970,28 +950,6 @@ public class AssNewBorn extends Activity {
 
             );
 
-            chkRR=(CheckBox)findViewById(R.id.chkRR);
-            chkRR.setOnCheckedChangeListener(new OnCheckedChangeListener()
-            {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
-                    if ( isChecked )
-                    {
-                        txtRR1.setEnabled(false);
-                        txtRR1.setText("");
-                        secRR2.setVisibility(View.GONE);
-                        txtRR2.setText("");
-                    }
-                    else
-                    {
-                        txtRR1.setEnabled(true);
-                        secRR2.setVisibility(View.VISIBLE);
-                    }
-
-                }
-            });
-
-
 
             secRR2=(LinearLayout)findViewById(R.id.secRR2);
             VlblRR2=(TextView) findViewById(R.id.VlblRR2);
@@ -1604,7 +1562,7 @@ public class AssNewBorn extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssNewBorn.this, e.getMessage());
+            Connection.MessageBox(AssNewBorn_old.this, e.getMessage());
             return;
         }
     }
@@ -1701,7 +1659,7 @@ public class AssNewBorn extends Activity {
 
             if(txtChildId.getText().toString().length()==0)
             {
-                Connection.MessageBox(AssNewBorn.this, "Required field:ChildID.");
+                Connection.MessageBox(AssNewBorn_old.this, "Required field:ChildID.");
                 txtChildId.requestFocus();
                 return;
             }
@@ -1716,14 +1674,14 @@ public class AssNewBorn extends Activity {
             DV = Global.DateValidate(dtpVDate.getText().toString());
             if(DV.length()!=0 & secVDate.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, DV);
+                Connection.MessageBox(AssNewBorn_old.this, DV);
                 dtpVDate.requestFocus();
                 return;
             }
 
             else if(spnOth1.getSelectedItemPosition()==0  & secOth1.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "Required field:নবজাতকের সমস্যা ১.");
+                Connection.MessageBox(AssNewBorn_old.this, "Required field:নবজাতকের সমস্যা ১.");
                 spnOth1.requestFocus();
                 return;
             }
@@ -1743,132 +1701,130 @@ public class AssNewBorn extends Activity {
 
             else if(!rdoHNoCry1.isChecked() & !rdoHNoCry2.isChecked() & secHNoCry.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মের পর না কাঁদা)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মের পর না কাঁদা)");
                 rdoHNoCry1.requestFocus();
                 return;
             }
 
             else if(!rdoHNoBrea1.isChecked() & !rdoHNoBrea2.isChecked() & secHNoBrea.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মের পর পর শ্বাস না নেওয়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মের পর পর শ্বাস না নেওয়া)");
                 rdoHNoBrea1.requestFocus();
                 return;
             }
 
             else if(!rdoHConv1.isChecked() & !rdoHConv2.isChecked() & secHConv.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (খিচুনী)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (খিচুনী)");
                 rdoHConv1.requestFocus();
                 return;
             }
 
             else if(!rdoHUncon1.isChecked() & !rdoHUncon2.isChecked() & secHUncon.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
                 rdoHUncon1.requestFocus();
                 return;
             }
 
             else if(!rdoHDBrea1.isChecked() & !rdoHDBrea2.isChecked() & secHDBrea.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শ্বাস কষ্ট)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শ্বাস কষ্ট)");
                 rdoHDBrea1.requestFocus();
                 return;
             }
 
             else if(!rdoHJaund1.isChecked() & !rdoHJaund2.isChecked() & secHJaund.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শরীর হলুদ হয়ে যাওয়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শরীর হলুদ হয়ে যাওয়া)");
                 rdoHJaund1.requestFocus();
                 return;
             }
 
             else if(!rdoHHFever1.isChecked() & !rdoHHFever2.isChecked() & secHHFever.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শরীরের তাপমাত্রা বেড়ে যাওয়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শরীরের তাপমাত্রা বেড়ে যাওয়া)");
                 rdoHHFever1.requestFocus();
                 return;
             }
 
             else if(!rdoHLFever1.isChecked() & !rdoHLFever2.isChecked() & secHLFever.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শরীরের তাপমাত্রা কমে যাওয়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শরীরের তাপমাত্রা কমে যাওয়া)");
                 rdoHLFever1.requestFocus();
                 return;
             }
 
             else if(!rdoHSkin1.isChecked() & !rdoHSkin2.isChecked() & secHSkin.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (চামড়ায় সংক্রমন)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (চামড়ায় সংক্রমন)");
                 rdoHSkin1.requestFocus();
                 return;
             }
 
             else if(!rdoHFedp1.isChecked() & !rdoHFedp2.isChecked() & secHFedp.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (খাওয়ার সমস্যা)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (খাওয়ার সমস্যা)");
                 rdoHFedp1.requestFocus();
                 return;
             }
 
             else if(!rdoHPus1.isChecked() & !rdoHPus2.isChecked() & secHPus.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নাভিতে পুজ বা লাল বা র্দুগন্ধ)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (নাভিতে পুজ বা লাল বা র্দুগন্ধ)");
                 rdoHPus1.requestFocus();
                 return;
             }
 
             else if(!rdoHVomit1.isChecked() & !rdoHVomit2.isChecked() & secHVomit.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (দীর্ঘ মেয়াদী বমি)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (দীর্ঘ মেয়াদী বমি)");
                 rdoHVomit1.requestFocus();
                 return;
             }
 
             else if(!rdoHWeak1.isChecked() & !rdoHWeak2.isChecked() & secHWeak.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (দুর্বল)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (দুর্বল)");
                 rdoHWeak1.requestFocus();
                 return;
             }
 
             else if(!rdoHLeth1.isChecked() & !rdoHLeth2.isChecked() & secHLeth.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নেতিয়ে পড়া) ");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (নেতিয়ে পড়া) ");
                 rdoHLeth1.requestFocus();
                 return;
             }
 
             else if(!rdoAsses1.isChecked() & !rdoAsses2.isChecked() & secAsses.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নবজাতককে কি পরীক্ষা করা হয়েছে?)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (নবজাতককে কি পরীক্ষা করা হয়েছে?)");
                 rdoAsses1.requestFocus();
                 return;
             }
-            if (!chkRR.isChecked()) {
-//            else if(txtRR1.getText().toString().length()==0 & secRR1.isShown())
-                if (txtRR1.getText().toString().length() == 0 & secRR1.isShown()) {
-                    Connection.MessageBox(AssNewBorn.this, "এক মিনিটে কতবার শ্বাস প্রশ্বাস  গুনুন - খালি থাকতে পারবেনা");
-                    txtRR1.requestFocus();
-                    return;
-                }
+            else if(txtRR1.getText().toString().length()==0 & secRR1.isShown())
+            {
+                Connection.MessageBox(AssNewBorn_old.this, "এক মিনিটে কতবার শ্বাস প্রশ্বাস  গুনুন - খালি থাকতে পারবেনা");
+                txtRR1.requestFocus();
+                return;
             }
             else if(txtRR2.getText().toString().length()==0 & secRR2.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "শ্বাস প্রশ্বাস >=৬০ বা তার বেশী শুনুন  - খালি থাকতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "শ্বাস প্রশ্বাস >=৬০ বা তার বেশী শুনুন  - খালি থাকতে পারবেনা");
                 txtRR2.requestFocus();
                 return;
             }
             if (!chkTemp.isChecked()) {
                 if (txtTemp.getText().toString().length() == 0 & secTemp.isShown()) {
-                    Connection.MessageBox(AssNewBorn.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
+                    Connection.MessageBox(AssNewBorn_old.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
                     txtTemp.requestFocus();
                     return;
                 }
                 else
                 {
                     if (secTemp.isShown() & (Double.valueOf(txtTemp.getText().toString().length() == 0 ? "0.0" : txtTemp.getText().toString()) < 92 || Double.valueOf(txtTemp.getText().toString().length() == 0 ? "999" : txtTemp.getText().toString()) > 108.0)) {
-                        Connection.MessageBox(AssNewBorn.this, "Current Temperature should be between 92 - 108");
+                        Connection.MessageBox(AssNewBorn_old.this, "Current Temperature should be between 92 - 108");
                         txtTemp.requestFocus();
                         return;
                     }
@@ -1878,242 +1834,231 @@ public class AssNewBorn extends Activity {
             Integer rr4 = Integer.parseInt(var.length() == 0 ? "0" : var);
             if(!rdoNoCry1.isChecked() & !rdoNoCry2.isChecked() & secNoCry.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শিশু কাঁদছে না/শ্বাস-প্রশ্বাস নিচ্ছে না)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শিশু কাঁদছে না/শ্বাস-প্রশ্বাস নিচ্ছে না)");
                 rdoNoCry1.requestFocus();
                 return;
             }
 
             else if(!rdoGasp1.isChecked() & !rdoGasp2.isChecked() & secGasp.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (গ্যাসপিং)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (গ্যাসপিং)");
                 rdoGasp1.requestFocus();
                 return;
             }
             else if(!rdoSBrea1.isChecked() & !rdoSBrea2.isChecked() & secSBrea.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (ধীর শ্বাস)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (ধীর শ্বাস)");
                 rdoSBrea1.requestFocus();
                 return;
             }
 //            update_Shahidul 11-Dec-2018
             else if(rdoSBrea1.isChecked() & (rr4>=30))
             {
-                Connection.MessageBox(AssNewBorn.this, "শ্বাসের হার ৩০ বা তার চেয়ে বেশী ,সুতরাং ধীর শ্বাস হ্যাঁ হবে না");
+                Connection.MessageBox(AssNewBorn_old.this, "শ্বাসের হার ৩০ বা তার চেয়ে বেশী ,সুতরাং ধীর শ্বাস হ্যাঁ হবে না");
                 rdoSBrea1.requestFocus();
                 return;
             }
 //            --------------------------------------------------------------------------
             else if(!rdoBirthAs1.isChecked() & !rdoBirthAs2.isChecked() & secBirthAs.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মকালীন শ্বাস কষ্ট)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (জন্মকালীন শ্বাস কষ্ট)");
                 rdoBirthAs1.requestFocus();
                 return;
             }
             else if(!rdoConv1.isChecked() & !rdoConv2.isChecked() & secConv.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (খিঁচুনী হতে দেখা)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (খিঁচুনী হতে দেখা)");
                 rdoConv1.requestFocus();
                 return;
             }
 
             else if(!rdoRBrea1.isChecked() & !rdoRBrea2.isChecked() & secRBrea.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - দ্রুত শ্বাস ৬০ (মিনিটে  বার বা তার চেয়ে বেশী)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - দ্রুত শ্বাস ৬০ (মিনিটে  বার বা তার চেয়ে বেশী)");
                 rdoRBrea1.requestFocus();
                 return;
             }
 
             else if(!rdoCInd1.isChecked() & !rdoCInd2.isChecked() & secCInd.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (বুকের নীচের অংশ মারাত্বক ভাবে ডেবে যাওয়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (বুকের নীচের অংশ মারাত্বক ভাবে ডেবে যাওয়া)");
                 rdoCInd1.requestFocus();
                 return;
             }
 
             else if(!rdoHFever1.isChecked() & !rdoHFever2.isChecked() & secHFever.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০১ºF -এর বেশী)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০১ºF -এর বেশী)");
                 rdoHFever1.requestFocus();
                 return;
             }
 
             else if(!rdoHypo1.isChecked() & !rdoHypo2.isChecked() & secHypo.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা 95.5ºF -এর কম)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা 95.5ºF -এর কম)");
                 rdoHypo1.requestFocus();
                 return;
             }
 
             else if(!rdoUCon1.isChecked() & !rdoUCon2.isChecked() & secUCon.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
                 rdoUCon1.requestFocus();
                 return;
             }
 
             else if(!rdoPus1.isChecked() & !rdoPus2.isChecked() & secPus.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (অনেক অথবা মারাত্বক পুঁজ সহ দানা বা ফোস্কা)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (অনেক অথবা মারাত্বক পুঁজ সহ দানা বা ফোস্কা)");
                 rdoPus1.requestFocus();
                 return;
             }
 
             else if(!rdoUmbR1.isChecked() & !rdoUmbR2.isChecked() & secUmbR.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নাভি লাল )");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (নাভি লাল )");
                 rdoUmbR1.requestFocus();
                 return;
             }
 
             else if(!rdoWeak1.isChecked() & !rdoWeak2.isChecked() & secWeak.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (দুর্বল)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (দুর্বল)");
                 rdoWeak1.requestFocus();
                 return;
             }
 
             else if(!rdoLeth1.isChecked() & !rdoLeth2.isChecked() & secLeth.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নেতিয়ে পড়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (নেতিয়ে পড়া)");
                 rdoLeth1.requestFocus();
                 return;
             }
 
             else if(!rdoNoFed1.isChecked() & !rdoNoFed2.isChecked() & secNoFed.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (বাচ্চা খেতে পারে না)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (বাচ্চা খেতে পারে না)");
                 rdoNoFed1.requestFocus();
                 return;
             }
 
             else if(!rdoVsd1.isChecked() & !rdoVsd2.isChecked() & secVsd.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (খুব মারাত্বক রোগ)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (খুব মারাত্বক রোগ)");
                 rdoVsd1.requestFocus();
                 return;
             }
 
             else if(!rdoConvH1.isChecked() & !rdoConvH2.isChecked() & secConvH.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (খিঁচুনীর ইতিহাস)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (খিঁচুনীর ইতিহাস)");
                 rdoConvH1.requestFocus();
                 return;
             }
 
             else if(!rdoFonta1.isChecked() & !rdoFonta2.isChecked() & secFonta.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (মাথার তালু ফোলা বা উঁচ)ু");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (মাথার তালু ফোলা বা উঁচ)ু");
                 rdoFonta1.requestFocus();
                 return;
             }
 
             else if(!rdoVomit1.isChecked() & !rdoVomit2.isChecked() & secVomit.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (সব কিছু বমি করে ফেলে দেয়)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (সব কিছু বমি করে ফেলে দেয়)");
                 rdoVomit1.requestFocus();
                 return;
             }
 
             else if(!rdoH1Fever1.isChecked() & !rdoH1Fever2.isChecked() & secH1Fever.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১00ºF - ১০১ºF এর মধ্যে)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১00ºF - ১০১ºF এর মধ্যে)");
                 rdoH1Fever1.requestFocus();
                 return;
             }
 
             else if(!rdoLFever1.isChecked() & !rdoLFever2.isChecked() & secLFever.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ৯৫.৫ºF - ৯৭.৫ºF এর মধ্যে)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ৯৫.৫ºF - ৯৭.৫ºF এর মধ্যে)");
                 rdoLFever1.requestFocus();
                 return;
             }
 
             else if(!rdoNJaun1.isChecked() & !rdoNJaun2.isChecked() & secNJaun.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (হাতের তালু বা পায়ের পাতায় জন্মের ১ দিন পর থেকে জন্ডিস)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (হাতের তালু বা পায়ের পাতায় জন্মের ১ দিন পর থেকে জন্ডিস)");
                 rdoNJaun1.requestFocus();
                 return;
             }
 
             else if(!rdoPvsd1.isChecked() & !rdoPvsd2.isChecked() & secPvsd.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (সম্ভবত খুব মারাত্বক রোগ)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (সম্ভবত খুব মারাত্বক রোগ)");
                 rdoPvsd1.requestFocus();
                 return;
             }
 
             else if(!rdoJaund1.isChecked() & !rdoJaund2.isChecked() & secJaund.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - ( জন্মের ২৪ ঘন্টার মধ্যে শরীরের যে কোন অংশ হলুদ হয়ে যাওয়া (জন্ডিস))");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - ( জন্মের ২৪ ঘন্টার মধ্যে শরীরের যে কোন অংশ হলুদ হয়ে যাওয়া (জন্ডিস))");
                 rdoJaund1.requestFocus();
                 return;
             }
 
             else if(!rdoSJaun1.isChecked() & !rdoSJaun2.isChecked() & secSJaun.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (মারাত্বক জন্ডিস)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (মারাত্বক জন্ডিস)");
                 rdoSJaun1.requestFocus();
                 return;
             }
 
             else if(!rdoEyeP1.isChecked() & !rdoEyeP2.isChecked() & secEyeP.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (চোখ থেকে পুঁজ বের  হওয়া)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (চোখ থেকে পুঁজ বের  হওয়া)");
                 rdoEyeP1.requestFocus();
                 return;
             }
 
             else if(!rdoGono1.isChecked() & !rdoGono2.isChecked() & secGono.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (চোখে সম্ভাব্য গনকোক্কাল ইনফেকশন)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (চোখে সম্ভাব্য গনকোক্কাল ইনফেকশন)");
                 rdoGono1.requestFocus();
                 return;
             }
 
             else if(!rdoSick1.isChecked() & !rdoSick2.isChecked() & secSick.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শিশুর বর্তমান আবস্তা )");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শিশুর বর্তমান আবস্তা )");
                 rdoSick1.requestFocus();
                 return;
             }
 
             else if(!rdoRef1.isChecked() & !rdoRef2.isChecked() & !rdoRef3.isChecked() & secRef.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (রেফার করা হয়েছে?)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (রেফার করা হয়েছে?)");
                 rdoRef1.requestFocus();
                 return;
             }
             if (rdoRef1.isChecked() || rdoRef2.isChecked()) {
                 if (txtRSlip.getText().toString().length() == 0 & secRSlip.isShown()) {
-                    Connection.MessageBox(AssNewBorn.this, "রেফারাল স্লিপ নং. খালি থাকতে পারবেনা");
+                    Connection.MessageBox(AssNewBorn_old.this, "রেফারাল স্লিপ নং. খালি থাকতে পারবেনা");
                     txtRSlip.requestFocus();
                     return;
                 }
             }
 
             if (txtRSlip.getText().toString().length() < 6  & secRSlip.isShown()) {
-                Connection.MessageBox(AssNewBorn.this,"রেফারাল স্লিপ  ৬ সঙ্খারকম হবেনা");
+                Connection.MessageBox(AssNewBorn_old.this,"রেফারাল স্লিপ  ৬ সঙ্খারকম হবেনা");
                 txtRSlip.requestFocus();
                 return;
             }
             if (txtPhone.getText().toString().length() != 0 & secPhone.isShown()) {
                 if (txtPhone.getText().toString().length() < 11 & secPhone.isShown()) {
-                    Connection.MessageBox(AssNewBorn.this, "ফোন নম্বর ১১  সঙ্খারকম হবেনা");
+                    Connection.MessageBox(AssNewBorn_old.this, "ফোন নম্বর ১১  সঙ্খারকম হবেনা");
                     txtPhone.requestFocus();
                     return;
                 }
             }
-
-            //            20/07/2020
-//            if (!chkRR.isChecked())
-//            {
-//                if (txtRR1.getText().toString().length() == 0 & secRR1.isShown()) {
-//                    Connection.MessageBox(AssNewBorn.this, "এক মিনিটে কতবার শ্বাস প্রশ্বাস  গুনুনঃ - খালি থাকতে পারবেনা");
-//                    txtRR1.requestFocus();
-//                    return;
-//                }
-//            }
-//            --------------------------------
 /*            String RFNo;
             RFNo=C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '"+ txtRSlip.getText() +"'");
             if(RFNo.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim()))
@@ -2130,7 +2075,7 @@ public class AssNewBorn extends Activity {
             }*/
             if(!rdoReason1.isChecked() & !rdoReason2.isChecked() & secReason.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (শিশুটিকে পরীক্ষা না করার কারন)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (শিশুটিকে পরীক্ষা না করার কারন)");
                 rdoReason1.requestFocus();
                 return;
             }
@@ -2142,7 +2087,7 @@ public class AssNewBorn extends Activity {
             }*/
             else if(spnTPlace.getSelectedItemPosition()==0  & secTPlace.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "ড্রপডাউন মেনু সিলেক্ট করা হয় নাই - (কোথায় চিকিৎসার জন্য গিয়েছে?)");
+                Connection.MessageBox(AssNewBorn_old.this, "ড্রপডাউন মেনু সিলেক্ট করা হয় নাই - (কোথায় চিকিৎসার জন্য গিয়েছে?)");
                 spnTPlace.requestFocus();
                 return;
             }
@@ -2154,25 +2099,25 @@ public class AssNewBorn extends Activity {
             }*/
             else if(txtTPlaceC.getText().toString().length()==0 & secTPlaceC.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "Required field:অন্যান্য");
+                Connection.MessageBox(AssNewBorn_old.this, "Required field:অন্যান্য");
                 txtTPlaceC.requestFocus();
                 return;
             }
             else if(txtTAbsDur.getText().toString().length()==0 & secTAbsDur.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "চিকিৎসার জন্য কতদিন হয় গিয়েছে? - খালি থাকতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "চিকিৎসার জন্য কতদিন হয় গিয়েছে? - খালি থাকতে পারবেনা");
                 txtTAbsDur.requestFocus();
                 return;
             }
             else if(!rdoTAbsIn1.isChecked() & !rdoTAbsIn2.isChecked() & secTAbsDur.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (চিকিৎসার জন্য কতদিন হয় গিয়েছে?)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (চিকিৎসার জন্য কতদিন হয় গিয়েছে?)");
                 rdoTAbsIn1.requestFocus();
                 return;
             }
             else if(!rdoHos1.isChecked() & !rdoHos2.isChecked() & !rdoHos3.isChecked() & secHos.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (হাসপাতালে ভর্তি ছিল কি?)");
+                Connection.MessageBox(AssNewBorn_old.this, "অপশন সিলেক্ট করা হয় নাই - (হাসপাতালে ভর্তি ছিল কি?)");
                 rdoHos1.requestFocus();
                 return;
             }
@@ -2181,78 +2126,78 @@ public class AssNewBorn extends Activity {
             Integer rr2 = Integer.parseInt(var2.length() == 0 ? "0" : var2);
             if (rr2 >= 60 & rdoRBrea2.isChecked())
             {
-                Connection.MessageBox(AssNewBorn.this, "শিশুর শ্বাসের হার ৬০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
+                Connection.MessageBox(AssNewBorn_old.this, "শিশুর শ্বাসের হার ৬০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
                 return;
             }
             else if((rdoNoCry1.isChecked() || rdoGasp1.isChecked() || rdoSBrea1.isChecked()) && (rdoBirthAs2.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "কান্না ও শ্বাস প্রশাসসের লক্ষণ হ্যাঁ কিন্ত জন্মকালীন শ্বাস কষ্ট না হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "কান্না ও শ্বাস প্রশাসসের লক্ষণ হ্যাঁ কিন্ত জন্মকালীন শ্বাস কষ্ট না হতে পারবেনা");
                 return;
             }
             else if((rdoNoCry2.isChecked() & rdoGasp2.isChecked() & rdoSBrea2.isChecked()) && (rdoBirthAs1.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "কান্না ও শ্বাস প্রশাসসের লক্ষণ না কিন্ত জন্মকালীন শ্বাস কষ্ট হ্যাঁ হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "কান্না ও শ্বাস প্রশাসসের লক্ষণ না কিন্ত জন্মকালীন শ্বাস কষ্ট হ্যাঁ হতে পারবেনা");
                 return;
             }
 
             else if((rdoConv1.isChecked() || rdoRBrea1.isChecked() || rdoCInd1.isChecked() || rdoHFever1.isChecked()  || rdoHypo1.isChecked()  || rdoUCon1.isChecked()  || rdoPus1.isChecked() || rdoUmbR1.isChecked() || rdoWeak1.isChecked() || rdoLeth1.isChecked() || rdoNoFed1.isChecked()) && (rdoVsd2.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "খুব মারাত্বকর রোগের লক্ষণগুলো হ্যাঁ কিন্ত খুব মারাত্বকরর রোগ না হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "খুব মারাত্বকর রোগের লক্ষণগুলো হ্যাঁ কিন্ত খুব মারাত্বকরর রোগ না হতে পারবেনা");
                 return;
             }
             else if((rdoConv2.isChecked() & rdoRBrea2.isChecked() & rdoCInd2.isChecked() & rdoHFever2.isChecked()  & rdoHypo2.isChecked()  & rdoUCon2.isChecked()  & rdoPus2.isChecked() & rdoUmbR2.isChecked() & rdoWeak2.isChecked() & rdoLeth2.isChecked() & rdoNoFed2.isChecked()) && (rdoVsd1.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "খুব মারাত্বকর রোগের লক্ষণগুলো না  কিন্ত খুব মারাত্বকরর রোগ হ্যাঁ  হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "খুব মারাত্বকর রোগের লক্ষণগুলো না  কিন্ত খুব মারাত্বকরর রোগ হ্যাঁ  হতে পারবেনা");
                 return;
             }
             else if((rdoConvH1.isChecked() || rdoFonta1.isChecked() || rdoVomit1.isChecked() || rdoH1Fever1.isChecked() || rdoLFever1.isChecked() || rdoNJaun1.isChecked()) && (rdoPvsd2.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "সম্ভবত খুব মারাত্বকর রোগের লক্ষণগুলো হ্যাঁ কিন্ত সম্ভবত খুব মারাত্বকরর রোগ না হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "সম্ভবত খুব মারাত্বকর রোগের লক্ষণগুলো হ্যাঁ কিন্ত সম্ভবত খুব মারাত্বকরর রোগ না হতে পারবেনা");
                 return;
             }
             else if((rdoConvH2.isChecked() & rdoFonta2.isChecked() & rdoVomit2.isChecked() & rdoH1Fever2.isChecked() & rdoLFever2.isChecked() & rdoNJaun2.isChecked()) && (rdoPvsd1.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "সম্ভবত খুব মারাত্বকর রোগের লক্ষণগুলো না  কিন্ত সম্ভবত খুব মারাত্বকরর রোগ হ্যাঁ  হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "সম্ভবত খুব মারাত্বকর রোগের লক্ষণগুলো না  কিন্ত সম্ভবত খুব মারাত্বকরর রোগ হ্যাঁ  হতে পারবেনা");
                 return;
             }
             else if(rdoJaund1.isChecked() & rdoSJaun2.isChecked())
             {
-                Connection.MessageBox(AssNewBorn.this, "জন্মের ২৪ ঘন্টার মধ্যে শরীর হালুদ হ্যাঁ কিন্ত  মারাত্বক জন্ডিস না হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "জন্মের ২৪ ঘন্টার মধ্যে শরীর হালুদ হ্যাঁ কিন্ত  মারাত্বক জন্ডিস না হতে পারবেনা");
                 return;
             }
             else if(rdoJaund2.isChecked() & rdoSJaun1.isChecked())
             {
-                Connection.MessageBox(AssNewBorn.this, "জন্মের ২৪ ঘন্টার মধ্যে শরীর হালুদ না  কিন্ত  মারাত্বক জন্ডিস হ্যাঁ হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "জন্মের ২৪ ঘন্টার মধ্যে শরীর হালুদ না  কিন্ত  মারাত্বক জন্ডিস হ্যাঁ হতে পারবেনা");
                 return;
             }
             else if(rdoEyeP1.isChecked() & rdoGono2.isChecked())
             {
-                Connection.MessageBox(AssNewBorn.this, "চোখ থেকে পুঁজ বের হয় হ্যাঁ কিন্ত  চোখে সম্ভাব্য গনকোক্কাল ইনফেকশন  না হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "চোখ থেকে পুঁজ বের হয় হ্যাঁ কিন্ত  চোখে সম্ভাব্য গনকোক্কাল ইনফেকশন  না হতে পারবেনা");
                 return;
             }
             else if(rdoEyeP2.isChecked() & rdoGono1.isChecked())
             {
-                Connection.MessageBox(AssNewBorn.this, "চোখ থেকে পুঁজ বের হয় না কিন্ত  চোখে সম্ভাব্য গনকোক্কাল ইনফেকশন  হ্যাঁ হতে পারবেনা");
+                Connection.MessageBox(AssNewBorn_old.this, "চোখ থেকে পুঁজ বের হয় না কিন্ত  চোখে সম্ভাব্য গনকোক্কাল ইনফেকশন  হ্যাঁ হতে পারবেনা");
                 return;
             }
             else if((rdoBirthAs1.isChecked() || rdoVsd1.isChecked() || rdoPvsd1.isChecked() || rdoSJaun1.isChecked() || rdoGono1.isChecked()) && (rdoRef3.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "রেফার এর লক্ষণগুলো হ্যাঁ  কিনত রেফার করা হয়নি  হতে পারবে না");
+                Connection.MessageBox(AssNewBorn_old.this, "রেফার এর লক্ষণগুলো হ্যাঁ  কিনত রেফার করা হয়নি  হতে পারবে না");
                 return;
             }
             else if((rdoBirthAs2.isChecked() & rdoVsd2.isChecked() & rdoPvsd2.isChecked() & rdoSJaun2.isChecked() & rdoGono2.isChecked()) && (rdoRef1.isChecked() || rdoRef2.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "রেফার এর লক্ষণগুলো না  কিনত রেফার করা হয়েছে হ্যাঁ  হতে পারবে না");
+                Connection.MessageBox(AssNewBorn_old.this, "রেফার এর লক্ষণগুলো না  কিনত রেফার করা হয়েছে হ্যাঁ  হতে পারবে না");
                 return;
             }
             else if((rdoBirthAs2.isChecked() & rdoVsd2.isChecked() & rdoPvsd2.isChecked() & rdoSJaun2.isChecked() & rdoGono2.isChecked()) && (rdoSick2.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "কোন সমস্যা নাই কিন্ত শিশুটি অসুস্থ  হতে পারবে না");
+                Connection.MessageBox(AssNewBorn_old.this, "কোন সমস্যা নাই কিন্ত শিশুটি অসুস্থ  হতে পারবে না");
                 return;
             }
             else if((rdoBirthAs1.isChecked() || rdoVsd1.isChecked() || rdoPvsd1.isChecked() || rdoSJaun1.isChecked() || rdoGono1.isChecked()) && (rdoSick1.isChecked()))
             {
-                Connection.MessageBox(AssNewBorn.this, "শিশুর সমস্যা আছে  কিন্ত শিশুটি সুস্থ্য আছে  হতে পারবে না");
+                Connection.MessageBox(AssNewBorn_old.this, "শিশুর সমস্যা আছে  কিন্ত শিশুটি সুস্থ্য আছে  হতে পারবে না");
                 return;
             }
             //String tm = txtTemp.getText().toString();
@@ -2269,7 +2214,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (!rdoHFever1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "১০১ ফাঃ এর বেশী  তাহলে তাপমাত্রা ১০১ ফাঃ এর বেশী না হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "১০১ ফাঃ এর বেশী  তাহলে তাপমাত্রা ১০১ ফাঃ এর বেশী না হবেনা");
                         return;
                     }
                    /* else if (rdoHFever1.isChecked())
@@ -2282,7 +2227,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (rdoHFever1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "১০১ ফাঃ এর কম  তাহলে তাপমাত্রা ১০১ ফাঃ এর বেশী হ্যাঁ হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "১০১ ফাঃ এর কম  তাহলে তাপমাত্রা ১০১ ফাঃ এর বেশী হ্যাঁ হবেনা");
                         return;
                     }
                 }
@@ -2290,7 +2235,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (!rdoH1Fever1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "১০০-১০১ ফাঃ এর বেশী  তাহলে তাপমাত্রা ১০০-১০১ ফাঃ এর মধ্যে না হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "১০০-১০১ ফাঃ এর বেশী  তাহলে তাপমাত্রা ১০০-১০১ ফাঃ এর মধ্যে না হবেনা");
                         return;
                     }
                 }
@@ -2298,7 +2243,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (rdoH1Fever1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "১০০-১০১ ফাঃ এর বেশী মধ্যে নয় তাহলে  তাপমাত্রা ১০০-১০১ ফাঃ এর মধ্যে হ্যাঁ হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "১০০-১০১ ফাঃ এর বেশী মধ্যে নয় তাহলে  তাপমাত্রা ১০০-১০১ ফাঃ এর মধ্যে হ্যাঁ হবেনা");
                         return;
                     }
                 }
@@ -2306,7 +2251,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (!rdoLFever1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে তাহলে তাপমাত্রা ৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে না হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে তাহলে তাপমাত্রা ৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে না হবেনা");
                         return;
                     }
                 }
@@ -2314,7 +2259,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (rdoLFever1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে নয় তাহলে  তাপমাত্রা ৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে হ্যাঁ হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে নয় তাহলে  তাপমাত্রা ৯৫.৫-৯৭.৫ ফাঃ এর মধ্যে হ্যাঁ হবেনা");
                         return;
                     }
                 }
@@ -2322,7 +2267,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (!rdoHypo1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "৯৫.৫ ফাঃ এর কম  তাহলে  তাপমাত্রা ৯৫.৫ ফাঃ এর কম না  হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "৯৫.৫ ফাঃ এর কম  তাহলে  তাপমাত্রা ৯৫.৫ ফাঃ এর কম না  হবেনা");
                         return;
                     }
                 }
@@ -2330,7 +2275,7 @@ public class AssNewBorn extends Activity {
                 {
                     if (rdoHypo1.isChecked())
                     {
-                        Connection.MessageBox(AssNewBorn.this, "৯৫.৫ ফাঃ এর বেশী  তাহলে  তাপমাত্রা ৯৫.৫ ফাঃ এর কম হ্যাঁ হবেনা");
+                        Connection.MessageBox(AssNewBorn_old.this, "৯৫.৫ ফাঃ এর বেশী  তাহলে  তাপমাত্রা ৯৫.৫ ফাঃ এর কম হ্যাঁ হবেনা");
                         return;
                     }
                 }
@@ -2355,7 +2300,7 @@ public class AssNewBorn extends Activity {
                 //RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and ChildId <> '"+ ChildID +"'");
                 RFNo = C.ReturnSingleValue("Select rslip from AssNewBorn where rslip='"+ txtRSlip.getText().toString() +"' and childid||week||vtype||visit not in('"+ (ChildID+txtWeek.getSelectedItem().toString()+VisitType+txtVisit.getSelectedItem().toString()) +"') limit 1");
                 if (RFNo.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
-                    Connection.MessageBox(AssNewBorn.this, "এই রেফারাল স্লিপ নং পূর্বে নবজাতকে-এ ব্যবহার করা হয়েছে");
+                    Connection.MessageBox(AssNewBorn_old.this, "এই রেফারাল স্লিপ নং পূর্বে নবজাতকে-এ ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
                     return;
                 }
@@ -2363,7 +2308,7 @@ public class AssNewBorn extends Activity {
                 //R2 = C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and ChildId <> '"+ ChildID +"'");
                 R2 = C.ReturnSingleValue("Select rslip from AssPneu where rslip='"+ txtRSlip.getText().toString() +"' and childid||week||vtype||visit not in('"+ (ChildID+txtWeek.getSelectedItem().toString()+VisitType+txtVisit.getSelectedItem().toString()) +"') limit 1");
                 if (R2.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
-                    Connection.MessageBox(AssNewBorn.this, "এই রেফারাল স্লিপ নং পূর্বে (০-৫৯ মাস)-এ  ব্যবহার করা হয়েছে");
+                    Connection.MessageBox(AssNewBorn_old.this, "এই রেফারাল স্লিপ নং পূর্বে (০-৫৯ মাস)-এ  ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
                     return;
                 }
@@ -2380,7 +2325,6 @@ public class AssNewBorn extends Activity {
 
             SQL = "Update " + TableName + " Set Upload='2',";
             SQL+="Temp = '"+ txtTemp.getText().toString() +"',";
-            SQL +="tempDk = '"+ (chkTemp.isChecked()?"1":"2") +"',";
             //SQL+="Week = '"+ txtWeek.getText().toString() +"',";
             //SQL+="VType = '"+ VisitType +"',";
             //SQL+="Visit = '"+ txtVisit.getText().toString() +"',";
@@ -2419,7 +2363,6 @@ public class AssNewBorn extends Activity {
             RadioButton rbAsses = (RadioButton)findViewById(rdogrpAsses.getCheckedRadioButtonId());
             SQL+="Asses = '"+ (rbAsses==null?"":(Global.Left(rbAsses.getText().toString(),1))) +"',";
             SQL+="RR1 = '"+ txtRR1.getText().toString() +"',";
-            SQL +="RRDk = '"+ (chkRR.isChecked()?"1":"2") +"',";
             SQL+="RR2 = '"+ txtRR2.getText().toString() +"',";
             RadioButton rbNoCry = (RadioButton)findViewById(rdogrpNoCry.getCheckedRadioButtonId());
             SQL+="NoCry = '"+ (rbNoCry==null?"":(Global.Left(rbNoCry.getText().toString(),1))) +"',";
@@ -2565,11 +2508,11 @@ public class AssNewBorn extends Activity {
             }
 
 
-            Connection.MessageBox(AssNewBorn.this, "Saved Successfully");
+            Connection.MessageBox(AssNewBorn_old.this, "Saved Successfully");
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssNewBorn.this, e.getMessage());
+            Connection.MessageBox(AssNewBorn_old.this, e.getMessage());
             return;
         }
     }
@@ -2592,7 +2535,7 @@ public class AssNewBorn extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssNewBorn.this, e.getMessage());
+            Connection.MessageBox(AssNewBorn_old.this, e.getMessage());
             return;
         }
     }
@@ -2621,24 +2564,15 @@ public class AssNewBorn extends Activity {
                 txtTemp.setText(cur.getString(cur.getColumnIndex("Temp")));
                 String a= cur.getString(cur.getColumnIndex("Temp"));
 
-                if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
+                if(a.equals(""))
                 {
                     chkTemp.setChecked(true);
                 }
-                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
+
+                else
                 {
                     chkTemp.setChecked(false);
                 }
-
-//                if(a.equals(""))
-//                {
-//                    chkTemp.setChecked(true);
-//                }
-//
-//                else
-//                {
-//                    chkTemp.setChecked(false);
-//                }
                 txtWeek.setSelection(Global.SpinnerItemPosition(txtWeek,3,cur.getString(cur.getColumnIndex("Week"))));
                 VisitType = cur.getString(cur.getColumnIndex("VType"));
                 if(VisitType.equals("1")) {
@@ -2780,16 +2714,6 @@ public class AssNewBorn extends Activity {
                     else
                         rb.setChecked(false);
                 }
-
-                if(cur.getString(cur.getColumnIndex("RRDk")).equals("1"))
-                {
-                    chkRR.setChecked(true);
-                }
-                else if(cur.getString(cur.getColumnIndex("RRDk")).equals("2"))
-                {
-                    chkRR.setChecked(false);
-                }
-
                 txtRR1.setText(cur.getString(cur.getColumnIndex("RR1")));
                 txtRR2.setText(cur.getString(cur.getColumnIndex("RR2")));
                 for (int i = 0; i < rdogrpNoCry.getChildCount(); i++)
@@ -3073,7 +2997,7 @@ public class AssNewBorn extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssNewBorn.this, e.getMessage());
+            Connection.MessageBox(AssNewBorn_old.this, e.getMessage());
             return;
         }
     }
@@ -3095,7 +3019,7 @@ public class AssNewBorn extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssNewBorn.this, e.getMessage());
+            Connection.MessageBox(AssNewBorn_old.this, e.getMessage());
             return;
         }
     }
@@ -3167,7 +3091,7 @@ public class AssNewBorn extends Activity {
 
     private void StopWatch(Integer time)
     {
-        final Dialog dialog = new Dialog(AssNewBorn.this);
+        final Dialog dialog = new Dialog(AssNewBorn_old.this);
         try
         {
             dialog.setTitle("Clock");
@@ -3307,7 +3231,7 @@ public class AssNewBorn extends Activity {
                 )
 
         {
-            Connection.MessageBox(AssNewBorn.this, ex.getMessage());
+            Connection.MessageBox(AssNewBorn_old.this, ex.getMessage());
             return;
         }
 
