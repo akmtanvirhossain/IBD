@@ -1609,6 +1609,10 @@ public class AssPneu extends Activity {
                         secRR2.setVisibility(View.GONE);
                         txtRR2.setText("");
 
+//                        22/07/2020
+                        secTemp1.setVisibility(View.GONE);
+                        rdogrpTemp1.clearCheck();
+//                       -------
                         sectemp.setVisibility(View.GONE);
                         txttemp.setText("");
                         secFeverChk_lbl.setVisibility(View.GONE);
@@ -1724,6 +1728,10 @@ public class AssPneu extends Activity {
                         if (dy1<59) {
                             secRR2.setVisibility(View.VISIBLE);
                         }
+                        //            22/07/2020
+                        secTemp1.setVisibility(View.VISIBLE);
+                        rdogrpTemp1.clearCheck();
+//            -------
                         sectemp.setVisibility(View.VISIBLE);
                         //   txttemp.setText("");
                         if(rdoCough1.isChecked())
@@ -2409,6 +2417,10 @@ public class AssPneu extends Activity {
             txtRR1.setText("");
             secRR2.setVisibility(View.GONE);
             txtRR2.setText("");
+//            22/07/2020
+            secTemp1.setVisibility(View.GONE);
+            rdogrpTemp1.clearCheck();
+//            -------
             sectemp.setVisibility(View.GONE);
             txttemp.setText("");
             secFeverChk_lbl.setVisibility(View.GONE);
@@ -2557,6 +2569,8 @@ public class AssPneu extends Activity {
                 //rdoReason1.setEnabled(false);
                 //rdoReason2.setEnabled(false);
                 //rdoReason3.setEnabled(false);
+//            22/07/2020
+                secTemp1.setVisibility(View.GONE);
             }
 
 
@@ -3121,10 +3135,13 @@ public class AssPneu extends Activity {
                     Connection.MessageBox(AssPneu.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ বা তার বেশী হলে দ্রুত শ্বাস না হবে না।");
                     return;
                 }
-                else if ((rr2 < 40) & (rdoFBrea1.isChecked()))
+//                23/07/2020 if (!chkRR.isChecked())
+                else if (!chkRR.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ এর কম হলে দ্রুত শ্বাস  হ্যাঁ  হবে না");
-                    return;
+                    if ((rr2 < 40) & (rdoFBrea1.isChecked())) {
+                        Connection.MessageBox(AssPneu.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ এর কম হলে দ্রুত শ্বাস  হ্যাঁ  হবে না");
+                        return;
+                    }
                 }
             }
 
@@ -3571,24 +3588,24 @@ public class AssPneu extends Activity {
 //            finish();
            //
             //******************RSV
-            Bundle IDbundle = new Bundle();
-            Intent f1;
-            IDbundle.putString("childid", ChildID);
-            IDbundle.putString("pid", txtPID.getText().toString());
-            IDbundle.putString("weekno", WeekNo);
-            IDbundle.putString("fm", txtFMName.getText().toString());
-            IDbundle.putString("aged", AgeD);
-            IDbundle.putString("agem", AgeM);
-            IDbundle.putString("agedm", AgeDM);
-            IDbundle.putString("bdate", DOB);
-            IDbundle.putString("name", txtName.getText().toString());
-            IDbundle.putString("visittype", VisitType);
-            IDbundle.putString("visitno", "0");
-            IDbundle.putString("visitdate", dtpVDate.getText().toString());
-            IDbundle.putString("temp", txttemp.getText().toString());
-            f1 = new Intent(getApplicationContext(), RSV.class);
-            f1.putExtras(IDbundle);
-            startActivityForResult(f1, 1);
+//            Bundle IDbundle = new Bundle();
+//            Intent f1;
+//            IDbundle.putString("childid", ChildID);
+//            IDbundle.putString("pid", txtPID.getText().toString());
+//            IDbundle.putString("weekno", WeekNo);
+//            IDbundle.putString("fm", txtFMName.getText().toString());
+//            IDbundle.putString("aged", AgeD);
+//            IDbundle.putString("agem", AgeM);
+//            IDbundle.putString("agedm", AgeDM);
+//            IDbundle.putString("bdate", DOB);
+//            IDbundle.putString("name", txtName.getText().toString());
+//            IDbundle.putString("visittype", VisitType);
+//            IDbundle.putString("visitno", "0");
+//            IDbundle.putString("visitdate", dtpVDate.getText().toString());
+//            IDbundle.putString("temp", txttemp.getText().toString());
+//            f1 = new Intent(getApplicationContext(), RSV.class);
+//            f1.putExtras(IDbundle);
+//            startActivityForResult(f1, 1);
             //******************RSV
             Connection.MessageBox(AssPneu.this, "Saved Successfully");
 

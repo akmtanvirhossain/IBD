@@ -466,7 +466,7 @@ public class FollowUpVisit extends Activity {
 
             finish();
 
-            if(EX.equals("0")|EX.equals("1")|EX.equals("2")|EX.equals("3")) {
+            if(EX.equals("0")|EX.equals("1")|EX.equals("2")|EX.equals("3")|EX.equals("16")) {
                 String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVDate.getText().toString(),txtDOB.getText().toString()));
                 AgeD = AgeDay;
                 double m = Integer.valueOf(AgeDay)/30.44;

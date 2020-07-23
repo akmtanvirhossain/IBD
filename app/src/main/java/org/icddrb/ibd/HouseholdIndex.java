@@ -1645,6 +1645,16 @@ public class HouseholdIndex extends Activity {
                 lblVisitStatus.setText(": Training/Meeting");
             else if(VS.equals("14"))
                 lblVisitStatus.setText(": অন্যান্য কারণ");
+            else if(VS.equals("16"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
+            else if(VS.equals("17"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে রাজি নন");
+            else if(VS.equals("18"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ করেনি");
+            else if(VS.equals("19"))
+                lblVisitStatus.setText(": ফোন সুইচ অফ");
+            else if(VS.equals("20"))
+                lblVisitStatus.setText(": ভুল নম্বর");
 
             //CID.setText(": " + o.get("cid"));
             CID.setText(": "+ o.get("vill")+"-"+o.get("bari")+"-"+o.get("hh")+"-"+o.get("sno"));
