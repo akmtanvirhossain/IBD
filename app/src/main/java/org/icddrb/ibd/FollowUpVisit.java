@@ -247,11 +247,18 @@ public class FollowUpVisit extends Activity {
             listVstat.add("13-সরকারী ছুটির দিন");
             listVstat.add("15-Training/Meeting");
             listVstat.add("14-অন্যান্য কারণ");
-            listVstat.add("16-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
+//            listVstat.add("16-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
             listVstat.add("17-ফোন কল রিসিভ: সাক্ষাতকার দিতে রাজি নন");
             listVstat.add("18-ফোন কল রিসিভ করেনি");
             listVstat.add("19-ফোন সুইচ অফ");
             listVstat.add("20-ভুল নম্বর");
+            listVstat.add("21-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু উপস্থিত(সুস্থ আছে)");
+            listVstat.add("22-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু উপস্থিত(অসুস্থ আছে)");
+            listVstat.add("23-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু অনুপস্থিত(সুস্থ আছে)");
+            listVstat.add("24-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু অনুপস্থিত(অসুস্থ আছে)");
+            listVstat.add("25-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু চিকিৎসার জন্য অনুপস্থিত(অসুস্থ আছে)");
+            listVstat.add("26-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (স্থানান্তর)");
+            listVstat.add("27-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (মৃত্যুবরণ)");
 
             ArrayAdapter<String> adptrVstat= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVstat);
             spnVstat.setAdapter(adptrVstat);
@@ -277,8 +284,19 @@ public class FollowUpVisit extends Activity {
                         secExDate.setVisibility(View.VISIBLE);
                         VlblExDate.setText("স্থানান্তরের তারিখ");
                         dtpExDate.setText(Global.DateNowDMY());
+//                    24/07/2020
+                    } else if (spnData.equalsIgnoreCase("26")) {
+                        secSickStatus.setVisibility(View.GONE);
+                        secExDate.setVisibility(View.VISIBLE);
+                        VlblExDate.setText("স্থানান্তরের তারিখ");
+                        dtpExDate.setText(Global.DateNowDMY());
 
                     } else if (spnData.equalsIgnoreCase("6")) {
+                        secSickStatus.setVisibility(View.GONE);
+                        secExDate.setVisibility(View.VISIBLE);
+                        VlblExDate.setText("মৃত্যুর তারিখ");
+//                    24/07/2020
+                    } else if (spnData.equalsIgnoreCase("27")) {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.VISIBLE);
                         VlblExDate.setText("মৃত্যুর তারিখ");
@@ -288,7 +306,7 @@ public class FollowUpVisit extends Activity {
                         secExDate.setVisibility(View.GONE);
                         dtpExDate.setText("");
 
-                    } else if (spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("2") | spnData.equalsIgnoreCase("3") | spnData.equalsIgnoreCase("16")) {
+                    } else if (spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("2") | spnData.equalsIgnoreCase("3") | spnData.equalsIgnoreCase("21")| spnData.equalsIgnoreCase("22")| spnData.equalsIgnoreCase("23")| spnData.equalsIgnoreCase("24")| spnData.equalsIgnoreCase("25")) {
                         secSickStatus.setVisibility(View.VISIBLE);
                         secExDate.setVisibility(View.GONE);
 
@@ -470,7 +488,7 @@ public class FollowUpVisit extends Activity {
 
             finish();
 
-            if(EX.equals("0")|EX.equals("1")|EX.equals("2")|EX.equals("3")|EX.equals("16")) {
+            if(EX.equals("0")|EX.equals("1")|EX.equals("2")|EX.equals("3")|EX.equals("21")|EX.equals("22")|EX.equals("23")|EX.equals("24")|EX.equals("25")) {
                 String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVDate.getText().toString(),txtDOB.getText().toString()));
                 AgeD = AgeDay;
                 double m = Integer.valueOf(AgeDay)/30.44;

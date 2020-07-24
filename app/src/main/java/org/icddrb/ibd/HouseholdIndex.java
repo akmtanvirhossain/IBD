@@ -1645,8 +1645,8 @@ public class HouseholdIndex extends Activity {
                 lblVisitStatus.setText(": Training/Meeting");
             else if(VS.equals("14"))
                 lblVisitStatus.setText(": অন্যান্য কারণ");
-            else if(VS.equals("16"))
-                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
+//            else if(VS.equals("16"))
+//                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
             else if(VS.equals("17"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে রাজি নন");
             else if(VS.equals("18"))
@@ -1655,6 +1655,20 @@ public class HouseholdIndex extends Activity {
                 lblVisitStatus.setText(": ফোন সুইচ অফ");
             else if(VS.equals("20"))
                 lblVisitStatus.setText(": ভুল নম্বর");
+            else if(VS.equals("21"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু উপস্থিত(সুস্থ আছে)");
+            else if(VS.equals("22"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু উপস্থিত(অসুস্থ আছে)");
+            else if(VS.equals("23"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু অনুপস্থিত(সুস্থ আছে)");
+            else if(VS.equals("24"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু অনুপস্থিত(অসুস্থ আছে)");
+            else if(VS.equals("25"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু চিকিৎসার জন্য অনুপস্থিত(অসুস্থ আছে)");
+            else if(VS.equals("26"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (স্থানান্তর)");
+            else if(VS.equals("27"))
+                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (মৃত্যুবরণ)");
 
             //CID.setText(": " + o.get("cid"));
             CID.setText(": "+ o.get("vill")+"-"+o.get("bari")+"-"+o.get("hh")+"-"+o.get("sno"));
