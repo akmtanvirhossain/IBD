@@ -1755,6 +1755,8 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("weekno", WeekNo);
                     IDbundle.putString("visittype", "1");
                     IDbundle.putString("visitstatus", o.get("vstat").toString());
+                    IDbundle.putString("village", VillageList.getSelectedItem().toString().split("-")[0]);
+                    IDbundle.putString("contactno", o.get("contactno"));
 
                     if(Integer.valueOf(o.get("aged"))>=1826)
                     {

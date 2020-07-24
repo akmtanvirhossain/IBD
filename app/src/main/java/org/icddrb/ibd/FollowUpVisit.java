@@ -152,6 +152,8 @@ public class FollowUpVisit extends Activity {
     String AgeD;
     String DOB;
     String FM;
+    String VILLAGE;
+    String CONTACT_NO;
 
     TextView lblCName;
     TextView FatherMother;
@@ -186,6 +188,8 @@ public class FollowUpVisit extends Activity {
             VisitType = B.getString("visittype");
             CID       = B.getString("cid");
             PID       = B.getString("pid");
+            VILLAGE       = B.getString("village");
+            CONTACT_NO       = B.getString("contactno");
 
             FatherMother = (TextView)findViewById(R.id.FatherMother);
             FatherMother.setText(": "+ B.getString("fm"));
@@ -479,6 +483,7 @@ public class FollowUpVisit extends Activity {
                     Bundle IDbundle = new Bundle();
                     IDbundle.putString("childid", ChildID);
                     IDbundle.putString("pid", PID);
+                    IDbundle.putString("cid", CID);
                     IDbundle.putString("weekno", WeekNo);
                     IDbundle.putString("fm", FM);
                     IDbundle.putString("aged", AgeD);
@@ -496,6 +501,8 @@ public class FollowUpVisit extends Activity {
 
                     IDbundle.putString("visitstatus", EX);
                     IDbundle.putString("child_outside_area", "n");
+                    IDbundle.putString("village", VILLAGE);
+                    IDbundle.putString("contactno", CONTACT_NO);
 
                     Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
                     f1.putExtras(IDbundle);
@@ -506,6 +513,7 @@ public class FollowUpVisit extends Activity {
                     Bundle IDbundle = new Bundle();
                     IDbundle.putString("childid", ChildID);
                     IDbundle.putString("pid", PID);
+                    IDbundle.putString("cid", CID);
                     IDbundle.putString("weekno", WeekNo);
                     IDbundle.putString("fm", FM);
                     IDbundle.putString("aged", AgeD);
@@ -523,6 +531,8 @@ public class FollowUpVisit extends Activity {
 
                     IDbundle.putString("visitstatus", EX);
                     IDbundle.putString("child_outside_area", "n");
+                    IDbundle.putString("village", VILLAGE);
+                    IDbundle.putString("contactno", CONTACT_NO);
 
                     Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
                     f1.putExtras(IDbundle);

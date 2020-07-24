@@ -13,9 +13,11 @@ import java.util.List;
 
 //import ccah.icddrb.ClinicalInformation;
 import android.app.*;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
@@ -26,6 +28,7 @@ import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -57,6 +60,7 @@ import android.widget.TimePicker;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import Common.Connection;
 import Common.Global;
@@ -509,6 +513,11 @@ public class AssPneu extends Activity {
 
 
     String ChildID;
+    String CID;
+    String PID;
+    String NAME;
+    String BDATE;
+    String FM;
     String WeekNo;
     String VisitType;
     String VisitNo;
@@ -517,6 +526,8 @@ public class AssPneu extends Activity {
     String ChildPresent;
     String VisitStatus;
     String Child_Outside_Area;
+    String VILLAGE;
+    String CONTACT_NO;
 
     TextView lblVisit;
     TextView Age;
@@ -539,6 +550,11 @@ public class AssPneu extends Activity {
             Bundle B    = new Bundle();
             B	        = getIntent().getExtras();
             ChildID     = B.getString("childid");
+            CID     = B.getString("cid");
+            NAME     = B.getString("name");
+            BDATE     = B.getString("bdate");
+            FM     = B.getString("fm");
+            PID     = B.getString("pid");
             AgeD        = B.getString("aged");
             AgeM        = B.getString("agem");
             WeekNo      = B.getString("weekno");
@@ -548,6 +564,8 @@ public class AssPneu extends Activity {
             DOB         = B.getString("bdate");
             VisitStatus = B.getString("visitstatus");
             Child_Outside_Area = B.getString("child_outside_area");
+            VILLAGE = B.getString("village");
+            CONTACT_NO = B.getString("contactno");
 
             VisitStatus = VisitStatus==null?"":VisitStatus;
             AgeDM = AgeM+" মাস "+ AgeD+"  দিন";
@@ -3610,12 +3628,90 @@ public class AssPneu extends Activity {
             Connection.MessageBox(AssPneu.this, "Saved Successfully");
 
 
+            //Format a Text message. Including these variables:
+            //--------------------------------------------------------------------------------------
+            //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
+            //(message will send to mother/parents’s phone and OPD person DC Razia)
+            CONTACT_NO = txtPhone.getText().toString();
+            String[] mob={CONTACT_NO,"01995207371"};
+            String SMS="" +
+                    "CID:"+ CID +"," +
+                    "PNO:"+ PID +"," +
+                    "Name:"+ NAME +"," +
+                    "Father/Mother:"+ FM +"," +
+                    "DOB/Age:"+ BDATE +"," +
+                    "Village:"+ VILLAGE +"," +
+                    "Date of Refer:"+ dtpVDate.getText().toString();
+            for(int i=0;i<mob.length;i++) sendSMS(mob[i],SMS);
 
 
         } catch (Exception e) {
             Connection.MessageBox(AssPneu.this, e.getMessage());
             return;
         }
+    }
+
+    private void sendSMS(String phoneNumber, String message)
+    {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
 
     private void DataSearchPhone(String ChildID)
