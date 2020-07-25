@@ -260,7 +260,7 @@ public class FollowUpVisit extends Activity {
             listVstat.add("26-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (স্থানান্তর)");
             listVstat.add("27-ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (মৃত্যুবরণ)");
 
-            ArrayAdapter<String> adptrVstat= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVstat);
+            ArrayAdapter<String> adptrVstat= new ArrayAdapter<String>(this, R.layout.multiline_spinner_dropdown_item, listVstat);
             spnVstat.setAdapter(adptrVstat);
 
 
