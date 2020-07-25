@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.icddrb.ibd" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.icddrb.ibd" >
 
     <!--<uses-sdk-->
         <!--android:minSdkVersion="16"-->
@@ -12,7 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -34,22 +37,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SettingForm" android:label="Setting Form"></activity>
-        <activity android:name=".mainmenu" android:label="Main Menu"></activity>
-        <activity android:name=".MainActivity" android:label="IBD: Bari List"></activity>
-        <activity android:name=".HouseholdIndex" android:label="শিশুর তালিকা"></activity>
-        <activity android:name=".HouseholdIndex_Outside" android:label="শিশুর তালিকা"></activity>
-        <activity android:name=".FollowUpVisit" android:label="সাপ্তাহিক পরিদর্শন"></activity>
-        <activity android:name=".ChildRegistration" android:label="শিশু নিবন্ধন"></activity>
+        <activity android:name=".SettingForm" android:label="Setting Form"/>
+        <activity android:name=".mainmenu" android:label="Main Menu"/>
+        <activity android:name=".MainActivity" android:label="IBD: Bari List"/>
+        <activity android:name=".HouseholdIndex" android:label="শিশুর তালিকা"/>
+        <activity android:name=".HouseholdIndex_Outside" android:label="শিশুর তালিকা"/>
+        <activity android:name=".FollowUpVisit" android:label="সাপ্তাহিক পরিদর্শন"/>
+        <activity android:name=".ChildRegistration" android:label="শিশু নিবন্ধন"/>
 
-        <activity android:name=".AssNewBorn" android:label="এসেসমেন্ট (নবজাতক - ০ থেকে ২৮ দিন)"></activity>
-        <activity android:name=".AssPneu" android:label="এসেসমেন্ট (২৯ দিন থেকে ৫৯ মাস)"></activity>
-        <activity android:name=".RSV" android:label="আর এস ভি কমিউনিটি গবেষণা"></activity>
-        <activity android:name=".NonComp" android:label="রেফারেলের ফলাফল"></activity>
-        <activity android:name=".DSSMember" android:label="Member List (DSS)"></activity>
-        <activity android:name=".WebReports" android:label="Reports"></activity>
-        <activity android:name=".VHWReports" android:label="VHW Reports"></activity>
-        <activity android:name=".MemSearch" android:label="Search DSS Member"></activity>
+        <activity android:name=".AssNewBorn" android:label="এসেসমেন্ট (নবজাতক - ০ থেকে ২৮ দিন)"/>
+        <activity android:name=".AssPneu" android:label="এসেসমেন্ট (২৯ দিন থেকে ৫৯ মাস)"/>
+        <activity android:name=".RSV" android:label="আর এস ভি কমিউনিটি গবেষণা"/>
+        <activity android:name=".NonComp" android:label="রেফারেলের ফলাফল"/>
+        <activity android:name=".DSSMember" android:label="Member List (DSS)"/>
+        <activity android:name=".WebReports" android:label="Reports"/>
+        <activity android:name=".VHWReports" android:label="VHW Reports"/>
+        <activity android:name=".MemSearch" android:label="Search DSS Member"/>
 
         <service android:name=".Sync_Service" />
     </application>
