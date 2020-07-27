@@ -69,10 +69,10 @@
             <ImageButton android:id="@+id/btnVDate" android:layout_width="40sp" android:layout_height="40sp" android:src="@drawable/calender" android:layout_gravity="center" />
         </LinearLayout>
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
-        <LinearLayout android:id="@+id/secVstat" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
+        <LinearLayout android:id="@+id/secVstat" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" style="@style/rowStyle0">
 
             <TextView android:id="@+id/VlblVstat" android:text="পরিদর্শনের অবস্থা" android:layout_width="160sp" android:layout_height="wrap_content" android:textSize="20sp" />
-            <Spinner android:id="@+id/spnVstat" android:drawSelectorOnTop="true" android:layout_width="450sp" android:layout_height="wrap_content" android:layout_weight="0" android:prompt="@string/planet_prompt" android:textSize="20sp" />
+            <Spinner android:id="@+id/spnVstat" android:drawSelectorOnTop="true" android:layout_width="550sp" android:layout_height="wrap_content" android:layout_weight="0" android:prompt="@string/planet_prompt" android:textSize="20sp" />
         </LinearLayout>
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
         <LinearLayout android:id="@+id/secSickStatus" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">

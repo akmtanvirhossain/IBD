@@ -277,6 +277,13 @@ public class AssNewBorn extends Activity {
     LinearLayout secTemp;
     TextView VlblTemp;
     EditText txtTemp;
+
+    LinearLayout secTemp1;
+    RadioGroup rdogrpTemp1;
+    RadioButton rdoTemp1;
+    RadioButton rdoTemp2;
+    RadioButton rdoTemp3;
+
     LinearLayout secNoCry;
     TextView VlblNoCry;
     RadioGroup rdogrpNoCry;
@@ -798,6 +805,11 @@ public class AssNewBorn extends Activity {
                         txtRR1.setText("");
                         secRR2.setVisibility(View.GONE);
                         txtRR2.setText("");
+//                        27/07/2020
+                        secTemp1.setVisibility(View.GONE);
+                        rdogrpTemp1.clearCheck();
+//                       -------
+
                         secTemp.setVisibility(View.GONE);
                         txtTemp.setText("");
                         secNoCry.setVisibility(View.GONE);
@@ -879,6 +891,12 @@ public class AssNewBorn extends Activity {
                         secAskMo.setVisibility(View.VISIBLE);
                         secRR1.setVisibility(View.VISIBLE);
                         secRR2.setVisibility(View.VISIBLE);
+
+//                        27/07/2020
+                        secTemp1.setVisibility(View.VISIBLE);
+                        rdogrpTemp1.clearCheck();
+//            -------
+
                         secTemp.setVisibility(View.VISIBLE);
                         secNoCry.setVisibility(View.VISIBLE);
                         secGasp.setVisibility(View.VISIBLE);
@@ -1016,6 +1034,40 @@ public class AssNewBorn extends Activity {
                 }
             });
             txtTemp=(EditText) findViewById(R.id.txtTemp);
+//            27/07/2020
+            secTemp1=(LinearLayout) findViewById(R.id.secTemp1) ;
+            rdogrpTemp1=(RadioGroup)findViewById(R.id.rdogrpTemp1) ;
+            rdoTemp1=(RadioButton)findViewById(R.id.rdoTemp1) ;
+            rdoTemp2=(RadioButton)findViewById(R.id.rdoTemp2) ;
+            rdoTemp3=(RadioButton)findViewById(R.id.rdoTemp3) ;
+
+            rdogrpTemp1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup,int radioButtonID) {
+                    if(rdoTemp1.isChecked()){
+                        txtTemp.setEnabled(true);
+                        txtTemp.requestFocus();
+                    }
+                    else if(rdoTemp2.isChecked()){
+                        txtTemp.setEnabled(false);
+                        txtTemp.setText("");
+                    }
+                    else if(rdoTemp3.isChecked()){
+                        txtTemp.setEnabled(false);
+                        txtTemp.setText("");
+                    }
+                    else{
+                        txtTemp.setEnabled(true);
+                    }
+                }
+
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    return;
+                }
+            });
+//
+
+
             secNoCry=(LinearLayout)findViewById(R.id.secNoCry);
             VlblNoCry = (TextView) findViewById(R.id.VlblNoCry);
             rdogrpNoCry = (RadioGroup) findViewById(R.id.rdogrpNoCry);
@@ -1483,6 +1535,12 @@ public class AssNewBorn extends Activity {
             txtRR1.setText("");
             secRR2.setVisibility(View.GONE);
             txtRR2.setText("");
+
+//            27/07/2020
+            secTemp1.setVisibility(View.GONE);
+            rdogrpTemp1.clearCheck();
+//            -------
+
             secTemp.setVisibility(View.GONE);
             txtTemp.setText("");
             secNoCry.setVisibility(View.GONE);
@@ -1834,7 +1892,7 @@ public class AssNewBorn extends Activity {
 
             else if(!rdoHLeth1.isChecked() & !rdoHLeth2.isChecked() & secHLeth.isShown())
             {
-                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নেতিয়ে পড়া) ");
+                Connection.MessageBox(AssNewBorn.this, "অপশন সিলেক্ট করা হয় নাই - (নেতিয়ে পড়া)");
                 rdoHLeth1.requestFocus();
                 return;
             }
@@ -1859,7 +1917,31 @@ public class AssNewBorn extends Activity {
                 txtRR2.requestFocus();
                 return;
             }
-            if (!chkTemp.isChecked()) {
+//            27/27/2020
+            else if(!rdoTemp1.isChecked() & !rdoTemp2.isChecked() & !rdoTemp3.isChecked() & secTemp1.isShown())
+            {
+                Connection.MessageBox(AssNewBorn.this, "তাপমাত্রা নিতে পেরেছে কিনা অপশন সিলেক্ট করা হয় নাই");
+                rdoTemp1.requestFocus();
+                return;
+            }
+//
+//            if (!chkTemp.isChecked()) {
+////                if (txtTemp.getText().toString().length() == 0 & secTemp.isShown()) {
+////                    Connection.MessageBox(AssNewBorn.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
+////                    txtTemp.requestFocus();
+////                    return;
+////                }
+////                else
+////                {
+////                    if (secTemp.isShown() & (Double.valueOf(txtTemp.getText().toString().length() == 0 ? "0.0" : txtTemp.getText().toString()) < 92 || Double.valueOf(txtTemp.getText().toString().length() == 0 ? "999" : txtTemp.getText().toString()) > 108.0)) {
+////                        Connection.MessageBox(AssNewBorn.this, "Current Temperature should be between 92 - 108");
+////                        txtTemp.requestFocus();
+////                        return;
+////                    }
+////                }
+////            }
+//            27/07/2020
+            if (rdoTemp1.isChecked()) {
                 if (txtTemp.getText().toString().length() == 0 & secTemp.isShown()) {
                     Connection.MessageBox(AssNewBorn.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
                     txtTemp.requestFocus();
@@ -1874,6 +1956,7 @@ public class AssNewBorn extends Activity {
                     }
                 }
             }
+//
             String var = txtRR1.getText().toString();
             Integer rr4 = Integer.parseInt(var.length() == 0 ? "0" : var);
             if(!rdoNoCry1.isChecked() & !rdoNoCry2.isChecked() & secNoCry.isShown())
@@ -2380,7 +2463,18 @@ public class AssNewBorn extends Activity {
 
             SQL = "Update " + TableName + " Set Upload='2',";
             SQL+="Temp = '"+ txtTemp.getText().toString() +"',";
-            SQL +="tempDk = '"+ (chkTemp.isChecked()?"1":"2") +"',";
+//            SQL +="tempDk = '"+ (chkTemp.isChecked()?"1":"2") +"',";
+            //21 Jul 2020
+            if(rdoTemp1.isChecked())
+                SQL +="tempDk = '2',";
+            else if(rdoTemp2.isChecked())
+                SQL +="tempDk = '1',";
+            else if(rdoTemp3.isChecked())
+                SQL +="tempDk = '3',";
+            else
+                SQL +="tempDk = '',";
+
+
             //SQL+="Week = '"+ txtWeek.getText().toString() +"',";
             //SQL+="VType = '"+ VisitType +"',";
             //SQL+="Visit = '"+ txtVisit.getText().toString() +"',";
@@ -2621,14 +2715,24 @@ public class AssNewBorn extends Activity {
                 txtTemp.setText(cur.getString(cur.getColumnIndex("Temp")));
                 String a= cur.getString(cur.getColumnIndex("Temp"));
 
-                if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
-                {
-                    chkTemp.setChecked(true);
-                }
-                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
-                {
-                    chkTemp.setChecked(false);
-                }
+//                if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
+//                {
+//                    chkTemp.setChecked(true);
+//                }
+//                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
+//                {
+//                    chkTemp.setChecked(false);
+//                }
+//                27/07/2020
+                if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
+                    rdoTemp1.setChecked(true);
+                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
+                    rdoTemp2.setChecked(true);
+                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("3"))
+                    rdoTemp3.setChecked(true);
+                else
+                    rdogrpTemp1.clearCheck();
+//
 
 //                if(a.equals(""))
 //                {

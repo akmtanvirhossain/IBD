@@ -398,7 +398,22 @@ public class FollowUpVisit extends Activity {
                 rdoSickStatus1.requestFocus();
                 return;
             }
-
+//            27/07/2020
+            String[] VS2 = spnVstat.getSelectedItem().toString().split("-");
+            String spnData = VS2[0];
+            if((spnData.equalsIgnoreCase("21") | spnData.equalsIgnoreCase("23"))  & secVstat.isShown() & !rdoSickStatus1.isChecked())
+            {
+                Connection.MessageBox(FollowUpVisit.this, "পরিদর্শনের অবস্থা- শিশু উপস্থিত(সুস্থ আছে)/অনুপস্থিত(সুস্থ আছে) কিন্তু শারীরিক অবস্থা- অসুস্থ সিলেক্ট করা হয়েছে");
+                spnVstat.requestFocus();
+                return;
+            }
+            else if((spnData.equalsIgnoreCase("22") | spnData.equalsIgnoreCase("24") | spnData.equalsIgnoreCase("25"))  & secVstat.isShown() & !rdoSickStatus2.isChecked())
+            {
+                Connection.MessageBox(FollowUpVisit.this, "পরিদর্শনের অবস্থা- শিশু উপস্থিত(অসুস্থ আছে)/অনুপস্থিত(অসুস্থ আছে)/চিকিৎসার জন্য অনুপস্থিত(অসুস্থ আছে) কিন্তু শারীরিক অবস্থা- সুস্থ সিলেক্ট করা হয়েছে");
+                spnVstat.requestFocus();
+                return;
+            }
+//
             DV = Global.DateValidate(dtpExDate.getText().toString());
             if(DV.length()!=0 & secExDate.isShown())
             {

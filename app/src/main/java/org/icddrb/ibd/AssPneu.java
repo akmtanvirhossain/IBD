@@ -1746,7 +1746,7 @@ public class AssPneu extends Activity {
                         if (dy1<59) {
                             secRR2.setVisibility(View.VISIBLE);
                         }
-                        //            22/07/2020
+//                        22/07/2020
                         secTemp1.setVisibility(View.VISIBLE);
                         rdogrpTemp1.clearCheck();
 //            -------
@@ -2771,6 +2771,14 @@ public class AssPneu extends Activity {
                 return;
             }
 //            ------------------------------------------------------------------
+//            27/07/2020
+            else if(!rdoTemp1.isChecked() & !rdoTemp2.isChecked() & !rdoTemp3.isChecked() & secTemp1.isShown())
+            {
+                Connection.MessageBox(AssPneu.this, "তাপমাত্রা নিতে পেরেছে কিনা অপশন সিলেক্ট করা হয় নাই");
+                rdoTemp1.requestFocus();
+                return;
+            }
+//
             else if (!rdoFBrea1.isChecked() & !rdoFBrea2.isChecked() & secFBrea.isShown()) {
                 Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (দ্রুত শ্বাস)");
                 rdoFBrea1.requestFocus();
@@ -3601,6 +3609,26 @@ public class AssPneu extends Activity {
                 //Save Assessment for Under 5 Child
             }
 
+            //Format a Text message. Including these variables:
+            //--------------------------------------------------------------------------------------
+            //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
+            //(message will send to mother/parents’s phone and OPD person DC Razia)
+            CONTACT_NO = txtPhone.getText().toString();
+            //String[] mob={CONTACT_NO,"01995207371"};
+            //String[] mob={"01813364948"};
+            String[] mob={CONTACT_NO,"01739957707"};
+            String SMS="" +
+                    "CID:"+ CID +"," +
+                    "PNO:"+ PID +"," +
+                    "Name"+ NAME +"," +
+                    "Father/Mother:"+ FM +"," +
+                    "DOB:"+ Global.DateConvertDMY(BDATE) +"," +
+                    "Vill:"+ VILLAGE.split(",")[1] +"," +
+                    "Slip:"+ txtRSlip.getText().toString() +"," +
+                    "Refer DT:"+ dtpVDate.getText().toString();
+            for(int i=0;i<mob.length;i++) sendSMS(mob[i],SMS);
+
+
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
 //            finish();
@@ -3628,21 +3656,7 @@ public class AssPneu extends Activity {
             Connection.MessageBox(AssPneu.this, "Saved Successfully");
 
 
-            //Format a Text message. Including these variables:
-            //--------------------------------------------------------------------------------------
-            //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
-            //(message will send to mother/parents’s phone and OPD person DC Razia)
-            CONTACT_NO = txtPhone.getText().toString();
-            String[] mob={CONTACT_NO,"01995207371"};
-            String SMS="" +
-                    "CID:"+ CID +"," +
-                    "PNO:"+ PID +"," +
-                    "Name:"+ NAME +"," +
-                    "Father/Mother:"+ FM +"," +
-                    "DOB/Age:"+ BDATE +"," +
-                    "Village:"+ VILLAGE +"," +
-                    "Date of Refer:"+ dtpVDate.getText().toString();
-            for(int i=0;i<mob.length;i++) sendSMS(mob[i],SMS);
+
 
 
         } catch (Exception e) {

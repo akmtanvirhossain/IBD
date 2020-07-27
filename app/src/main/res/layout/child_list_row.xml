@@ -178,7 +178,7 @@
 
     <LinearLayout android:id="@+id/secVisitStatus" android:paddingTop="3sp" android:paddingBottom="3sp" android:paddingLeft="10sp" android:paddingRight="10sp"
         android:layout_width="match_parent"
-        android:layout_height="30sp" android:gravity="left">
+        android:layout_height="50sp" android:gravity="left">
         <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
             android:text="Visit Status" android:textColor="#D2288E"
