@@ -511,6 +511,8 @@ public class AssPneu extends Activity {
     String VisitSt;
     String St;
 
+    static String Cough = "";
+    static String DBrea = "";
 
     String ChildID;
     String CID;
@@ -568,7 +570,8 @@ public class AssPneu extends Activity {
             CONTACT_NO = B.getString("contactno");
 
             VisitStatus = VisitStatus==null?"":VisitStatus;
-            AgeDM = AgeM+" মাস "+ AgeD+"  দিন";
+//            AgeDM = AgeM+" মাস "+ AgeD+"  দিন";
+            AgeDM = B.getString("agedm");
 
 //            Button cmdRSV   = (Button)findViewById(R.id.cmdRSV);
 //            cmdRSV.setOnClickListener(new View.OnClickListener() {
@@ -1410,7 +1413,9 @@ public class AssPneu extends Activity {
                         dtpCoughDt.setText("");
                         secCoughDt.setVisibility(View.GONE);
                     }
-
+//                    30/07/2020 saleheen
+                    Cough=rbData;
+//
                     //27 04 2016
                     if (rdoCough2.isChecked() & rdoDBrea2.isChecked() & rdoFever2.isChecked())
                     {
@@ -1447,7 +1452,8 @@ public class AssPneu extends Activity {
                         dtpDBreaDt.setText("");
                         secDBreaDt.setVisibility(View.GONE);
                     }
-
+//                    30/07/2020 saleheen
+                    DBrea=rbData;
                     //27 04 2016
                     if (rdoCough2.isChecked() & rdoDBrea2.isChecked() & rdoFever2.isChecked())
                     {
@@ -1748,7 +1754,7 @@ public class AssPneu extends Activity {
                         }
 //                        22/07/2020
                         secTemp1.setVisibility(View.VISIBLE);
-                        rdogrpTemp1.clearCheck();
+
 //            -------
                         sectemp.setVisibility(View.VISIBLE);
                         //   txttemp.setText("");
@@ -2577,6 +2583,16 @@ public class AssPneu extends Activity {
                 //rdoReason2.setEnabled(false);
                 //rdoReason3.setEnabled(false);
             }
+//            03/08/2020
+            else if(VisitStatus.equals("24"))
+            {
+                rdoAsses1.setEnabled(false);
+                rdoAsses2.setEnabled(false);
+                rdoAsses2.setChecked(true);
+
+                rdoReason3.setChecked(true);
+            }
+//
             else if(VisitStatus.equals("3"))
             {
                 rdoAsses1.setEnabled(false);
@@ -2590,7 +2606,17 @@ public class AssPneu extends Activity {
 //            22/07/2020
                 secTemp1.setVisibility(View.GONE);
             }
+//            03/08/2020
+            else if(VisitStatus.equals("25"))
+            {
+                rdoAsses1.setEnabled(false);
+                rdoAsses2.setEnabled(false);
+                rdoAsses2.setChecked(true);
 
+                rdoReason2.setChecked(true);
+                secTemp1.setVisibility(View.GONE);
+            }
+//
 
             DataSearch(ChildID,txtWeek.getSelectedItem().toString(),VisitType,txtVisit.getSelectedItem().toString());
             DataSearchPhone(ChildID);
@@ -2775,6 +2801,30 @@ public class AssPneu extends Activity {
             else if(!rdoTemp1.isChecked() & !rdoTemp2.isChecked() & !rdoTemp3.isChecked() & secTemp1.isShown())
             {
                 Connection.MessageBox(AssPneu.this, "তাপমাত্রা নিতে পেরেছে কিনা অপশন সিলেক্ট করা হয় নাই");
+                rdoTemp1.requestFocus();
+                return;
+            }
+            else if(rdoLFever1.isChecked() & rdoMFever1.isChecked() & rdoHFever1.isChecked() & secLFever.isShown())
+            {
+                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                rdoTemp1.requestFocus();
+                return;
+            }
+            else if(rdoLFever1.isChecked() & rdoMFever1.isChecked() & !rdoHFever1.isChecked() & secLFever.isShown())
+            {
+                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                rdoTemp1.requestFocus();
+                return;
+            }
+            else if(rdoLFever1.isChecked() & !rdoMFever1.isChecked() & rdoHFever1.isChecked() & secLFever.isShown())
+            {
+                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                rdoTemp1.requestFocus();
+                return;
+            }
+            else if(!rdoLFever1.isChecked() & rdoMFever1.isChecked() & rdoHFever1.isChecked() & secLFever.isShown())
+            {
+                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoTemp1.requestFocus();
                 return;
             }
@@ -3295,6 +3345,12 @@ public class AssPneu extends Activity {
                 Connection.MessageBox(AssPneu.this, "রেফার এর লক্ষণগুলো না  কিন্তু রেফার করা  হয়েছে   হতে পারবে না");
                 return;
             }
+//            04/08/2020
+            else if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
+                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
+                return;
+            }
+//
 //            if (Temp9 > 96.0 && (!chkTemp.isChecked())) { block 31-10-2018 shahidul code include in <2month
 //                if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
 //                {
@@ -3609,50 +3665,82 @@ public class AssPneu extends Activity {
                 //Save Assessment for Under 5 Child
             }
 
-            //Format a Text message. Including these variables:
-            //--------------------------------------------------------------------------------------
-            //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
-            //(message will send to mother/parents’s phone and OPD person DC Razia)
-            CONTACT_NO = txtPhone.getText().toString();
-            //String[] mob={CONTACT_NO,"01995207371"};
-            //String[] mob={"01813364948"};
-            String[] mob={CONTACT_NO,"01739957707"};
-            String SMS="" +
-                    "CID:"+ CID +"," +
-                    "PNO:"+ PID +"," +
-                    "Name"+ NAME +"," +
-                    "Father/Mother:"+ FM +"," +
-                    "DOB:"+ Global.DateConvertDMY(BDATE) +"," +
-                    "Vill:"+ VILLAGE.split(",")[1] +"," +
-                    "Slip:"+ txtRSlip.getText().toString() +"," +
-                    "Refer DT:"+ dtpVDate.getText().toString();
-            for(int i=0;i<mob.length;i++) sendSMS(mob[i],SMS);
+            if(rdoRef1.isChecked()) {
+                //Format a Text message. Including these variables:
+                //--------------------------------------------------------------------------------------
+                //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
+                //(message will send to mother/parents’s phone and OPD person DC Razia)
+                AlertDialog.Builder alert=new AlertDialog.Builder(this);
+                alert.setTitle("Confirm");
+                alert.setMessage("Do you want to send the message?");
+                alert.setNegativeButton("No", null);
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int asd) {
+                        CONTACT_NO = txtPhone.getText().toString();
+//                        String[] mob={CONTACT_NO,"01813364948"};
+                        //String[] mob={"01813364948"};
+                        String[] mob = {CONTACT_NO, "01739957707"};
+                        String SMS = "" +
+                                "CID:" + CID + "," +
+                                "PNO:" + PID + "," +
+                                "Name" + NAME + "," +
+                                "Father/Mother:" + FM + "," +
+                                "DOB:" + Global.DateConvertDMY(BDATE) + "," +
+                                "Vill:" + VILLAGE.split(",")[1] + "," +
+                                "Slip:" + txtRSlip.getText().toString() + "," +
+                                "Refer DT:" + dtpVDate.getText().toString();
+                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
 
-            Intent returnIntent = new Intent();
-            setResult(Activity.RESULT_OK, returnIntent);
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK, returnIntent);
+                    }
+                });
+
+                AlertDialog alertDialog=alert.create();
+                alertDialog.show();
+
+
 //            finish();
+            }
+
+
+
+
+
+
+
            //
             //******************RSV
-//            Bundle IDbundle = new Bundle();
-//            Intent f1;
-//            IDbundle.putString("childid", ChildID);
-//            IDbundle.putString("pid", txtPID.getText().toString());
-//            IDbundle.putString("weekno", WeekNo);
-//            IDbundle.putString("fm", txtFMName.getText().toString());
-//            IDbundle.putString("aged", AgeD);
-//            IDbundle.putString("agem", AgeM);
-//            IDbundle.putString("agedm", AgeDM);
-//            IDbundle.putString("bdate", DOB);
-//            IDbundle.putString("name", txtName.getText().toString());
-//            IDbundle.putString("visittype", VisitType);
-//            IDbundle.putString("visitno", "0");
-//            IDbundle.putString("visitdate", dtpVDate.getText().toString());
-//            IDbundle.putString("temp", txttemp.getText().toString());
-//            f1 = new Intent(getApplicationContext(), RSV.class);
-//            f1.putExtras(IDbundle);
-//            startActivityForResult(f1, 1);
-            //******************RSV
+            if (m<=24) {
+
+                Bundle IDbundle = new Bundle();
+                Intent f1;
+                IDbundle.putString("childid", ChildID);
+                IDbundle.putString("pid", txtPID.getText().toString());
+                IDbundle.putString("weekno", WeekNo);
+                IDbundle.putString("fm", txtFMName.getText().toString());
+                IDbundle.putString("aged", AgeD);
+                IDbundle.putString("agem", AgeM);
+                IDbundle.putString("agedm", AgeDM);
+                IDbundle.putString("bdate", DOB);
+                IDbundle.putString("name", txtName.getText().toString());
+                IDbundle.putString("visittype", VisitType);
+                IDbundle.putString("visitno", "0");
+                IDbundle.putString("visitdate", dtpVDate.getText().toString());
+                IDbundle.putString("temp", txttemp.getText().toString());
+                IDbundle.putString("Cough", Cough);
+                IDbundle.putString("CoughDt", dtpCoughDt.getText().toString());
+                IDbundle.putString("DBrea", DBrea);
+                IDbundle.putString("DBreaDt", dtpDBreaDt.getText().toString());
+                IDbundle.putString("source", "u5");
+
+                f1 = new Intent(getApplicationContext(), RSV.class);
+                f1.putExtras(IDbundle);
+                startActivityForResult(f1, 1);
+                //******************RSV
+            }
             Connection.MessageBox(AssPneu.this, "Saved Successfully");
 
 

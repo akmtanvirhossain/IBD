@@ -3163,6 +3163,8 @@ public class HouseholdIndex extends Activity {
                 IDbundle.putString("childpresent", "y");
                 IDbundle.putString("visitdate", dtpVVDate.getText().toString());
                 IDbundle.putString("child_outside_area", "n");
+                IDbundle.putString("village", VillageList.getSelectedItem().toString().split("-")[0]);
+
 
                 //Call Assessment based on age of child
                 if(Integer.valueOf(AgeDay)<=28)

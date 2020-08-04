@@ -11,9 +11,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import android.app.*;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +25,7 @@ import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.telephony.SmsManager;
 import android.view.KeyEvent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -521,6 +524,14 @@ public class AssNewBorn extends Activity {
     String StartTime;
     //String a;
     String ChildID;
+//    28/07/2020
+    String CID;
+    String PID;
+    String NAME;
+    String BDATE;
+    String VILLAGE;
+    String CONTACT_NO;
+//
     String WeekNo;
     String VisitType;
     String VisitNo;
@@ -539,6 +550,10 @@ public class AssNewBorn extends Activity {
     TextView txtFMName;
     TextView txtPID;
 
+    String txttemp;
+    String n;
+
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try
@@ -553,6 +568,15 @@ public class AssNewBorn extends Activity {
             Bundle B    = new Bundle();
             B	        = getIntent().getExtras();
             ChildID     = B.getString("childid");
+//            28/07/2020
+            CID     = B.getString("cid");
+            PID     = B.getString("pid");
+            NAME     = B.getString("name");
+            FM     = B.getString("fm");
+            BDATE     = B.getString("bdate");
+            VILLAGE = B.getString("village");
+            CONTACT_NO = B.getString("contactno");
+//
             AgeD        = B.getString("aged");
             AgeM        = B.getString("agem");
             WeekNo      = B.getString("weekno");
@@ -894,7 +918,7 @@ public class AssNewBorn extends Activity {
 
 //                        27/07/2020
                         secTemp1.setVisibility(View.VISIBLE);
-                        rdogrpTemp1.clearCheck();
+
 //            -------
 
                         secTemp.setVisibility(View.VISIBLE);
@@ -2659,6 +2683,104 @@ public class AssNewBorn extends Activity {
             }
 
 
+//            if(rdoRef1.isChecked()) {
+//                //Format a Text message. Including these variables:
+//                //--------------------------------------------------------------------------------------
+//                //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
+//                //(message will send to mother/parents’s phone and OPD person DC Razia)
+//                CONTACT_NO = txtPhone.getText().toString();
+//                //String[] mob={CONTACT_NO,"01995207371"};
+//                //String[] mob={"01813364948"};
+//                String[] mob = {CONTACT_NO, "01739957707"};
+//                String SMS = "" +
+//                        "CID:" + CID + "," +
+//                        "PNO:" + PID + "," +
+//                        "Name" + NAME + "," +
+//                        "Father/Mother:" + FM + "," +
+//                        "DOB:" + Global.DateConvertDMY(BDATE) + "," +
+//                        "Vill:" + VILLAGE.split(",")[1] + "," +
+//                        "Slip:" + txtRSlip.getText().toString() + "," +
+//                        "Refer DT:" + dtpVDate.getText().toString();
+//                for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+//
+//
+//                Intent returnIntent = new Intent();
+//                setResult(Activity.RESULT_OK, returnIntent);
+////            finish();
+//            }
+
+            if(rdoRef1.isChecked()) {
+                //Format a Text message. Including these variables:
+                //--------------------------------------------------------------------------------------
+                //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
+                //(message will send to mother/parents’s phone and OPD person DC Razia)
+                AlertDialog.Builder alert=new AlertDialog.Builder(this);
+                alert.setTitle("Confirm");
+                alert.setMessage("Do you want to send the message?");
+                alert.setNegativeButton("No", null);
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int asd) {
+                        CONTACT_NO = txtPhone.getText().toString();
+//                        String[] mob={CONTACT_NO,"01813364948"};
+                        //String[] mob={"01813364948"};
+                        String[] mob = {CONTACT_NO, "01739957707"};
+                        String SMS = "" +
+                                "CID:" + CID + "," +
+                                "PNO:" + PID + "," +
+                                "Name" + NAME + "," +
+                                "Father/Mother:" + FM + "," +
+                                "DOB:" + Global.DateConvertDMY(BDATE) + "," +
+                                "Vill:" + VILLAGE.split(",")[1] + "," +
+                                "Slip:" + txtRSlip.getText().toString() + "," +
+                                "Refer DT:" + dtpVDate.getText().toString();
+                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+
+
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK, returnIntent);
+                    }
+                });
+
+                AlertDialog alertDialog=alert.create();
+                alertDialog.show();
+
+//            finish();
+            }
+
+
+//            //******************RSV
+
+
+                Bundle IDbundle = new Bundle();
+                Intent f1;
+                IDbundle.putString("childid", ChildID);
+                IDbundle.putString("pid", txtPID.getText().toString());
+                IDbundle.putString("weekno", WeekNo);
+                IDbundle.putString("fm", txtFMName.getText().toString());
+                IDbundle.putString("aged", AgeD);
+                IDbundle.putString("agem", AgeM);
+                IDbundle.putString("agedm", AgeD+" দিন");
+                IDbundle.putString("bdate", DOB);
+                IDbundle.putString("name", txtName.getText().toString());
+                IDbundle.putString("visittype", VisitType);
+                IDbundle.putString("visitno", "0");
+                IDbundle.putString("visitdate", dtpVDate.getText().toString());
+
+                IDbundle.putString("temp", txttemp);
+                IDbundle.putString("Cough", "");
+                IDbundle.putString("CoughDt", "");
+                IDbundle.putString("DBrea", "");
+                IDbundle.putString("DBreaDt", "");
+                IDbundle.putString("source", "nb");
+
+
+                f1 = new Intent(getApplicationContext(), RSV.class);
+                f1.putExtras(IDbundle);
+                startActivityForResult(f1, 1);
+//                //******************RSV
+
+
             Connection.MessageBox(AssNewBorn.this, "Saved Successfully");
         }
         catch(Exception  e)
@@ -2668,6 +2790,70 @@ public class AssNewBorn extends Activity {
         }
     }
 
+//    28/07/2020
+    private void sendSMS(String phoneNumber, String message)
+    {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+    }
+//
     private void DataSearchPhone(String ChildID)
     {
         try
