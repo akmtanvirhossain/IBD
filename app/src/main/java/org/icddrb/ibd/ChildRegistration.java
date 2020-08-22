@@ -14,13 +14,16 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -52,6 +55,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
 import Common.*;
 
 public class ChildRegistration extends Activity {
@@ -170,6 +175,11 @@ public class ChildRegistration extends Activity {
     EditText txtPhone;
     String NewOld = "";
     String Migration = "2";
+    String CONTACT_NO;
+    String Clst;
+    String Blc;
+    String Card;
+    String UNc;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,6 +200,8 @@ public class ChildRegistration extends Activity {
             Vill     = B.getString("vill");
             Bari     = B.getString("bari");
             Status   = B.getString("status");
+            Clst   = B.getString("Cluster");
+            Blc   = B.getString("Block");
             NewOld   = "n"; //n-new, o-old
 
             txtPhone = (EditText)findViewById(R.id.txtPhone);
@@ -610,8 +622,77 @@ public class ChildRegistration extends Activity {
             }
 
 
+
+//            21/08/2020  SMS
+
+//            CHRF
+//                    <5 Child card
+//            CID:32702240388
+//            Name: aaaaaaaaaaaa
+//            Sex:Female
+//            DOB:27/09/19
+//            Mo name: aaaaaaaaaaaa
+//            Mo PNO:22824635
+//            Fa name: aaaaaaaaaaaa
+//            Cl:01
+//            Bl:01
+//            Union:17
+//   -----------------------------------------------------
+//            String CDOB;
+//            CDOB=C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '"+ ChildID +"'");
+
+            UNc=C.ReturnSingleValue("select v.UName from Bari b left outer join MDSSVill v on b.vill=v.vill where b.Cluster='"+ Clst +"'");
+
+
+                Card="Under 5 Child card";
+
+
+//------------------------------------------------------
+
+            AlertDialog.Builder alert=new AlertDialog.Builder(this);
+            alert.setTitle("Confirm");
+            alert.setMessage("Do you want to send the message?");
+            alert.setNegativeButton("No", null);
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int asd) {
+                    CONTACT_NO = txtPhone.getText().toString();
+                    String sex=rdoSex1.isChecked()?"Male":rdoSex2.isChecked()?"Female":"";
+
+                        String[] mob={CONTACT_NO,"01813364948"};
+                    //String[] mob={"01813364948"};
+//                    String[] mob = {CONTACT_NO, "01739957707"};
+                    String SMS = "" + "," +
+                            "CHRF:" + Card +
+                            "CID:" + txtCID.getText().toString() + "," +
+                            "Name:" + txtName.getText().toString() + "," +
+                            "Sex:" + sex + "," +
+                            "DOB:" + dtpBdate.getText().toString()+
+                            "Mother:" + txtMoName.getText().toString() + "," +
+                            "PNO:" + txtMoPNO.getText().toString() + "," +
+                            "Father:" + txtFaName.getText().toString() + ","+
+                            "Cluster:" + Clst + "," +
+                            "Block:" + Blc + "." +
+                            "Union:" + UNc + ",";
+
+                    for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+
+
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_OK, returnIntent);
+//                    finish();
+                }
+            });
+
+            AlertDialog alertDialog=alert.create();
+            alertDialog.show();
+
+//            finish();
+
+//    21/08/2020
+
             Connection.MessageBox(ChildRegistration.this, "Saved Successfully");
-            finish();
+//            finish();
 
         }
         catch(Exception  e)
@@ -620,6 +701,70 @@ public class ChildRegistration extends Activity {
             return;
         }
     }
+
+    private void sendSMS(String phoneNumber, String message)
+    {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+    }
+
     private void DataSearch(String ChildId)
     {
         try

@@ -381,8 +381,8 @@ public class RSV extends Activity {
             if (DBrea.equals("1")) {
                 rdoDBrea1.setChecked(true);
                 rdoDBrea2.setEnabled(false);
-                dtpdtpCoughDt.setText(IDbundle.getString("CoughDt"));
-                dtpdtpCoughDt.setEnabled(false);
+                dtpdtpDBreaDt.setText(IDbundle.getString("DBreaDt"));
+                dtpdtpDBreaDt.setEnabled(false);
             } else if (DBrea.equals("2")) {
                 rdoDBrea2.setChecked(true);
                 rdoDBrea1.setEnabled(false);

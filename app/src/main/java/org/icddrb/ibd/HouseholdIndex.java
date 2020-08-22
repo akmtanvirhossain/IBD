@@ -919,7 +919,9 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("bari", CurrentBariNo);
                     IDbundle.putString("hh", "");
                     IDbundle.putString("status", "new");
-
+                    IDbundle.putString("Cluster", Cluster);
+                    IDbundle.putString("Block", Block);
+//                    IDbundle.putString("Union", UCode );
                     Intent f1 = new Intent(getApplicationContext(),ChildRegistration.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);

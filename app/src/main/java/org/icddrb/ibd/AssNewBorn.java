@@ -2722,9 +2722,9 @@ public class AssNewBorn extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
                         CONTACT_NO = txtPhone.getText().toString();
-//                        String[] mob={CONTACT_NO,"01813364948"};
+                        String[] mob={CONTACT_NO,"01875492771"};
                         //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO, "01739957707"};
+//                        String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
                                 "CID:" + CID + "," +
                                 "PNO:" + PID + "," +

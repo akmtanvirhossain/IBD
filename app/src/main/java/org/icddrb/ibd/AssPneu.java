@@ -538,6 +538,8 @@ public class AssPneu extends Activity {
     TextView txtFMName;
     TextView txtPID;
     String AgeDM;
+    String BanglaSMS;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -569,10 +571,12 @@ public class AssPneu extends Activity {
             VILLAGE = B.getString("village");
             CONTACT_NO = B.getString("contactno");
 
+
             VisitStatus = VisitStatus==null?"":VisitStatus;
 //            AgeDM = AgeM+" মাস "+ AgeD+"  দিন";
             AgeDM = B.getString("agedm");
 
+            BanglaSMS = "সহযোগিতায় সি এইচ আর এফ";
 //            Button cmdRSV   = (Button)findViewById(R.id.cmdRSV);
 //            cmdRSV.setOnClickListener(new View.OnClickListener() {
 //                public void onClick(View arg0) {
@@ -3678,9 +3682,9 @@ public class AssPneu extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
                         CONTACT_NO = txtPhone.getText().toString();
-//                        String[] mob={CONTACT_NO,"01813364948"};
+                        String[] mob={CONTACT_NO,"01875492771"};
                         //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO, "01739957707"};
+//                        String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
                                 "CID:" + CID + "," +
                                 "PNO:" + PID + "," +
@@ -3689,8 +3693,14 @@ public class AssPneu extends Activity {
                                 "DOB:" + Global.DateConvertDMY(BDATE) + "," +
                                 "Vill:" + VILLAGE.split(",")[1] + "," +
                                 "Slip:" + txtRSlip.getText().toString() + "," +
-                                "Refer DT:" + dtpVDate.getText().toString();
-                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+                                "Refer DT:" + dtpVDate.getText().toString()+ "," +
+                                "In collaboration CHRF" + "," ;
+//                                "সহযোগিতায়" + "," +
+//                                "সহযোগিতায়:" + "সি এইচ আর এফ";
+//                                "সহযোগিতায় সি এইচ আর এফ";
+//                                ":" + BanglaSMS + ",";
+                        for (int i = 0; i < mob.length;
+                             i++) sendSMS(mob[i], SMS);
 
 
                         Intent returnIntent = new Intent();
