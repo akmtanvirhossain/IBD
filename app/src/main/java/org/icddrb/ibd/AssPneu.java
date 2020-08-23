@@ -3682,22 +3682,23 @@ public class AssPneu extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
                         CONTACT_NO = txtPhone.getText().toString();
-                        String[] mob={CONTACT_NO,"01875492771"};
+//                        String[] mob={CONTACT_NO,"01716064990","01711352041"};
+                        String[] mob={CONTACT_NO,"01813364948"};
                         //String[] mob={"01813364948"};
 //                        String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
                                 "CID:" + CID + "," +
                                 "PNO:" + PID + "," +
-                                "Name" + NAME + "," +
+                                "Name:" + NAME + "," +
                                 "Father/Mother:" + FM + "," +
                                 "DOB:" + Global.DateConvertDMY(BDATE) + "," +
                                 "Vill:" + VILLAGE.split(",")[1] + "," +
                                 "Slip:" + txtRSlip.getText().toString() + "," +
                                 "Refer DT:" + dtpVDate.getText().toString()+ "," +
                                 "In collaboration CHRF" + "," ;
-//                                "সহযোগিতায়" + "," +
+//                                "বাংলাদেশ";
 //                                "সহযোগিতায়:" + "সি এইচ আর এফ";
-//                                "সহযোগিতায় সি এইচ আর এফ";
+//                                "সহযোগতিায় সি এইচ আর এফ";
 //                                ":" + BanglaSMS + ",";
                         for (int i = 0; i < mob.length;
                              i++) sendSMS(mob[i], SMS);
@@ -3824,6 +3825,14 @@ public class AssPneu extends Activity {
 
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+//        ArrayList<String> part=new ArrayList<>();
+//        part.add(message);
+//        ArrayList<PendingIntent> listsentPI=new ArrayList<>();
+//        listsentPI.add(sentPI);
+//        ArrayList<PendingIntent> listdeliveredPI=new ArrayList<>();
+//        listdeliveredPI.add(deliveredPI);
+//        sms.sendMultipartTextMessage(phoneNumber, null, part, listsentPI, listdeliveredPI);
+
     }
 
     private void DataSearchPhone(String ChildID)

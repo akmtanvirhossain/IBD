@@ -2722,7 +2722,8 @@ public class AssNewBorn extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
                         CONTACT_NO = txtPhone.getText().toString();
-                        String[] mob={CONTACT_NO,"01875492771"};
+                        String[] mob={CONTACT_NO,"01716064990"};
+//                        String[] mob={CONTACT_NO,"01875492771"};
                         //String[] mob={"01813364948"};
 //                        String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
@@ -2733,7 +2734,8 @@ public class AssNewBorn extends Activity {
                                 "DOB:" + Global.DateConvertDMY(BDATE) + "," +
                                 "Vill:" + VILLAGE.split(",")[1] + "," +
                                 "Slip:" + txtRSlip.getText().toString() + "," +
-                                "Refer DT:" + dtpVDate.getText().toString();
+                                "Refer DT:" + dtpVDate.getText().toString() + "," +
+                                "In collaboration CHRF" + "." ;
                         for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
 

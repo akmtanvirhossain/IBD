@@ -181,6 +181,8 @@ public class ChildRegistration extends Activity {
     String Card;
     String UNc;
 
+    static boolean hasChild=false;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try
@@ -189,6 +191,7 @@ public class ChildRegistration extends Activity {
             C = new Connection(this);
             g = Global.getInstance();
             StartTime = g.CurrentTime24();
+
 
             TableName = "Child";
             Old_CID   = "";
@@ -203,6 +206,8 @@ public class ChildRegistration extends Activity {
             Clst   = B.getString("Cluster");
             Blc   = B.getString("Block");
             NewOld   = "n"; //n-new, o-old
+
+            hasChild=C.Existence("Select ChildId from " + TableName + "  Where ChildId='"+ ChildId +"'");
 
             txtPhone = (EditText)findViewById(R.id.txtPhone);
             lblBari  = (EditText)findViewById(R.id.lblBari);
@@ -643,52 +648,52 @@ public class ChildRegistration extends Activity {
 
             UNc=C.ReturnSingleValue("select v.UName from Bari b left outer join MDSSVill v on b.vill=v.vill where b.Cluster='"+ Clst +"'");
 
-
                 Card="Under 5 Child card";
 
 
-//------------------------------------------------------
+//   ------------------------------------------------------
+            if(!hasChild) {
 
-            AlertDialog.Builder alert=new AlertDialog.Builder(this);
-            alert.setTitle("Confirm");
-            alert.setMessage("Do you want to send the message?");
-            alert.setNegativeButton("No", null);
-            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int asd) {
-                    CONTACT_NO = txtPhone.getText().toString();
-                    String sex=rdoSex1.isChecked()?"Male":rdoSex2.isChecked()?"Female":"";
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Confirm");
+                alert.setMessage("Do you want to send the message?");
+                alert.setNegativeButton("No", null);
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int asd) {
+                        CONTACT_NO = txtPhone.getText().toString();
+                        String sex = rdoSex1.isChecked() ? "Male" : rdoSex2.isChecked() ? "Female" : "";
 
-                        String[] mob={CONTACT_NO,"01813364948"};
-                    //String[] mob={"01813364948"};
+//                        String[] mob = {CONTACT_NO, "01813364948"};
+                        String[] mob={CONTACT_NO};
 //                    String[] mob = {CONTACT_NO, "01739957707"};
-                    String SMS = "" + "," +
-                            "CHRF:" + Card +
-                            "CID:" + txtCID.getText().toString() + "," +
-                            "Name:" + txtName.getText().toString() + "," +
-                            "Sex:" + sex + "," +
-                            "DOB:" + dtpBdate.getText().toString()+
-                            "Mother:" + txtMoName.getText().toString() + "," +
-                            "PNO:" + txtMoPNO.getText().toString() + "," +
-                            "Father:" + txtFaName.getText().toString() + ","+
-                            "Cluster:" + Clst + "," +
-                            "Block:" + Blc + "." +
-                            "Union:" + UNc + ",";
+                        String SMS = "" +
+                                "CHRF:" + Card + "," +
+                                "CID:" + txtCID.getText().toString() + "," +
+                                "Name:" + txtName.getText().toString() + "," +
+                                "Sex:" + sex + "," +
+                                "DOB:" + dtpBdate.getText().toString() +
+                                "Mother:" + txtMoName.getText().toString() + "," +
+                                "PNO:" + txtMoPNO.getText().toString() + "," +
+                                "Father:" + txtFaName.getText().toString() + "," +
+                                "Cluster:" + Clst + "," +
+                                "Block:" + Blc + "." +
+                                "Union:" + UNc + ",";
 
-                    for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
 
-                    Intent returnIntent = new Intent();
-                    setResult(Activity.RESULT_OK, returnIntent);
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK, returnIntent);
 //                    finish();
-                }
-            });
+                    }
+                });
 
-            AlertDialog alertDialog=alert.create();
-            alertDialog.show();
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
 
 //            finish();
-
+            }
 //    21/08/2020
 
             Connection.MessageBox(ChildRegistration.this, "Saved Successfully");
@@ -701,6 +706,7 @@ public class ChildRegistration extends Activity {
             return;
         }
     }
+
 
     private void sendSMS(String phoneNumber, String message)
     {
