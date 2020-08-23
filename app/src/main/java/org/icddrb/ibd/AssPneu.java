@@ -3,6 +3,7 @@ package org.icddrb.ibd;
 /**
  * Created by TanvirHossain on 03/12/2015.
  */
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.os.Bundle;
@@ -3824,6 +3826,12 @@ public class AssPneu extends Activity {
         }, new IntentFilter(DELIVERED));
 
         SmsManager sms = SmsManager.getDefault();
+
+        try {
+            message = Html.fromHtml(new String(message.getBytes("UTF-8"))).toString();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
 //        ArrayList<String> part=new ArrayList<>();
 //        part.add(message);
