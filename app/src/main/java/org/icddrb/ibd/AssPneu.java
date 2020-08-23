@@ -33,6 +33,7 @@ import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -3672,10 +3673,7 @@ public class AssPneu extends Activity {
             }
 
             if(rdoRef1.isChecked()) {
-                //Format a Text message. Including these variables:
-                //--------------------------------------------------------------------------------------
-                //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
-                //(message will send to mother/parents’s phone and OPD person DC Razia)
+
                 AlertDialog.Builder alert=new AlertDialog.Builder(this);
                 alert.setTitle("Confirm");
                 alert.setMessage("Do you want to send the message?");
@@ -3685,25 +3683,22 @@ public class AssPneu extends Activity {
                     public void onClick(DialogInterface dialogInterface, int asd) {
                         CONTACT_NO = txtPhone.getText().toString();
 //                        String[] mob={CONTACT_NO,"01716064990","01711352041"};
-                        String[] mob={CONTACT_NO,"01813364948"};
-                        //String[] mob={"01813364948"};
-//                        String[] mob = {CONTACT_NO, "01739957707"};
+//                        String[] mob={CONTACT_NO,"01875492771"};
+//                        String[] mob={CONTACT_NO};
+                        String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
-                                "CID:" + CID + "," +
-                                "PNO:" + PID + "," +
-                                "Name:" + NAME + "," +
-                                "Father/Mother:" + FM + "," +
-                                "DOB:" + Global.DateConvertDMY(BDATE) + "," +
-                                "Vill:" + VILLAGE.split(",")[1] + "," +
-                                "Slip:" + txtRSlip.getText().toString() + "," +
-                                "Refer DT:" + dtpVDate.getText().toString()+ "," +
-                                "In collaboration CHRF" + "," ;
-//                                "বাংলাদেশ";
-//                                "সহযোগিতায়:" + "সি এইচ আর এফ";
-//                                "সহযোগতিায় সি এইচ আর এফ";
-//                                ":" + BanglaSMS + ",";
-                        for (int i = 0; i < mob.length;
-                             i++) sendSMS(mob[i], SMS);
+                                "CID: " + CID + "" +
+                                "\nPNO: " + PID + "" +
+                                "\nনাম" + NAME + "" +
+                                "\nপিত/মাতা: " + FM + "" +
+                                "\nজন্ম তারিখ: " + Global.DateConvertDMY(BDATE) + "" +
+                                "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
+                                "\nSlip: " + txtRSlip.getText().toString() + "" +
+                                "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
+                                "\nসহযোগিতায়: সি এইচ আর এফ";
+
+                        for (int i = 0; i < mob.length;i++)
+                            sendSMS(mob[i], SMS);
 
 
                         Intent returnIntent = new Intent();
@@ -3827,12 +3822,24 @@ public class AssPneu extends Activity {
 
         SmsManager sms = SmsManager.getDefault();
 
-        try {
+        /*try {
             message = Html.fromHtml(new String(message.getBytes("UTF-8"))).toString();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+        }*/
+        //sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+//        23/08/2020
+        try {
+            if(message.length() > 100) {
+                ArrayList<String> messageList = SmsManager.getDefault().divideMessage(message);
+                sms.sendMultipartTextMessage(phoneNumber, null, messageList, null, null);
+            } else {
+                sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+            }
+        } catch (Exception e) {
+            Log.e("SmsProvider", "" + e);
         }
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+//
 //        ArrayList<String> part=new ArrayList<>();
 //        part.add(message);
 //        ArrayList<PendingIntent> listsentPI=new ArrayList<>();

@@ -26,6 +26,7 @@ import android.media.ToneGenerator;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -2710,10 +2711,7 @@ public class AssNewBorn extends Activity {
 //            }
 
             if(rdoRef1.isChecked()) {
-                //Format a Text message. Including these variables:
-                //--------------------------------------------------------------------------------------
-                //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
-                //(message will send to mother/parents’s phone and OPD person DC Razia)
+
                 AlertDialog.Builder alert=new AlertDialog.Builder(this);
                 alert.setTitle("Confirm");
                 alert.setMessage("Do you want to send the message?");
@@ -2722,20 +2720,20 @@ public class AssNewBorn extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
                         CONTACT_NO = txtPhone.getText().toString();
-                        String[] mob={CONTACT_NO,"01716064990"};
+//                        String[] mob={CONTACT_NO"};
 //                        String[] mob={CONTACT_NO,"01875492771"};
                         //String[] mob={"01813364948"};
-//                        String[] mob = {CONTACT_NO, "01739957707"};
+                        String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
-                                "CID:" + CID + "," +
-                                "PNO:" + PID + "," +
-                                "Name" + NAME + "," +
-                                "Father/Mother:" + FM + "," +
-                                "DOB:" + Global.DateConvertDMY(BDATE) + "," +
-                                "Vill:" + VILLAGE.split(",")[1] + "," +
-                                "Slip:" + txtRSlip.getText().toString() + "," +
-                                "Refer DT:" + dtpVDate.getText().toString() + "," +
-                                "In collaboration CHRF" + "." ;
+                                "CID: " + CID + "" +
+                                "\nPNO: " + PID + "" +
+                                "\nনাম" + NAME + "" +
+                                "\nপিত/মাতা: " + FM + "" +
+                                "\nজন্ম তারিখ: " + Global.DateConvertDMY(BDATE) + "" +
+                                "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
+                                "\nSlip: " + txtRSlip.getText().toString() + "" +
+                                "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
+                                "\nসহযোগিতায়: সি এইচ আর এফ";
                         for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
 
@@ -2853,7 +2851,17 @@ public class AssNewBorn extends Activity {
         }, new IntentFilter(DELIVERED));
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+//        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+        try {
+            if(message.length() > 100) {
+                ArrayList<String> messageList = SmsManager.getDefault().divideMessage(message);
+                sms.sendMultipartTextMessage(phoneNumber, null, messageList, null, null);
+            } else {
+                sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+            }
+        } catch (Exception e) {
+            Log.e("SmsProvider", "" + e);
+        }
     }
 //
     private void DataSearchPhone(String ChildID)

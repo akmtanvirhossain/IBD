@@ -628,23 +628,6 @@ public class ChildRegistration extends Activity {
 
 
 
-//            21/08/2020  SMS
-
-//            CHRF
-//                    <5 Child card
-//            CID:32702240388
-//            Name: aaaaaaaaaaaa
-//            Sex:Female
-//            DOB:27/09/19
-//            Mo name: aaaaaaaaaaaa
-//            Mo PNO:22824635
-//            Fa name: aaaaaaaaaaaa
-//            Cl:01
-//            Bl:01
-//            Union:17
-//   -----------------------------------------------------
-//            String CDOB;
-//            CDOB=C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '"+ ChildID +"'");
 
             UNc=C.ReturnSingleValue("select v.UName from Bari b left outer join MDSSVill v on b.vill=v.vill where b.Cluster='"+ Clst +"'");
 
@@ -668,17 +651,17 @@ public class ChildRegistration extends Activity {
                         String[] mob={CONTACT_NO};
 //                    String[] mob = {CONTACT_NO, "01739957707"};
                         String SMS = "" +
-                                "CHRF:" + Card + "," +
-                                "CID:" + txtCID.getText().toString() + "," +
-                                "Name:" + txtName.getText().toString() + "," +
-                                "Sex:" + sex + "," +
-                                "DOB:" + dtpBdate.getText().toString() +
-                                "Mother:" + txtMoName.getText().toString() + "," +
-                                "PNO:" + txtMoPNO.getText().toString() + "," +
-                                "Father:" + txtFaName.getText().toString() + "," +
-                                "Cluster:" + Clst + "," +
-                                "Block:" + Blc + "." +
-                                "Union:" + UNc + ",";
+                                "CHRF:" + Card + "" +
+                                "\nCID:" + txtCID.getText().toString() + "" +
+                                "\nName:" + txtName.getText().toString() + "" +
+                                "\nSex:" + sex + "" +
+                                "\nDOB:" + dtpBdate.getText().toString() +
+                                "\nMother:" + txtMoName.getText().toString() + "" +
+                                "\nMo PNO:" + txtMoPNO.getText().toString() + "" +
+                                "\nFather:" + txtFaName.getText().toString() + "" +
+                                "\nDSS Cluster:" + Clst + "" +
+                                "\nDSS Block:" + Blc + "" +
+                                "\nUnion:" + UNc + "";
 
                         for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
