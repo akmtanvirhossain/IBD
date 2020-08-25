@@ -542,6 +542,7 @@ public class AssPneu extends Activity {
     TextView txtPID;
     String AgeDM;
     String BanglaSMS;
+//    String VHWCl;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -3672,6 +3673,9 @@ public class AssPneu extends Activity {
                 //Save Assessment for Under 5 Child
             }
 
+//            VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTRING(c.CID,1,3) and b.Bari=SUBSTRING(c.CID,4,4) where ChildId='"+ txtChildId +"'");
+//            UNc=C.ReturnSingleValue("select v.UName from Bari b left outer join MDSSVill v on b.vill=v.vill where b.Cluster='"+ Clst +"'");
+
             if(rdoRef1.isChecked()) {
 
                 AlertDialog.Builder alert=new AlertDialog.Builder(this);
@@ -3685,7 +3689,7 @@ public class AssPneu extends Activity {
 //                        String[] mob={CONTACT_NO,"01716064990","01711352041"};
 //                        String[] mob={CONTACT_NO,"01875492771"};
 //                        String[] mob={CONTACT_NO};
-                        String[] mob = {CONTACT_NO, "01739957707"};
+                        String[] mob = {CONTACT_NO,"01739957707"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
@@ -3695,7 +3699,8 @@ public class AssPneu extends Activity {
                                 "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
                                 "\nSlip: " + txtRSlip.getText().toString() + "" +
                                 "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
-                                "\nসহযোগিতায়: সি এইচ আর এফ";
+//                                "\nVHW Cluster:" + VHWCluster + "" +
+                                "\nতত্ত্বাবধানে: সি এইচ আর এফ";
 
                         for (int i = 0; i < mob.length;i++)
                             sendSMS(mob[i], SMS);

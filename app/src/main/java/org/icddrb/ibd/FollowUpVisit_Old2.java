@@ -5,14 +5,7 @@ package org.icddrb.ibd;
  */
 
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import android.app.*;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -25,38 +18,36 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.view.KeyEvent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ArrayAdapter;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
-import Common.*;
+import Common.Connection;
+import Common.Global;
 
-public class FollowUpVisit extends Activity {
+public class FollowUpVisit_Old2 extends Activity {
     boolean netwoekAvailable=false;
     Location currentLocation;
     double currentLatitude,currentLongitude;
@@ -78,7 +69,7 @@ public class FollowUpVisit extends Activity {
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(FollowUpVisit.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(FollowUpVisit_Old2.this);
         switch (item.getItemId()) {
             case R.id.menuClose:
                 adb.setTitle("Close");
@@ -141,13 +132,6 @@ public class FollowUpVisit extends Activity {
     EditText dtpExDate;
     ImageButton btnExDate;
 
-    LinearLayout secRSVStatus;
-    View lineRSVStatus;
-    TextView VlblRSVStatus;
-    RadioGroup rdogrpRSVStatus;
-    RadioButton rdoRSVStatus1;
-    RadioButton rdoRSVStatus2;
-
     String StartTime;
     String CID;
     String PID;
@@ -168,8 +152,6 @@ public class FollowUpVisit extends Activity {
     TextView txtDOB;
     String AgeDM;
 
-
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try
@@ -185,7 +167,6 @@ public class FollowUpVisit extends Activity {
 
             //GPS Location
             FindLocation();
-
 
             Bundle B = new Bundle();
             B	     = getIntent().getExtras();
@@ -288,33 +269,28 @@ public class FollowUpVisit extends Activity {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.GONE);
                         dtpExDate.setText("");
-                        secRSVStatus.setVisibility(View.GONE);
 
                     } else if (spnData.equalsIgnoreCase("5")) {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.VISIBLE);
                         VlblExDate.setText("স্থানান্তরের তারিখ");
                         dtpExDate.setText(Global.DateNowDMY());
-                        secRSVStatus.setVisibility(View.GONE);
 //                    24/07/2020
                     } else if (spnData.equalsIgnoreCase("26")) {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.VISIBLE);
                         VlblExDate.setText("স্থানান্তরের তারিখ");
                         dtpExDate.setText(Global.DateNowDMY());
-                        secRSVStatus.setVisibility(View.GONE);
 
                     } else if (spnData.equalsIgnoreCase("6")) {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.VISIBLE);
                         VlblExDate.setText("মৃত্যুর তারিখ");
-                        secRSVStatus.setVisibility(View.GONE);
 //                    24/07/2020
                     } else if (spnData.equalsIgnoreCase("27")) {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.VISIBLE);
                         VlblExDate.setText("মৃত্যুর তারিখ");
-                        secRSVStatus.setVisibility(View.GONE);
 
                     } else if (spnData.equalsIgnoreCase("0")) {
                         secSickStatus.setVisibility(View.VISIBLE);
@@ -325,13 +301,10 @@ public class FollowUpVisit extends Activity {
                         secSickStatus.setVisibility(View.VISIBLE);
                         secExDate.setVisibility(View.GONE);
 
-
                     } else {
                         secSickStatus.setVisibility(View.GONE);
                         secExDate.setVisibility(View.GONE);
                         dtpExDate.setText("");
-                        secRSVStatus.setVisibility(View.GONE);
-                        rdogrpRSVStatus.clearCheck();
                     }
                 }
 
@@ -346,35 +319,6 @@ public class FollowUpVisit extends Activity {
             rdoSickStatus1 = (RadioButton) findViewById(R.id.rdoSickStatus1);
             rdoSickStatus2 = (RadioButton) findViewById(R.id.rdoSickStatus2);
             rdoSickStatus3 = (RadioButton) findViewById(R.id.rdoSickStatus3);
-
-
-                rdogrpSickStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
-                        String rbData = "";
-                        RadioButton rb;
-                        String[] d_rdogrpRSVsuitable = new String[]{"1", "2", "3"};
-                        for (int i = 0; i < rdogrpSickStatus.getChildCount(); i++) {
-                            rb = (RadioButton) rdogrpSickStatus.getChildAt(i);
-                            if (rb.isChecked()) rbData = d_rdogrpRSVsuitable[i];
-                        }
-
-                        if (rbData.equalsIgnoreCase("2")) {
-                            secRSVStatus.setVisibility(View.GONE);
-                            lineRSVStatus.setVisibility(View.GONE);
-                            rdogrpRSVStatus.clearCheck();
-                        } else {
-                            secRSVStatus.setVisibility(View.VISIBLE);
-                            lineRSVStatus.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        return;
-                    }
-                });
-
-
             secExDate=(LinearLayout)findViewById(R.id.secExDate);
             VlblExDate=(TextView) findViewById(R.id.VlblExDate);
             dtpExDate=(EditText) findViewById(R.id.dtpExDate);
@@ -396,15 +340,7 @@ public class FollowUpVisit extends Activity {
                 }
             });
 
-//            ---
-                secRSVStatus = (LinearLayout) findViewById(R.id.secRSVStatus);
-                lineRSVStatus = (View) findViewById(R.id.lineRSVStatus);
-                VlblRSVStatus = (TextView) findViewById(R.id.VlblRSVStatus);
-                rdogrpRSVStatus = (RadioGroup) findViewById(R.id.rdogrpRSVStatus);
-                rdoRSVStatus1 = (RadioButton) findViewById(R.id.rdoRSVStatus1);
-                rdoRSVStatus2 = (RadioButton) findViewById(R.id.rdoRSVStatus2);
 
-//
             secSickStatus.setVisibility(View.GONE);
             secExDate.setVisibility(View.GONE);
             String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVDate.getText().toString(),txtDOB.getText().toString()));
@@ -423,7 +359,7 @@ public class FollowUpVisit extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(FollowUpVisit.this, e.getMessage());
+            Connection.MessageBox(FollowUpVisit_Old2.this, e.getMessage());
             return;
         }
     }
@@ -436,20 +372,20 @@ public class FollowUpVisit extends Activity {
             DV = Global.DateValidate(dtpVDate.getText().toString());
             if(DV.length()!=0 & secVDate.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, DV);
+                Connection.MessageBox(FollowUpVisit_Old2.this, DV);
                 dtpVDate.requestFocus();
                 return;
             }
             else if(spnVstat.getSelectedItemPosition()==0  & secVstat.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, "পরিদর্শনের অবস্থা কি সিলেক্ট করুন।");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "পরিদর্শনের অবস্থা কি সিলেক্ট করুন।");
                 spnVstat.requestFocus();
                 return;
             }
 
             else if(!rdoSickStatus1.isChecked() & !rdoSickStatus2.isChecked() & !rdoSickStatus3.isChecked() & secSickStatus.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, "শারীরিক অবস্থা কি সিলেক্ট করুন।");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "শারীরিক অবস্থা কি সিলেক্ট করুন।");
                 rdoSickStatus1.requestFocus();
                 return;
             }
@@ -458,13 +394,13 @@ public class FollowUpVisit extends Activity {
             String spnData = VS2[0];
             if((spnData.equalsIgnoreCase("21") | spnData.equalsIgnoreCase("23"))  & secVstat.isShown() & !rdoSickStatus1.isChecked())
             {
-                Connection.MessageBox(FollowUpVisit.this, "পরিদর্শনের অবস্থা- শিশু উপস্থিত(সুস্থ আছে)/অনুপস্থিত(সুস্থ আছে) কিন্তু শারীরিক অবস্থা- অসুস্থ সিলেক্ট করা হয়েছে");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "পরিদর্শনের অবস্থা- শিশু উপস্থিত(সুস্থ আছে)/অনুপস্থিত(সুস্থ আছে) কিন্তু শারীরিক অবস্থা- অসুস্থ সিলেক্ট করা হয়েছে");
                 spnVstat.requestFocus();
                 return;
             }
             else if((spnData.equalsIgnoreCase("22") | spnData.equalsIgnoreCase("24") | spnData.equalsIgnoreCase("25"))  & secVstat.isShown() & !rdoSickStatus2.isChecked())
             {
-                Connection.MessageBox(FollowUpVisit.this, "পরিদর্শনের অবস্থা- শিশু উপস্থিত(অসুস্থ আছে)/অনুপস্থিত(অসুস্থ আছে)/চিকিৎসার জন্য অনুপস্থিত(অসুস্থ আছে) কিন্তু শারীরিক অবস্থা- সুস্থ সিলেক্ট করা হয়েছে");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "পরিদর্শনের অবস্থা- শিশু উপস্থিত(অসুস্থ আছে)/অনুপস্থিত(অসুস্থ আছে)/চিকিৎসার জন্য অনুপস্থিত(অসুস্থ আছে) কিন্তু শারীরিক অবস্থা- সুস্থ সিলেক্ট করা হয়েছে");
                 spnVstat.requestFocus();
                 return;
             }
@@ -472,33 +408,27 @@ public class FollowUpVisit extends Activity {
             DV = Global.DateValidate(dtpExDate.getText().toString());
             if(DV.length()!=0 & secExDate.isShown())
             {
-                Connection.MessageBox(FollowUpVisit.this, DV);
+                Connection.MessageBox(FollowUpVisit_Old2.this, DV);
                 dtpExDate.requestFocus();
-                return;
-            }
-            else if(!rdoRSVStatus1.isChecked() & !rdoRSVStatus2.isChecked() &  secRSVStatus.isShown())
-            {
-                Connection.MessageBox(FollowUpVisit.this, "আর এস ভি সিলেক্ট করুন।");
-                secRSVStatus.requestFocus();
                 return;
             }
 
             if(Global.DateDifferenceDays(dtpVDate.getText().toString(), txtDOB.getText().toString())<0)
             {
-                Connection.MessageBox(FollowUpVisit.this, "ভিজিটের তারিখ অবশ্যই জন্ম তারিখের সমান অথবা বড় হতে হবে।");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "ভিজিটের তারিখ অবশ্যই জন্ম তারিখের সমান অথবা বড় হতে হবে।");
                 dtpVDate.requestFocus();
                 return;
             }
 
             if(Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(g.getWeekStartDate()))<0)
             {
-                Connection.MessageBox(FollowUpVisit.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
+                Connection.MessageBox(FollowUpVisit_Old2.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
                         dtpVDate.requestFocus();
                 return;
             }
             if(Global.DateDifferenceDays(Global.DateConvertDMY(g.getWeekEndDate()),dtpVDate.getText().toString())<0)
             {
-                Connection.MessageBox(FollowUpVisit.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
+                Connection.MessageBox(FollowUpVisit_Old2.this, WeekNo + " সপ্তাহের ভিজিট অবশ্যই " + Global.DateConvertDMY(g.getWeekStartDate()) + " এবং " + Global.DateConvertDMY(g.getWeekEndDate()) +" এর মধ্যে হতে হবে।");
                 dtpVDate.requestFocus();
                 return;
             }
@@ -509,12 +439,12 @@ public class FollowUpVisit extends Activity {
 
             if(rdoSickStatus3.isChecked() & !VisitStatus.equals("2"))
             {
-                Connection.MessageBox(FollowUpVisit.this, "শিশু অনুপস্থিত থাকলেই শুধুমাএ অসুস্থ্যতার অবস্থা জানি না হতে পারে.");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "শিশু অনুপস্থিত থাকলেই শুধুমাএ অসুস্থ্যতার অবস্থা জানি না হতে পারে.");
                 return;
             }
             else if(!rdoSickStatus2.isChecked() & VisitStatus.equals("3"))
             {
-                Connection.MessageBox(FollowUpVisit.this, "শিশু চিকিৎসার জন্য অনুপস্থিত থাকলে অসুস্থ্যতার অবস্থা - অসুস্থ (কাশি, শ্বাস কষ্ট, জ্বর ) হতে হবে ।");
+                Connection.MessageBox(FollowUpVisit_Old2.this, "শিশু চিকিৎসার জন্য অনুপস্থিত থাকলে অসুস্থ্যতার অবস্থা - অসুস্থ (কাশি, শ্বাস কষ্ট, জ্বর ) হতে হবে ।");
                 return;
             }
 
@@ -543,12 +473,6 @@ public class FollowUpVisit extends Activity {
             //RadioButton rbSickStatus = (RadioButton)findViewById(rdogrpSickStatus.getCheckedRadioButtonId());
             //SQL+="SickStatus = '" + (rbSickStatus == null ? "":(Global.Left(rbSickStatus.getText().toString(),1))) +"',";
             SQL+="ExDate = '"+ Global.DateConvertYMD(dtpExDate.getText().toString()) +"'";
-
-            if(rdoRSVStatus1.isChecked())
-                SQL+=",RSVStatus = '1'";
-            else if(rdoRSVStatus2.isChecked())
-                SQL+=",RSVStatus = '2'";
-
             SQL+="  Where ChildId='"+ ChildID +"' and Week='"+ WeekNo +"'";
             C.Save(SQL);
 
@@ -566,48 +490,7 @@ public class FollowUpVisit extends Activity {
             {
                 C.Save("Update Child set upload='2',ExType='',ExDate='' Where ChildId='"+ ChildID +"'");
             }
-
-//            24/08/2020
-            String CDOB;
-            CDOB=C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '"+ ChildID +"'");
-
-            int da = Global.DateDifferenceDays(dtpVDate.getText().toString(),Global.DateConvertDMY(CDOB));
-            int mo = (int)(da/30.44);
-
-            if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
-                if (mo <= 24) {
-
-                    Bundle IDbundle = new Bundle();
-                    Intent f1;
-                    IDbundle.putString("childid", ChildID);
-                    IDbundle.putString("pid", txtPID.getText().toString());
-                    IDbundle.putString("weekno", WeekNo);
-                IDbundle.putString("fm", FatherMother.getText().toString());
-                    IDbundle.putString("aged", AgeD);
-                    IDbundle.putString("agem", AgeM);
-                    IDbundle.putString("agedm", AgeDM);
-                    IDbundle.putString("bdate", DOB);
-                    IDbundle.putString("name", lblCName.getText().toString());
-                    IDbundle.putString("visittype", VisitType);
-                    IDbundle.putString("visitno", "0");
-                    IDbundle.putString("visitdate", dtpVDate.getText().toString());
-                    IDbundle.putString("temp", "");
-                    IDbundle.putString("Cough", "");
-                    IDbundle.putString("CoughDt", "");
-                    IDbundle.putString("DBrea", "");
-                    IDbundle.putString("DBreaDt", "");
-                    IDbundle.putString("source", "");
-
-                    f1 = new Intent(getApplicationContext(), RSV.class);
-                    f1.putExtras(IDbundle);
-                    startActivityForResult(f1, 1);
-                    //******************RSV
-                }
-            }
-//
-
-
-            Connection.MessageBox(FollowUpVisit.this, "Saved Successfully");
+            Connection.MessageBox(FollowUpVisit_Old2.this, "Saved Successfully");
 
             finish();
 
@@ -684,7 +567,7 @@ public class FollowUpVisit extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(FollowUpVisit.this, e.getMessage());
+            Connection.MessageBox(FollowUpVisit_Old2.this, e.getMessage());
             return;
         }
     }
@@ -694,7 +577,7 @@ public class FollowUpVisit extends Activity {
         {
 
             RadioButton rb;
-            Cursor cur = C.ReadData("Select CID as cid,PID as pid,Week as week,VDate as vdate,VStat as vstat,ifnull(SickStatus,'') as sickstatus,ifnull(ExDate,'') as exdate,ifnull(RSVStatus,'') as rsvstatus " +
+            Cursor cur = C.ReadData("Select CID as cid,PID as pid,Week as week,VDate as vdate,VStat as vstat,ifnull(SickStatus,'') as sickstatus,ifnull(ExDate,'') as exdate " +
                     "from "+ TableName +"  Where ChildId='"+ ChildId +"' and Week='"+ Week +"' group by childid,week order by min(vstat)");
             cur.moveToFirst();
             while(!cur.isAfterLast())
@@ -715,10 +598,6 @@ public class FollowUpVisit extends Activity {
                     rdoSickStatus3.setChecked(true);
 
                 dtpExDate.setText(Global.DateConvertDMY(cur.getString(cur.getColumnIndex("exdate"))));
-                if(cur.getString(cur.getColumnIndex("rsvstatus")).equals("1"))
-                    rdoRSVStatus1.setChecked(true);
-                else if(cur.getString(cur.getColumnIndex("rsvstatus")).equals("2"))
-                    rdoRSVStatus2.setChecked(true);
 
                 String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVDate.getText().toString(),txtDOB.getText().toString()));
                 AgeD = AgeDay;
@@ -733,7 +612,7 @@ public class FollowUpVisit extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(FollowUpVisit.this, e.getMessage());
+            Connection.MessageBox(FollowUpVisit_Old2.this, e.getMessage());
             return;
         }
     }

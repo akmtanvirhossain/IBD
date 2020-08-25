@@ -208,8 +208,8 @@ public class HouseholdIndex extends Activity {
                                         //Visits
                                         //--------------------------------------------------------------------------------------
                                         TableName = "Visits";
-                                        VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, Lat, Lon, EnDt, UserId, Upload, UploadDT";
-                                        SQLStr  = " select ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, Lat, Lon, EnDt, UserId, Upload, UploadDT from";
+                                        VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload, UploadDT";
+                                        SQLStr  = " select ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload, UploadDT from";
                                         SQLStr += " (Select ChildId, PID, CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate,";
                                         SQLStr += " VStat, SickStatus, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2)) ExDate,";
                                         SQLStr += " v.Lat, v.Lon, v.EnDt, v.UserId, v.Upload, v.UploadDT,rank() over (partition by childid order by week desc)total";
@@ -374,7 +374,7 @@ public class HouseholdIndex extends Activity {
 
                                     //Visits
                                     TableName     = "Visits";
-                                    VariableList  = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, Lat, Lon, EnDt, UserId, Upload";
+                                    VariableList  = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload";
                                     UniqueField   = "ChildId,Week";
 
                                     C.UploadJSON(TableName,VariableList,UniqueField);

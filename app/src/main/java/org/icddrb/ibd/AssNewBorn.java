@@ -2723,7 +2723,7 @@ public class AssNewBorn extends Activity {
 //                        String[] mob={CONTACT_NO"};
 //                        String[] mob={CONTACT_NO,"01875492771"};
                         //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO, "01739957707"};
+                        String[] mob = {CONTACT_NO,"01739957707"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
@@ -2733,7 +2733,7 @@ public class AssNewBorn extends Activity {
                                 "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
                                 "\nSlip: " + txtRSlip.getText().toString() + "" +
                                 "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
-                                "\nসহযোগিতায়: সি এইচ আর এফ";
+                                "\nতত্ত্বাবধানে: সি এইচ আর এফ";
                         for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
 
