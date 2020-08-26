@@ -542,7 +542,7 @@ public class AssPneu extends Activity {
     TextView txtPID;
     String AgeDM;
     String BanglaSMS;
-//    String VHWCl;
+
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -3353,11 +3353,34 @@ public class AssPneu extends Activity {
                 Connection.MessageBox(AssPneu.this, "রেফার এর লক্ষণগুলো না  কিন্তু রেফার করা  হয়েছে   হতে পারবে না");
                 return;
             }
-//            04/08/2020
-            else if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
+//            25/08/2020 ruma complaint
+            else if (rdoConv1.isChecked() & !rdoConv21.isChecked() & secConv2.isShown())   {
                 Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
                 return;
             }
+            else if (rdoUCon1.isChecked() & !rdoUcon21.isChecked() & secUcon2.isShown()) {
+                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে অজ্ঞান থাকলে জ্বরের উপর্সগ অজ্ঞান হ্যাঁ হবে");
+                return;
+            }
+            else if (rdoLeth1.isChecked() & !rdoLeth21.isChecked() & secLeth2.isShown()) {
+                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে শিশুটি নেতিয়ে পড়েছে থাকলে জ্বরের উপর্সগ শিশুটি নেতিয়ে পড়েছে হ্যাঁ হবে");
+                return;
+            }
+            else if (rdoVomit1.isChecked() & !rdoVomit21.isChecked() & secVomit2.isShown()) {
+                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
+                return;
+            }
+            else if (rdoDrink1.isChecked() & !rdoDrink21.isChecked() & secDrink2.isShown()) {
+                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'বুকের দুধ বা পানি পান না করতে পারলে' থাকলে জ্বরের উপর্সগ 'বুকের দুধ বা পানি পান না করতে পারলে' হ্যাঁ হবে");
+                return;
+            }
+//
+
+//            04/08/2020
+//            else if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
+//                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
+//                return;
+//            }
 //
 //            if (Temp9 > 96.0 && (!chkTemp.isChecked())) { block 31-10-2018 shahidul code include in <2month
 //                if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
@@ -3673,10 +3696,13 @@ public class AssPneu extends Activity {
                 //Save Assessment for Under 5 Child
             }
 
-//            VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTRING(c.CID,1,3) and b.Bari=SUBSTRING(c.CID,4,4) where ChildId='"+ txtChildId +"'");
-//            UNc=C.ReturnSingleValue("select v.UName from Bari b left outer join MDSSVill v on b.vill=v.vill where b.Cluster='"+ Clst +"'");
+
+
+
+
 
             if(rdoRef1.isChecked()) {
+
 
                 AlertDialog.Builder alert=new AlertDialog.Builder(this);
                 alert.setTitle("Confirm");
@@ -3685,11 +3711,16 @@ public class AssPneu extends Activity {
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
+
+                        String VHWCl;
+                        VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
+
                         CONTACT_NO = txtPhone.getText().toString();
 //                        String[] mob={CONTACT_NO,"01716064990","01711352041"};
-//                        String[] mob={CONTACT_NO,"01875492771"};
+//                        String[] mob={CONTACT_NO,"01723301539"};
+                        String[] mob={CONTACT_NO,"01995207371"};
 //                        String[] mob={CONTACT_NO};
-                        String[] mob = {CONTACT_NO,"01739957707"};
+//                        String[] mob = {CONTACT_NO,"01739957707"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
@@ -3699,7 +3730,7 @@ public class AssPneu extends Activity {
                                 "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
                                 "\nSlip: " + txtRSlip.getText().toString() + "" +
                                 "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
-//                                "\nVHW Cluster:" + VHWCluster + "" +
+                                "\nVHW Cluster:" + VHWCl + "" +
                                 "\nতত্ত্বাবধানে: সি এইচ আর এফ";
 
                         for (int i = 0; i < mob.length;i++)
@@ -3720,43 +3751,40 @@ public class AssPneu extends Activity {
 
 
 
-
-
-
-
            //
             //******************RSV
-            if (m<=24) {
+            if (!rdoAsses2.isChecked())
+            {
+                if (m <= 24) {
 
-                Bundle IDbundle = new Bundle();
-                Intent f1;
-                IDbundle.putString("childid", ChildID);
-                IDbundle.putString("pid", txtPID.getText().toString());
-                IDbundle.putString("weekno", WeekNo);
-                IDbundle.putString("fm", txtFMName.getText().toString());
-                IDbundle.putString("aged", AgeD);
-                IDbundle.putString("agem", AgeM);
-                IDbundle.putString("agedm", AgeDM);
-                IDbundle.putString("bdate", DOB);
-                IDbundle.putString("name", txtName.getText().toString());
-                IDbundle.putString("visittype", VisitType);
-                IDbundle.putString("visitno", "0");
-                IDbundle.putString("visitdate", dtpVDate.getText().toString());
-                IDbundle.putString("temp", txttemp.getText().toString());
-                IDbundle.putString("Cough", Cough);
-                IDbundle.putString("CoughDt", dtpCoughDt.getText().toString());
-                IDbundle.putString("DBrea", DBrea);
-                IDbundle.putString("DBreaDt", dtpDBreaDt.getText().toString());
-                IDbundle.putString("source", "u5");
+                    Bundle IDbundle = new Bundle();
+                    Intent f1;
+                    IDbundle.putString("childid", ChildID);
+                    IDbundle.putString("pid", txtPID.getText().toString());
+                    IDbundle.putString("weekno", WeekNo);
+                    IDbundle.putString("fm", txtFMName.getText().toString());
+                    IDbundle.putString("aged", AgeD);
+                    IDbundle.putString("agem", AgeM);
+                    IDbundle.putString("agedm", AgeDM);
+                    IDbundle.putString("bdate", DOB);
+                    IDbundle.putString("name", txtName.getText().toString());
+                    IDbundle.putString("visittype", VisitType);
+                    IDbundle.putString("visitno", "0");
+                    IDbundle.putString("visitdate", dtpVDate.getText().toString());
+                    IDbundle.putString("temp", txttemp.getText().toString());
+                    IDbundle.putString("Cough", Cough);
+                    IDbundle.putString("CoughDt", dtpCoughDt.getText().toString());
+                    IDbundle.putString("DBrea", DBrea);
+                    IDbundle.putString("DBreaDt", dtpDBreaDt.getText().toString());
+                    IDbundle.putString("source", "u5");
 
-                f1 = new Intent(getApplicationContext(), RSV.class);
-                f1.putExtras(IDbundle);
-                startActivityForResult(f1, 1);
-                //******************RSV
+                    f1 = new Intent(getApplicationContext(), RSV.class);
+                    f1.putExtras(IDbundle);
+                    startActivityForResult(f1, 1);
+                    //******************RSV
+                }
             }
             Connection.MessageBox(AssPneu.this, "Saved Successfully");
-
-
 
 
 
@@ -3835,7 +3863,7 @@ public class AssPneu extends Activity {
         //sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
 //        23/08/2020
         try {
-            if(message.length() > 100) {
+            if(message.length() > 80) {
                 ArrayList<String> messageList = SmsManager.getDefault().divideMessage(message);
                 sms.sendMultipartTextMessage(phoneNumber, null, messageList, null, null);
             } else {

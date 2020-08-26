@@ -2663,6 +2663,7 @@ public class Connection extends SQLiteOpenHelper {
             C.TableStructureSync("child");
             C.TableStructureSync("AssPneu");
             C.TableStructureSync("AssNewBorn");
+            C.TableStructureSync("Visits");
 
             //C.Sync_DatabaseStructure(UniqueID);
             C.Sync_Download_Bari(CLUSTER);

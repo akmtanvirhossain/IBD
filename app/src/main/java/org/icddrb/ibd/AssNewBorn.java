@@ -2719,11 +2719,16 @@ public class AssNewBorn extends Activity {
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
+
+                        String VHWCl;
+                        VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
+
                         CONTACT_NO = txtPhone.getText().toString();
 //                        String[] mob={CONTACT_NO"};
-//                        String[] mob={CONTACT_NO,"01875492771"};
+//                        String[] mob={CONTACT_NO};
                         //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO,"01739957707"};
+                        String[] mob = {CONTACT_NO,"01995207371"};
+//                        String[] mob = {CONTACT_NO,"01723301539"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
@@ -2733,6 +2738,7 @@ public class AssNewBorn extends Activity {
                                 "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
                                 "\nSlip: " + txtRSlip.getText().toString() + "" +
                                 "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
+                                "\nVHW Cluster:" + VHWCl + "" +
                                 "\nতত্ত্বাবধানে: সি এইচ আর এফ";
                         for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
 
@@ -2853,7 +2859,7 @@ public class AssNewBorn extends Activity {
         SmsManager sms = SmsManager.getDefault();
 //        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
         try {
-            if(message.length() > 100) {
+            if(message.length() > 80) {
                 ArrayList<String> messageList = SmsManager.getDefault().divideMessage(message);
                 sms.sendMultipartTextMessage(phoneNumber, null, messageList, null, null);
             } else {

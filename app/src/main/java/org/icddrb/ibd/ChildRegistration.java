@@ -751,7 +751,17 @@ public class ChildRegistration extends Activity {
         }, new IntentFilter(DELIVERED));
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+//        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+        try {
+            if(message.length() > 80) {
+                ArrayList<String> messageList = SmsManager.getDefault().divideMessage(message);
+                sms.sendMultipartTextMessage(phoneNumber, null, messageList, null, null);
+            } else {
+                sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+            }
+        } catch (Exception e) {
+            Log.e("SmsProvider", "" + e);
+        }
     }
 
     private void DataSearch(String ChildId)
