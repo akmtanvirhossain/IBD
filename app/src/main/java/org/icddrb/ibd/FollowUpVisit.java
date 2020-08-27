@@ -351,6 +351,15 @@ public class FollowUpVisit extends Activity {
                 rdogrpSickStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
+                        String CDOB1;
+                        CDOB1=C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '"+ ChildID +"'");
+
+                        int daa = Global.DateDifferenceDays(dtpVDate.getText().toString(),Global.DateConvertDMY(CDOB1));
+                        int moo = (int)(daa/30.44);
+
+
+
+
                         String rbData = "";
                         RadioButton rb;
                         String[] d_rdogrpRSVsuitable = new String[]{"1", "2", "3"};
@@ -363,7 +372,9 @@ public class FollowUpVisit extends Activity {
                             secRSVStatus.setVisibility(View.GONE);
                             lineRSVStatus.setVisibility(View.GONE);
                             rdogrpRSVStatus.clearCheck();
-                        } else {
+
+                        } if (moo <= 24) {
+//                        } else {
                             secRSVStatus.setVisibility(View.VISIBLE);
                             lineRSVStatus.setVisibility(View.VISIBLE);
                         }
