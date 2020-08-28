@@ -373,10 +373,14 @@ public class FollowUpVisit extends Activity {
                             lineRSVStatus.setVisibility(View.GONE);
                             rdogrpRSVStatus.clearCheck();
 
-                        } if (moo <= 24) {
-//                        } else {
-                            secRSVStatus.setVisibility(View.VISIBLE);
-                            lineRSVStatus.setVisibility(View.VISIBLE);
+                        }
+                        String[] VS1 = spnVstat.getSelectedItem().toString().split("-");
+                        String spnData = VS1[0];
+                        if((spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("21"))  & (rbData.equalsIgnoreCase("1"))) {
+                            if (moo <= 24) {
+                                secRSVStatus.setVisibility(View.VISIBLE);
+                                lineRSVStatus.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
 

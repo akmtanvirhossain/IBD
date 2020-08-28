@@ -533,6 +533,7 @@ public class AssPneu extends Activity {
     String Child_Outside_Area;
     String VILLAGE;
     String CONTACT_NO;
+//    String CONTACT_Kum;
 
     TextView lblVisit;
     TextView Age;
@@ -3712,15 +3713,15 @@ public class AssPneu extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int asd) {
 
+
                         String VHWCl;
                         VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
 
                         CONTACT_NO = txtPhone.getText().toString();
-//                        String[] mob={CONTACT_NO,"01716064990","01711352041"};
-//                        String[] mob={CONTACT_NO,"01723301539"};
-                        String[] mob={CONTACT_NO,"01995207371"};
+
+//                        String[] mob={CONTACT_NO,"01995207371"};
 //                        String[] mob={CONTACT_NO};
-//                        String[] mob = {CONTACT_NO,"01739957707"};
+                        String[] mob = {CONTACT_NO,"01739957707"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
@@ -3732,6 +3733,15 @@ public class AssPneu extends Activity {
                                 "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
                                 "\nVHW Cluster:" + VHWCl + "" +
                                 "\nতত্ত্বাবধানে: সি এইচ আর এফ";
+//                                "\nPNO: " + PID + "" +
+//                                "\nName" + NAME + "" +
+//                                "\nFather/Mother: " + FM + "" +
+//                                "\nDOB: " + Global.DateConvertDMY(BDATE) + "" +
+//                                "\nVillage: " + VILLAGE.split(",")[1] + "" +
+//                                "\nSlip: " + txtRSlip.getText().toString() + "" +
+//                                "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
+//                                "\nVHW Cluster:" + VHWCl + "" +
+//                                "\nIn collaboration : CHRF";
 
                         for (int i = 0; i < mob.length;i++)
                             sendSMS(mob[i], SMS);
@@ -3873,13 +3883,7 @@ public class AssPneu extends Activity {
             Log.e("SmsProvider", "" + e);
         }
 //
-//        ArrayList<String> part=new ArrayList<>();
-//        part.add(message);
-//        ArrayList<PendingIntent> listsentPI=new ArrayList<>();
-//        listsentPI.add(sentPI);
-//        ArrayList<PendingIntent> listdeliveredPI=new ArrayList<>();
-//        listdeliveredPI.add(deliveredPI);
-//        sms.sendMultipartTextMessage(phoneNumber, null, part, listsentPI, listdeliveredPI);
+
 
     }
 

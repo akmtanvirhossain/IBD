@@ -532,6 +532,7 @@ public class AssNewBorn extends Activity {
     String BDATE;
     String VILLAGE;
     String CONTACT_NO;
+    String CONTACT_Kum;
 //
     String WeekNo;
     String VisitType;
@@ -2724,11 +2725,9 @@ public class AssNewBorn extends Activity {
                         VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
 
                         CONTACT_NO = txtPhone.getText().toString();
-//                        String[] mob={CONTACT_NO"};
 //                        String[] mob={CONTACT_NO};
                         //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO,"01995207371"};
-//                        String[] mob = {CONTACT_NO,"01723301539"};
+                        String[] mob = {CONTACT_NO,"01739957707"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
