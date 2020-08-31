@@ -3798,7 +3798,7 @@ public class AssPneu extends Activity {
         }
     }
 
-    private void sendSMS(String phoneNumber, String message)
+    /*private void sendSMS(String phoneNumber, String message)
     {
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
@@ -3859,11 +3859,11 @@ public class AssPneu extends Activity {
 
         SmsManager sms = SmsManager.getDefault();
 
-        /*try {
+        *//*try {
             message = Html.fromHtml(new String(message.getBytes("UTF-8"))).toString();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }*/
+        }*//*
         //sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
 //        23/08/2020
         try {
@@ -3879,6 +3879,34 @@ public class AssPneu extends Activity {
 //
 
 
+    }*/
+
+    private void sendSMS(String phoneNumber, String message)
+    {
+        ArrayList<PendingIntent> sentPendingIntents = new ArrayList<PendingIntent>();
+        ArrayList<PendingIntent> deliveredPendingIntents = new ArrayList<PendingIntent>();
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(this, SmsSentReceiver.class), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(this, SmsDeliveredReceiver.class), 0);
+        try {
+            SmsManager sms = SmsManager.getDefault();
+            ArrayList<String> mSMSMessage = sms.divideMessage(message);
+            for (int i = 0; i < mSMSMessage.size(); i++) {
+                sentPendingIntents.add(i, sentPI);
+
+                deliveredPendingIntents.add(i, deliveredPI);
+            }
+            sms.sendMultipartTextMessage(phoneNumber, null, mSMSMessage,
+                    sentPendingIntents, deliveredPendingIntents);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            Toast.makeText(this, "SMS sending failed...",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void DataSearchPhone(String ChildID)
