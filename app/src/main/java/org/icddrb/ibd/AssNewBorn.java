@@ -2727,7 +2727,8 @@ public class AssNewBorn extends Activity {
                         CONTACT_NO = txtPhone.getText().toString();
 //                        String[] mob={CONTACT_NO};
                         //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO,"01739957707"};
+                        String[] mob = {CONTACT_NO,"01995207371"};
+//                        String[] mob = {CONTACT_NO,"01739957707"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +

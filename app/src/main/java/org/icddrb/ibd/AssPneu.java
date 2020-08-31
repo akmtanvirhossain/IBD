@@ -3721,7 +3721,7 @@ public class AssPneu extends Activity {
 
 //                        String[] mob={CONTACT_NO,"01995207371"};
 //                        String[] mob={CONTACT_NO};
-                        String[] mob = {CONTACT_NO,"01739957707"};
+                        String[] mob = {CONTACT_NO,"01995207371"};
                         String SMS = "" +
                                 "CID: " + CID + "" +
                                 "\nPNO: " + PID + "" +
@@ -3733,22 +3733,16 @@ public class AssPneu extends Activity {
                                 "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
                                 "\nVHW Cluster:" + VHWCl + "" +
                                 "\nতত্ত্বাবধানে: সি এইচ আর এফ";
-//                                "\nPNO: " + PID + "" +
-//                                "\nName" + NAME + "" +
-//                                "\nFather/Mother: " + FM + "" +
-//                                "\nDOB: " + Global.DateConvertDMY(BDATE) + "" +
-//                                "\nVillage: " + VILLAGE.split(",")[1] + "" +
-//                                "\nSlip: " + txtRSlip.getText().toString() + "" +
-//                                "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
-//                                "\nVHW Cluster:" + VHWCl + "" +
-//                                "\nIn collaboration : CHRF";
 
                         for (int i = 0; i < mob.length;i++)
                             sendSMS(mob[i], SMS);
 
-
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
+
+//                        ----
+
+
                     }
                 });
 
