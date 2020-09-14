@@ -211,6 +211,15 @@ public class RSV extends Activity {
     TextView Age;
     TextView Dob;
 
+    LinearLayout secFever;
+    RadioGroup rdogrpFever;
+    RadioButton rdoFever1;
+    RadioButton rdoFever2;
+    RadioButton rdoFever3;
+    RadioButton rdoFever4;
+    LinearLayout secFeverDt;
+    EditText dtpFeverDt;
+
 //    String ChildID;
 
     static int MODULEID = 0;
@@ -364,7 +373,17 @@ public class RSV extends Activity {
                     return false;
                 }
             });
-
+            dtpFeverDt.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        VariableID = "dtpFeverDt";
+                        showDialog(DATE_DIALOG);
+                        return true;
+                    }
+                    return false;
+                }
+            });
 
             //Hide all skip variables
 
@@ -388,7 +407,7 @@ public class RSV extends Activity {
                 rdoDBrea1.setEnabled(false);
             }
 
-
+            secFeverDt.setVisibility(View.GONE);
 
                 DataSearch(CHILDID, WEEK, VTYPE, VISIT);
 
@@ -407,6 +426,15 @@ public class RSV extends Activity {
 
     private void Initialization() {
         try {
+            secFever=(LinearLayout) findViewById(R.id.secFever) ;
+            rdogrpFever=(RadioGroup) findViewById(R.id.rdogrpFever) ;
+            rdoFever1=(RadioButton)findViewById(R.id.rdoFever1) ;
+            rdoFever2=(RadioButton)findViewById(R.id.rdoFever2) ;
+            rdoFever3=(RadioButton)findViewById(R.id.rdoFever3) ;
+            rdoFever4=(RadioButton)findViewById(R.id.rdoFever4) ;
+            secFeverDt=(LinearLayout)findViewById(R.id.secFeverDt) ;
+            dtpFeverDt=(EditText)findViewById(R.id.dtpFeverDt) ;
+
 //         String CDOB;
 //         CDOB=C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '"+ ChildID +"'");
 //
@@ -784,6 +812,30 @@ public class RSV extends Activity {
             lineReason = (View) findViewById(R.id.lineReason);
             VlblReason = (TextView) findViewById(R.id.VlblReason);
             txtReason = (EditText) findViewById(R.id.txtReason);
+
+
+            rdogrpFever.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
+                    String rbData = "";
+                    RadioButton rb;
+                    String[] d_rdogrpFever = new String[]{"1", "2","3","4"};
+                    for (int i = 0; i < rdogrpFever.getChildCount(); i++) {
+                        rb = (RadioButton) rdogrpFever.getChildAt(i);
+                        if (rb.isChecked()) rbData = d_rdogrpFever[i];
+                    }
+
+                    if (rbData.equalsIgnoreCase("1")|rbData.equalsIgnoreCase("2")|rbData.equalsIgnoreCase("3")) {
+                        secFeverDt.setVisibility(View.VISIBLE);
+                    } else {
+                        secFeverDt.setVisibility(View.GONE);
+                    }
+                }
+
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    return;
+                }
+            });
         } catch (Exception e) {
             Connection.MessageBox(RSV.this, e.getMessage());
             return;
@@ -852,6 +904,16 @@ public class RSV extends Activity {
             }
 
             objSave.setSoreThroatDt(dtpSoreThroatDt.getText().toString().length() > 0 ? Global.DateConvertYMD(dtpSoreThroatDt.getText().toString()) : dtpSoreThroatDt.getText().toString());
+
+            String[] d_rdogrpFever = new String[]{"1", "2", "3","4"};
+            objSave.setFever("");
+            for (int i = 0; i < rdogrpFever.getChildCount(); i++) {
+                rb = (RadioButton) rdogrpFever.getChildAt(i);
+                if (rb.isChecked()) objSave.setFever(d_rdogrpFever[i]);
+            }
+            objSave.setFeverDt(dtpFeverDt.getText().toString().length() > 0 ? Global.DateConvertYMD(dtpFeverDt.getText().toString()) : dtpFeverDt.getText().toString());
+
+
             String[] d_rdogrpRSVsuitable = new String[]{"1", "2"};
             objSave.setRSVsuitable("");
             for (int i = 0; i < rdogrpRSVsuitable.getChildCount(); i++) {
@@ -999,6 +1061,17 @@ public class RSV extends Activity {
                 ValidationMsg += "\nRequired field/Not a valid date format: গলা ব্যাথা শুরুর তারিখ.";
                 secSoreThroatDt.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
+
+            if(!rdoFever1.isChecked() & !rdoFever2.isChecked() & !rdoFever3.isChecked() & !rdoFever4.isChecked() & secFever.isShown()){
+                ValidationMsg += "\nRequired field: জ্বর (অল্প/মাঝারি/বেশি).";
+                secFever.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+            }
+            DV = Global.DateValidate(dtpFeverDt.getText().toString());
+            if (DV.length() != 0 & secFeverDt.isShown()) {
+                ValidationMsg += "\nRequired field/Not a valid date format: জ্বর শুরুর তারিখ.";
+                secFeverDt.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+            }
+
             if (!rdoRSVsuitable1.isChecked() & !rdoRSVsuitable2.isChecked() & secRSVsuitable.isShown()) {
                 ValidationMsg += "\nRequired field: আর এস ভি গবেষণার জন্য উপযুক্ত.";
                 secRSVsuitable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
@@ -1049,6 +1122,8 @@ public class RSV extends Activity {
             secRSVlisted.setBackgroundColor(Color.WHITE);
             secRSVlistedDt.setBackgroundColor(Color.WHITE);
             secReason.setBackgroundColor(Color.WHITE);
+            secFever.setBackgroundColor(Color.WHITE);
+            secFeverDt.setBackgroundColor(Color.WHITE);
         } catch (Exception e) {
         }
     }
@@ -1122,6 +1197,19 @@ public class RSV extends Activity {
                         rb.setChecked(true);
                     }
                 }
+
+
+                String[] d_rdogrpFever = new String[]{"1", "2", "3","4"};
+                for (int i = 0; i < d_rdogrpFever.length; i++) {
+                    if (String.valueOf(item.getFever()).equals(String.valueOf(d_rdogrpFever[i]))) {
+                        rb = (RadioButton) rdogrpFever.getChildAt(i);
+                        rb.setChecked(true);
+                    }
+                }
+                dtpFeverDt.setText(item.getFeverDt().toString().length() == 0 ? "" : Global.DateConvertDMY(item.getFeverDt()));
+
+
+
                 String[] d_rdogrpRSVlisted = new String[]{"1", "2"};
                 for (int i = 0; i < d_rdogrpRSVlisted.length; i++) {
                     if (String.valueOf(item.getRSVlisted()).equals(String.valueOf(d_rdogrpRSVlisted[i]))) {
@@ -1174,6 +1262,10 @@ public class RSV extends Activity {
             } else if (VariableID.equals("btnRSVlistedDt")) {
                 dtpDate = (EditText) findViewById(R.id.dtpRSVlistedDt);
             }
+            else if (VariableID.equals("dtpFeverDt")) {
+                dtpDate = (EditText) findViewById(R.id.dtpFeverDt);
+            }
+
             dtpDate.setText(new StringBuilder()
                     .append(Global.Right("00" + mDay, 2)).append("/")
                     .append(Global.Right("00" + mMonth, 2)).append("/")

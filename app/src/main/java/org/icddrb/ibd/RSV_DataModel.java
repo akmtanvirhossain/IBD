@@ -121,7 +121,25 @@ import android.content.Context;
         public void setSoreThroatDt(String newValue){
               _SoreThroatDt = newValue;
          }
-        private String _RSVsuitable = "";
+
+     private String _Fever = "";
+     public String getFever(){
+         return _Fever;
+     }
+     public void setFever(String newValue){
+         _Fever = newValue;
+     }
+
+     private String _FeverDt = "";
+     public String getFeverDt(){
+         return _FeverDt;
+     }
+     public void setFeverDt(String newValue){
+         _FeverDt = newValue;
+     }
+
+
+     private String _RSVsuitable = "";
         public String getRSVsuitable(){
               return _RSVsuitable;
          }
@@ -223,6 +241,10 @@ import android.content.Context;
                  contentValues.put("DeepColdDt", _DeepColdDt);
                  contentValues.put("SoreThroat", _SoreThroat);
                  contentValues.put("SoreThroatDt", _SoreThroatDt);
+
+                 contentValues.put("Fever", _Fever);
+                 contentValues.put("FeverDt", _FeverDt);
+
                  contentValues.put("RSVsuitable", _RSVsuitable);
                  contentValues.put("RSVlisted", _RSVlisted);
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
@@ -269,6 +291,10 @@ import android.content.Context;
                  contentValues.put("DeepColdDt", _DeepColdDt);
                  contentValues.put("SoreThroat", _SoreThroat);
                  contentValues.put("SoreThroatDt", _SoreThroatDt);
+
+                 contentValues.put("Fever", _Fever);
+                 contentValues.put("FeverDt", _FeverDt);
+
                  contentValues.put("RSVsuitable", _RSVsuitable);
                  contentValues.put("RSVlisted", _RSVlisted);
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
@@ -315,6 +341,10 @@ import android.content.Context;
                 d._DeepColdDt = cur.getString(cur.getColumnIndex("DeepColdDt"));
                 d._SoreThroat = cur.getString(cur.getColumnIndex("SoreThroat"));
                 d._SoreThroatDt = cur.getString(cur.getColumnIndex("SoreThroatDt"));
+
+                d._Fever = cur.getString(cur.getColumnIndex("Fever"));
+                d._FeverDt = cur.getString(cur.getColumnIndex("FeverDt"));
+
                 d._RSVsuitable = cur.getString(cur.getColumnIndex("RSVsuitable"));
                 d._RSVlisted = cur.getString(cur.getColumnIndex("RSVlisted"));
                 d._RSVlistedDt = cur.getString(cur.getColumnIndex("RSVlistedDt"));
