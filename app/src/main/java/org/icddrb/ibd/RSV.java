@@ -238,7 +238,7 @@ public class RSV extends Activity {
     static String VISITDate = "";
 
     static String BDATE = "";
-    static String VISIT = "", FMName = "", CHName = "", PID = "", AgeDM = "", AgeD = "", AgeM = "", TEMP = "";
+    static String VISIT = "", FMName = "", CHName = "", CHID = "", PID = "", AgeDM = "", AgeD = "", AgeM = "", TEMP = "";
     static String Cough = "";
     static String CoughDate = "";
     static String DBrea = "";
@@ -260,6 +260,7 @@ public class RSV extends Activity {
 
             IDbundle = getIntent().getExtras();
             CHILDID = IDbundle.getString("childid");
+            CHID = IDbundle.getString("cid");
             PID = IDbundle.getString("pid");
             WEEK = IDbundle.getString("weekno");
             FMName = IDbundle.getString("fm");
@@ -471,6 +472,9 @@ public class RSV extends Activity {
             lineCID = (View) findViewById(R.id.lineCID);
             VlblCID = (TextView) findViewById(R.id.VlblCID);
             txtCID = (EditText) findViewById(R.id.txtCID);
+            txtCID.setText(CHID);
+            txtCID.setEnabled(false);
+
             secPID = (LinearLayout) findViewById(R.id.secPID);
 //         linePID=(View)findViewById(R.id.linePID);
             VlblPID = (TextView) findViewById(R.id.VlblPID);
@@ -1078,6 +1082,10 @@ public class RSV extends Activity {
             }
             if (!rdoRSVlisted1.isChecked() & !rdoRSVlisted2.isChecked() & secRSVlisted.isShown()) {
                 ValidationMsg += "\nRequired field: আর এস ভি গবেষণার জন্য তালিকাভুক্ত.";
+                secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+            }
+            if (!rdoCough1.isChecked() & !rdoDBrea1.isChecked() & !rdoDeepCold1.isChecked() & !rdoSoreThroat1.isChecked() & (rdoFever1.isChecked() | rdoFever4.isChecked()) & secRSVlisted.isShown()) {
+                ValidationMsg += "কাশি, শ্বাসকষ্ট, ঘন সর্দি, গলা ব্যাথা যদি না হয় এবং অল্প জ্বর/জ্বর না থাকে তাহলে আর এস ভি গবেষণার জন্য তালিকাভুক্ত হা হবেনা।";
                 secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
             DV = Global.DateValidate(dtpRSVlistedDt.getText().toString());

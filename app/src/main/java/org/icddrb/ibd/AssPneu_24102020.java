@@ -3,72 +3,63 @@ package org.icddrb.ibd;
 /**
  * Created by TanvirHossain on 03/12/2015.
  */
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
-//import ccah.icddrb.ClinicalInformation;
-import android.app.*;
-import android.content.BroadcastReceiver;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 import Common.Connection;
 import Common.Global;
 
-public class AssPneu extends Activity {
+//import ccah.icddrb.ClinicalInformation;
+
+public class AssPneu_24102020 extends Activity {
     boolean netwoekAvailable = false;
     Location currentLocation;
     double currentLatitude, currentLongitude;
@@ -96,7 +87,7 @@ public class AssPneu extends Activity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(AssPneu.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(AssPneu_24102020.this);
         switch (item.getItemId()) {
             case R.id.menuClose:
                 adb.setTitle("Close");
@@ -930,7 +921,7 @@ public class AssPneu extends Activity {
 
                             if(Temp>108)
                             {
-                                C.MessageBox(AssPneu.this, "Temperature range should be less then 108");
+                                C.MessageBox(AssPneu_24102020.this, "Temperature range should be less then 108");
                                 //txttemp.setText(null);
                                 //txttemp.requestFocus();
                                 return;
@@ -1428,7 +1419,7 @@ public class AssPneu extends Activity {
                     //27 04 2016
                     if (rdoCough2.isChecked() & rdoDBrea2.isChecked() & rdoFever2.isChecked())
                     {
-                        Connection.MessageBox(AssPneu.this,"কাশি, শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
+                        Connection.MessageBox(AssPneu_24102020.this,"কাশি, শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
                         return;
                     }
                 }
@@ -1466,7 +1457,7 @@ public class AssPneu extends Activity {
                     //27 04 2016
                     if (rdoCough2.isChecked() & rdoDBrea2.isChecked() & rdoFever2.isChecked())
                     {
-                        Connection.MessageBox(AssPneu.this, "কাশি, শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
+                        Connection.MessageBox(AssPneu_24102020.this, "কাশি, শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
                         return;
                     }
 
@@ -1492,7 +1483,7 @@ public class AssPneu extends Activity {
                     //27 04 2016
                     if (rdoCough2.isChecked() & rdoDBrea2.isChecked() & rdoFever2.isChecked())
                     {
-                        Connection.MessageBox(AssPneu.this, "কাশি, শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
+                        Connection.MessageBox(AssPneu_24102020.this, "কাশি, শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
                         return;
                     }
                 }
@@ -1906,7 +1897,7 @@ public class AssPneu extends Activity {
                                                   {
                                                       if(rr1>105)
                                                       {
-                                                          C.MessageBox(AssPneu.this, "শ্বাস ১০৫ এর বেশী হবে না,please check ");
+                                                          C.MessageBox(AssPneu_24102020.this, "শ্বাস ১০৫ এর বেশী হবে না,please check ");
                                                           //txttemp.setText(null);
                                                           //txttemp.requestFocus();
                                                           return;
@@ -2636,7 +2627,7 @@ public class AssPneu extends Activity {
                 }
             });
         } catch (Exception e) {
-            Connection.MessageBox(AssPneu.this, e.getMessage());
+            Connection.MessageBox(AssPneu_24102020.this, e.getMessage());
             return;
         }
     }
@@ -2670,14 +2661,14 @@ public class AssPneu extends Activity {
             String DV = "";
 
             if (txtChildId.getText().toString().length() == 0) {
-                Connection.MessageBox(AssPneu.this, "Required field:Child ID.");
+                Connection.MessageBox(AssPneu_24102020.this, "Required field:Child ID.");
                 txtChildId.requestFocus();
                 return;
             }
 
             DV = Global.DateValidate(dtpVDate.getText().toString());
             if (DV.length() != 0 & secVDate.isShown()) {
-                Connection.MessageBox(AssPneu.this, DV);
+                Connection.MessageBox(AssPneu_24102020.this, DV);
                 dtpVDate.requestFocus();
                 return;
             }
@@ -2701,14 +2692,14 @@ public class AssPneu extends Activity {
             }*/
             if(rdoTemp1.isChecked()){
                 if (txttemp.getText().toString().length() == 0 & sectemp.isShown()) {
-                    Connection.MessageBox(AssPneu.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "তাপমাত্রা - খালি থাকতে পারবেনা");
                     txttemp.requestFocus();
                     return;
                 }
                 else
                 {
                     if (sectemp.isShown() & (Double.valueOf(txttemp.getText().toString().length() == 0 ? "0.0" : txttemp.getText().toString()) < 92 || Double.valueOf(txttemp.getText().toString().length() == 0 ? "999" : txttemp.getText().toString()) > 108.0)) {
-                        Connection.MessageBox(AssPneu.this, "Current Temperature should be between 92 - 108");
+                        Connection.MessageBox(AssPneu_24102020.this, "Current Temperature should be between 92 - 108");
                         txttemp.requestFocus();
                         return;
                     }
@@ -2716,31 +2707,31 @@ public class AssPneu extends Activity {
             }
 
             if (!rdoCough1.isChecked() & !rdoCough2.isChecked() & secCough.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (কাশি )");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (কাশি )");
                 rdoCough1.requestFocus();
                 return;
             }
             DV = Global.DateValidate(dtpCoughDt.getText().toString());
             if (DV.length() != 0 & secCoughDt.isShown()) {
-                Connection.MessageBox(AssPneu.this,DV);
+                Connection.MessageBox(AssPneu_24102020.this,DV);
                 dtpCoughDt.requestFocus();
                 return;
             }
 
             else if (!rdoDBrea1.isChecked() & !rdoDBrea2.isChecked() & secDBrea.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (শ্বাস কষ্ট)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (শ্বাস কষ্ট)");
                 rdoDBrea1.requestFocus();
                 return;
             }
             DV = Global.DateValidate(dtpDBreaDt.getText().toString());
             if (DV.length() != 0 & secDBreaDt.isShown()) {
-                Connection.MessageBox(AssPneu.this, DV);
+                Connection.MessageBox(AssPneu_24102020.this, DV);
                 dtpDBreaDt.requestFocus();
                 return;
             }
 
             else if (!rdoFever1.isChecked() & !rdoFever2.isChecked() & secFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (জ্বর)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (জ্বর)");
                 rdoFever1.requestFocus();
                 return;
             }
@@ -2748,20 +2739,20 @@ public class AssPneu extends Activity {
             //27 04 2016
             if(rdoCough2.isChecked() & rdoDBrea2.isChecked() & rdoFever2.isChecked())
             {
-                Connection.MessageBox(AssPneu.this, "কাশি,শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি,শ্বাসকষ্ট এবং জ্বর, সকল সমস্যা না হতে পারবে না।");
                 return;
             }
 
 
             DV = Global.DateValidate(dtpFeverDt.getText().toString());
             if (DV.length() != 0 & secFeverDt.isShown()) {
-                Connection.MessageBox(AssPneu.this, "জ্বর শুরুর তারিখ খালি থাকতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বর শুরুর তারিখ খালি থাকতে পারবেনা");
                 dtpFeverDt.requestFocus();
                 return;
             }
 
             else if (!rdoAsses1.isChecked() & !rdoAsses2.isChecked() & secAsses.isShown()) {
-                Connection.MessageBox(AssPneu.this,  "শিশুকে পরীক্ষা করেছেন কিনা খালি থাকতে পারবে না");
+                Connection.MessageBox(AssPneu_24102020.this,  "শিশুকে পরীক্ষা করেছেন কিনা খালি থাকতে পারবে না");
                 rdoAsses1.requestFocus();
                 return;
             }
@@ -2771,13 +2762,13 @@ public class AssPneu extends Activity {
             if (!chkRR.isChecked())
             {
                 if (txtRR1.getText().toString().length() == 0 & secRR1.isShown()) {
-                    Connection.MessageBox(AssPneu.this, "এক মিনিটে কতবার শ্বাস প্রশ্বাস  গুনুনঃ - খালি থাকতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "এক মিনিটে কতবার শ্বাস প্রশ্বাস  গুনুনঃ - খালি থাকতে পারবেনা");
                     txtRR1.requestFocus();
                     return;
                 }
             }
             if (txtRR2.getText().toString().length() == 0  & secRR2.isShown()) {
-                Connection.MessageBox(AssPneu.this,"যদি বয়স <২ মাস এবং শ্বাস প্রশ্বাস >৫৯ হলে ২ বার গুনন - খালি থাকতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this,"যদি বয়স <২ মাস এবং শ্বাস প্রশ্বাস >৫৯ হলে ২ বার গুনন - খালি থাকতে পারবেনা");
                 txtRR2.requestFocus();
                 return;
             }
@@ -2788,7 +2779,7 @@ public class AssPneu extends Activity {
                     double Temp9 = Double.parseDouble(t1);
                     if (!rdoCough1.isChecked() & !rdoDBrea1.isChecked() & rdoFever1.isChecked()) {
                         if (!chkFever.isChecked() & (Temp9 < 99.5) & chkFever.isShown()) {
-                            Connection.MessageBox(AssPneu.this, "চেকবক্স সিলেক্ট করা হয় নাই - (মা বলেছে জ্বর আছে কিন্ত মেপে জ্বর পাওয়া যায়নি)");
+                            Connection.MessageBox(AssPneu_24102020.this, "চেকবক্স সিলেক্ট করা হয় নাই - (মা বলেছে জ্বর আছে কিন্ত মেপে জ্বর পাওয়া যায়নি)");
                             chkFever.requestFocus();
                             return;
                         }
@@ -2801,7 +2792,7 @@ public class AssPneu extends Activity {
             Float Tempt =  Float.parseFloat(t.length()==0?"0":t);
 //            if (!rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
             if ((rdoCough1.isChecked() || rdoDBrea1.isChecked()) & rdoFever1.isChecked() & !rdoConv1.isChecked() & rdoConv21.isChecked() & secConv.isShown()) {
-                Connection.MessageBox(AssPneu.this, "মায়ের অভিযোগ কাশি/শ্বাসকষ্ট + জ্বর, জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
+                Connection.MessageBox(AssPneu_24102020.this, "মায়ের অভিযোগ কাশি/শ্বাসকষ্ট + জ্বর, জ্বরের লক্ষণ খিঁচুনী-হ্যাঁ, কিন্তু লক্ষণ/ চিহ্ন  অপশন-খিঁচুনী সিলেক্ট করা হয় নাই ");
                 rdoConv1.requestFocus();
                 return;
             }
@@ -2809,116 +2800,116 @@ public class AssPneu extends Activity {
 //            27/07/2020
             else if(!rdoTemp1.isChecked() & !rdoTemp2.isChecked() & !rdoTemp3.isChecked() & secTemp1.isShown())
             {
-                Connection.MessageBox(AssPneu.this, "তাপমাত্রা নিতে পেরেছে কিনা অপশন সিলেক্ট করা হয় নাই");
+                Connection.MessageBox(AssPneu_24102020.this, "তাপমাত্রা নিতে পেরেছে কিনা অপশন সিলেক্ট করা হয় নাই");
                 rdoTemp1.requestFocus();
                 return;
             }
             else if(rdoLFever1.isChecked() & rdoMFever1.isChecked() & rdoHFever1.isChecked() & secLFever.isShown())
             {
-                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoTemp1.requestFocus();
                 return;
             }
             else if(rdoLFever1.isChecked() & rdoMFever1.isChecked() & !rdoHFever1.isChecked() & secLFever.isShown())
             {
-                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoTemp1.requestFocus();
                 return;
             }
             else if(rdoLFever1.isChecked() & !rdoMFever1.isChecked() & rdoHFever1.isChecked() & secLFever.isShown())
             {
-                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoTemp1.requestFocus();
                 return;
             }
             else if(!rdoLFever1.isChecked() & rdoMFever1.isChecked() & rdoHFever1.isChecked() & secLFever.isShown())
             {
-                Connection.MessageBox(AssPneu.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বরের- একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoTemp1.requestFocus();
                 return;
             }
 //
             else if (!rdoFBrea1.isChecked() & !rdoFBrea2.isChecked() & secFBrea.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (দ্রুত শ্বাস)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (দ্রুত শ্বাস)");
                 rdoFBrea1.requestFocus();
                 return;
             }
 
 //            else if (!rdoCInd1.isChecked() & !rdoCInd2.isChecked() & !rdoCInd3.isChecked() & secCInd.isShown()) {
             else if (!rdoCInd1.isChecked() & !rdoCInd2.isChecked() & secCInd.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (বুকের নীচের অংশ ডেবে যাওয়া)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (বুকের নীচের অংশ ডেবে যাওয়া)");
                 rdoCInd1.requestFocus();
                 return;
             }
 
             else if (!rdoLeth1.isChecked() & !rdoLeth2.isChecked()  & secLeth.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (শিশুটি নেতিয়ে পড়েছে)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (শিশুটি নেতিয়ে পড়েছে)");
                 rdoLeth1.requestFocus();
                 return;
             }
 
             else if (!rdoUCon1.isChecked() & !rdoUCon2.isChecked() & secUCon.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
                 rdoUCon1.requestFocus();
                 return;
             }
 
             else if (!rdoDrink1.isChecked() & !rdoDrink2.isChecked() & secDrink.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (বুকের দুধ বা পানি পান না করতে পারলে)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (বুকের দুধ বা পানি পান না করতে পারলে)");
                 rdoDrink1.requestFocus();
                 return;
             }
 
             else if (!rdoVomit1.isChecked() & !rdoVomit2.isChecked() & secVomit.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (সবকিছু বমি করে দিলে)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (সবকিছু বমি করে দিলে)");
                 rdoVomit1.requestFocus();
                 return;
             }
 
             else if (!rdoNone1.isChecked() & !rdoNone2.isChecked() & secNone.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (উপরের কোন লক্ষণ নেই)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (উপরের কোন লক্ষণ নেই)");
                 rdoNone1.requestFocus();
                 return;
             }
 
             else if (!rdoCSPne1.isChecked() & !rdoCSPne2.isChecked() & secCSPne.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (সম্ভাব্য মারাত্বক নিউমোনিয়া)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (সম্ভাব্য মারাত্বক নিউমোনিয়া)");
                 rdoCSPne1.requestFocus();
                 return;
             }
             else if (rdoCSPne1.isChecked() & rdoCPPne1.isChecked() )
             {
-                Connection.MessageBox(AssPneu.this, "একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoCSPne1.requestFocus();
                 return;
             }
             else if (rdoCSPne1.isChecked() & rdoCNPne1.isChecked() )
             {
-                Connection.MessageBox(AssPneu.this, "একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoCSPne1.requestFocus();
                 return;
             }
             else if (!rdoCPPne1.isChecked() & !rdoCPPne2.isChecked() & secCPPne.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (সম্ভাব্য নিউমোনিয়া)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (সম্ভাব্য নিউমোনিয়া)");
                 rdoCPPne1.requestFocus();
                 return;
             }
 
             else if (!rdoCNPne1.isChecked() & !rdoCNPne2.isChecked() & secCNPne.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (নিউমোনিয়া নয়, সর্দি বা কাশি)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (নিউমোনিয়া নয়, সর্দি বা কাশি)");
                 rdoCNPne1.requestFocus();
                 return;
             }
             else if (rdoCNPne1.isChecked() & rdoCPPne1.isChecked() )
             {
-                Connection.MessageBox(AssPneu.this, "একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "একের অধিক  শ্রেনী বিভাগ হতে পারবেনা");
                 rdoCNPne1.requestFocus();
                 return;
             }
 //            update_shahidul 11-Dec-2018
 
             else if (rdoFBrea2.isChecked() & rdoCPPne1.isChecked() & rdoTPPne1.isChecked() & rdoRef3.isChecked() & (Tempt < 99.5) & rdoTemp1.isChecked()) {
-                Connection.MessageBox(AssPneu.this, "* শ্রেনী বিভাগ সম্ভাব্য নিউমোনিয়া, দ্রুত শ্বাস না হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "* শ্রেনী বিভাগ সম্ভাব্য নিউমোনিয়া, দ্রুত শ্বাস না হতে পারবেনা");
                 rdoCNPne1.requestFocus();
                 return;
             }
@@ -2929,202 +2920,202 @@ public class AssPneu extends Activity {
 //            }
 //            ----------------------------------------------------
             else if (!rdoTSPne1.isChecked() & !rdoTSPne2.isChecked() & secTSPne.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
                 rdoTSPne1.requestFocus();
                 return;
             }
             else if (rdoTSPne1.isChecked() & rdoTPPne1.isChecked() )
             {
-                Connection.MessageBox(AssPneu.this, "একের অধিক ব্যবস্থাপনা হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "একের অধিক ব্যবস্থাপনা হতে পারবেনা");
                 rdoTSPne1.requestFocus();
                 return;
             }
             else if (rdoTSPne1.isChecked() & rdoTNPne1.isChecked() )
             {
-                Connection.MessageBox(AssPneu.this, "একের অধিক ব্যবস্থাপনা হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "একের অধিক ব্যবস্থাপনা হতে পারবেনা");
                 rdoTSPne1.requestFocus();
                 return;
             }
             else if (!rdoTPPne1.isChecked() & !rdoTPPne2.isChecked() & secTPPne.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (নিকটতম সাস্থকেন্দ্রে প্রেরণ)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (নিকটতম সাস্থকেন্দ্রে প্রেরণ)");
                 rdoTPPne1.requestFocus();
                 return;
             }
 
             else if (!rdoTNPne1.isChecked() & !rdoTNPne2.isChecked() & secTNPne.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (বাড়ীতে চিকিৎসা)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (বাড়ীতে চিকিৎসা)");
                 rdoTNPne1.requestFocus();
                 return;
             }
             else if (rdoTNPne1.isChecked() & rdoTPPne1.isChecked() )
             {
-                Connection.MessageBox(AssPneu.this, "একের অধিক ব্যবস্থাপনা হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "একের অধিক ব্যবস্থাপনা হতে পারবেনা");
                 rdoTPPne1.requestFocus();
                 return;
             }
             else if (!rdoLFever1.isChecked() & !rdoLFever2.isChecked() & !rdoLFever3.isChecked() & secLFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ৯৯.৫ ফাঃ - ১০০.৩ ফাঃ)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ৯৯.৫ ফাঃ - ১০০.৩ ফাঃ)");
                 rdoLFever1.requestFocus();
                 return;
             }
 
             else if (!rdoCLFever1.isChecked() & !rdoCLFever2.isChecked() & secCLFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (অল্প জ্বর)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (অল্প জ্বর)");
                 rdoCLFever1.requestFocus();
                 return;
             }
 
             else if (!rdoTLFever1.isChecked() & !rdoTLFever2.isChecked() & secTLFever.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (বাড়ীতে চিকিৎসা)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (বাড়ীতে চিকিৎসা)");
                 rdoTLFever1.requestFocus();
                 return;
             }
 
             else if (!rdoMFever1.isChecked() & !rdoMFever2.isChecked() & !rdoMFever3.isChecked() & secMFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০০.৪  ফাঃ -  ১০১.৯  ফাঃ)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০০.৪  ফাঃ -  ১০১.৯  ফাঃ)");
                 rdoMFever1.requestFocus();
                 return;
             }
 
             else if (!rdoCMFever1.isChecked() & !rdoCMFever2.isChecked() & secCMFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (মাঝারি জ্বর)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (মাঝারি জ্বর)");
                 rdoCMFever1.requestFocus();
                 return;
             }
 
             else if (!rdoTMFever1.isChecked() & !rdoTMFever2.isChecked() & secTMFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
                 rdoTMFever1.requestFocus();
                 return;
             }
 
             else if (!rdoHFever1.isChecked() & !rdoHFever2.isChecked() & !rdoHFever3.isChecked() & secHFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০২  ফাঃ অথবা বেশী)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (তাপমাত্রা ১০২  ফাঃ অথবা বেশী)");
                 rdoHFever1.requestFocus();
                 return;
             }
 
             else if (!rdoCHFever1.isChecked() & !rdoCHFever2.isChecked() & secCHFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (বেশী জ্বর)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (বেশী জ্বর)");
                 rdoCHFever1.requestFocus();
                 return;
             }
 
             else if (!rdoTHFever1.isChecked() & !rdoTHFever2.isChecked() & secTHFever.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
                 rdoTHFever1.requestFocus();
                 return;
             }
 
             else if (!rdoNeck1.isChecked() & !rdoNeck2.isChecked() & secNeck.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (ঘাড় শক্ত)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (ঘাড় শক্ত)");
                 rdoNeck1.requestFocus();
                 return;
             }
 
             else if (!rdoFonta1.isChecked() & !rdoFonta2.isChecked() & secFonta.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (মাথার তালু ফুলে যাওয়া)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (মাথার তালু ফুলে যাওয়া)");
                 rdoFonta1.requestFocus();
                 return;
             }
 
             else if (!rdoConv21.isChecked() & !rdoConv22.isChecked() & secConv2.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (খিঁচুনী)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (খিঁচুনী)");
                 rdoConv21.requestFocus();
                 return;
             }
 
             else if (!rdoLeth21.isChecked() & !rdoLeth22.isChecked() & secLeth2.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (শিশুটি নেতিয়ে পড়েছে)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (শিশুটি নেতিয়ে পড়েছে)");
                 rdoLeth21.requestFocus();
                 return;
             }
 
             else if (!rdoUcon21.isChecked() & !rdoUcon22.isChecked() & secUcon2.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (অজ্ঞান)");
                 rdoUcon21.requestFocus();
                 return;
             }
 
             else if (!rdoDrink21.isChecked() & !rdoDrink22.isChecked() & secDrink2.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (বুকের দুধ বা পানি পান না করতে পারলে)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (বুকের দুধ বা পানি পান না করতে পারলে)");
                 rdoDrink21.requestFocus();
                 return;
             }
 
             else if (!rdoVomit21.isChecked() & !rdoVomit22.isChecked() & secVomit2.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (সবকিছু বমি করে দেয়)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (সবকিছু বমি করে দেয়)");
                 rdoVomit21.requestFocus();
                 return;
             }
 
             else if (!rdoCMenin1.isChecked() & !rdoCMenin2.isChecked() & secCMenin.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (সম্ভাব্য মেনিনজাইটিস )");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (সম্ভাব্য মেনিনজাইটিস )");
                 rdoCMenin1.requestFocus();
                 return;
             }
 
             else if (!rdoTMenin1.isChecked() & !rdoTMenin2.isChecked() & secTMenin.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ)");
                 rdoTMenin1.requestFocus();
                 return;
             }
 
             else if (!rdoRef1.isChecked() & !rdoRef2.isChecked() & !rdoRef3.isChecked() & secRef.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (রেফার)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (রেফার)");
                 rdoRef1.requestFocus();
                 return;
             }
             if (rdoRef1.isChecked() || rdoRef2.isChecked()) {
                 if (txtRSlip.getText().toString().length() == 0 & secRSlip.isShown()) {
-                    Connection.MessageBox(AssPneu.this, "রেফারাল স্লিপ নং. - খালি থাকতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "রেফারাল স্লিপ নং. - খালি থাকতে পারবেনা");
                     txtRSlip.requestFocus();
                     return;
                 }
             }
             if (txtRSlip.getText().toString().length() < 6  & secRSlip.isShown()) {
-                Connection.MessageBox(AssPneu.this,"রেফারাল স্লিপ  ৬ সঙ্খারকম হবেনা");
+                Connection.MessageBox(AssPneu_24102020.this,"রেফারাল স্লিপ  ৬ সঙ্খারকম হবেনা");
                 txtRSlip.requestFocus();
                 return;
             }
 
             if (txtPhone.getText().toString().length() != 0 & secPhone.isShown()) {
                 if (txtPhone.getText().toString().length() < 11 & secPhone.isShown()) {
-                    Connection.MessageBox(AssPneu.this, "ফোন নম্বর ১১  সঙ্খারকম হবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "ফোন নম্বর ১১  সঙ্খারকম হবেনা");
                     txtPhone.requestFocus();
                     return;
                 }
             }
 
             if (!rdoComp1.isChecked() & !rdoComp2.isChecked() & secComp.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (রেফারালের ফলাফল)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (রেফারালের ফলাফল)");
                 rdoComp1.requestFocus();
                 return;
             }
 
             else if (!rdoReason1.isChecked() & !rdoReason2.isChecked() & !rdoReason3.isChecked() & secReason.isShown()) {
-                Connection.MessageBox(AssPneu.this,"অপশন সিলেক্ট করা হয় নাই - (শিশুটিকে পরীক্ষা না করার কারন)");
+                Connection.MessageBox(AssPneu_24102020.this,"অপশন সিলেক্ট করা হয় নাই - (শিশুটিকে পরীক্ষা না করার কারন)");
                 rdoReason1.requestFocus();
                 return;
             } else if (spnTPlace.getSelectedItemPosition() == 0 & secTPlace.isShown()) {
-                Connection.MessageBox(AssPneu.this,"ড্রপডাউন মেনু সিলেক্ট করা হয় নাই - (কোথায় চিকিৎসার জন্য গিয়েছে?)");
+                Connection.MessageBox(AssPneu_24102020.this,"ড্রপডাউন মেনু সিলেক্ট করা হয় নাই - (কোথায় চিকিৎসার জন্য গিয়েছে?)");
                 spnTPlace.requestFocus();
                 return;
             }
 
             else if (!rdoTAbsIn1.isChecked() & !rdoTAbsIn2.isChecked() & secTAbsDur.isShown()) {
-                Connection.MessageBox(AssPneu.this,	"অপশন সিলেক্ট করা হয় নাই - (চিকিৎসার জন্য কতদিন/ ঘণ্টা  হয় গিয়েছিল)");
+                Connection.MessageBox(AssPneu_24102020.this,	"অপশন সিলেক্ট করা হয় নাই - (চিকিৎসার জন্য কতদিন/ ঘণ্টা  হয় গিয়েছিল)");
                 rdoTAbsIn1.requestFocus();
                 return;
             }
             else if (txtTAbsDur.getText().toString().length() == 0 & secTAbsDur.isShown()) {
-                Connection.MessageBox(AssPneu.this,	"চিকিৎসার জন্য কতদিন/ ঘণ্টা  হয় গিয়েছিল - খালি থাকতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this,	"চিকিৎসার জন্য কতদিন/ ঘণ্টা  হয় গিয়েছিল - খালি থাকতে পারবেনা");
                 txtTAbsDur.requestFocus();
                 return;
             }
 
             else if (!rdoHos1.isChecked() & !rdoHos2.isChecked() & !rdoHos3.isChecked() & secHos.isShown()) {
-                Connection.MessageBox(AssPneu.this, "অপশন সিলেক্ট করা হয় নাই - (হাসপাতালে ভর্তি ছিল কি?)");
+                Connection.MessageBox(AssPneu_24102020.this, "অপশন সিলেক্ট করা হয় নাই - (হাসপাতালে ভর্তি ছিল কি?)");
                 rdoHos1.requestFocus();
                 return;
             }
@@ -3149,17 +3140,17 @@ public class AssPneu extends Activity {
                 //Integer rr2 = Integer.parseInt(var2.length() == 0 ? var1 : var2);
                 if (rr2 >= 60 & rdoFBrea2.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং শ্বাসের হার ৬০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২ মাসের কম এবং শ্বাসের হার ৬০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
                     return;
                 }
                 else if ((rr2 < 60) & (rdoFBrea1.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং শ্বাসের হার ৬০ এর কম, দ্রুত শ্বাস  হ্যাঁ  হাবে না");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২ মাসের কম এবং শ্বাসের হার ৬০ এর কম, দ্রুত শ্বাস  হ্যাঁ  হাবে না");
                     return;
                 }
                 else if (rr2 >= 60 & rdoCSPne2.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং শ্বাসের হার ৬০ বা তার বেশী, তাহলে সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২ মাসের কম এবং শ্বাসের হার ৬০ বা তার বেশী, তাহলে সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                     return;
                 }
 
@@ -3174,7 +3165,7 @@ public class AssPneu extends Activity {
                     }*/
                     //21 Jul 2020
                     if ((Temp < 96.0) & (!rdoCSPne1.isChecked())) {
-                        Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ৯৬.০ এর কম, সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                        Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ৯৬.০ এর কম, সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                         return;
                     }
                 }
@@ -3186,7 +3177,7 @@ public class AssPneu extends Activity {
 
                 if ((Temp >= 101.0) & (!rdoCSPne1.isChecked()) && rdoTemp1.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ আথবা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২ মাসের কম এবং তাপমাত্রা ১০১ আথবা ১০১ এর বেশী , সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                     return;
                 }
             }
@@ -3199,13 +3190,13 @@ public class AssPneu extends Activity {
                 if (rr2 >= 50 & rdoFBrea2.isChecked() & !chkRR.isChecked())
 //                if (rr2 >= 50 & rdoFBrea2.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২-১২ মাস হলে এবং শ্বাসের হার ৫০ বা তার বেশী হলে দ্রুত শ্বাস না হবে না।");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২-১২ মাস হলে এবং শ্বাসের হার ৫০ বা তার বেশী হলে দ্রুত শ্বাস না হবে না।");
                     return;
                 }
                 else if ((rr2 < 50) & (rdoFBrea1.isChecked() & !chkRR.isChecked()))
 //                else if ((rr2 < 50) & (rdoFBrea1.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২-১২ মাস হলে এবং শ্বাসের হার ৫০ এর কম হলে দ্রুত শ্বাস  হ্যাঁ  হবে না");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২-১২ মাস হলে এবং শ্বাসের হার ৫০ এর কম হলে দ্রুত শ্বাস  হ্যাঁ  হবে না");
                     return;
                 }
             }
@@ -3219,14 +3210,14 @@ public class AssPneu extends Activity {
 
                 if (rr2 >= 40 & rdoFBrea2.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ বা তার বেশী হলে দ্রুত শ্বাস না হবে না।");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ বা তার বেশী হলে দ্রুত শ্বাস না হবে না।");
                     return;
                 }
 //                23/07/2020 if (!chkRR.isChecked())
                 else if (!chkRR.isChecked())
                 {
                     if ((rr2 < 40) & (rdoFBrea1.isChecked())) {
-                        Connection.MessageBox(AssPneu.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ এর কম হলে দ্রুত শ্বাস  হ্যাঁ  হবে না");
+                        Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ১২ মাসের বেশী  এবং শ্বাসের হার ৪০ এর কম হলে দ্রুত শ্বাস  হ্যাঁ  হবে না");
                         return;
                     }
                 }
@@ -3241,23 +3232,23 @@ public class AssPneu extends Activity {
 
                 if ((rdoConv2.isChecked() & rdoFBrea1.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone2.isChecked()) && (!rdoCPPne1.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "দ্রুত শ্বাস  হ্যাঁ  এবং  সম্ভাব্য নিউমোনিয়া  না  হতে পারবে না");
+                    Connection.MessageBox(AssPneu_24102020.this, "দ্রুত শ্বাস  হ্যাঁ  এবং  সম্ভাব্য নিউমোনিয়া  না  হতে পারবে না");
                     return;
                 }
                 else if ((rdoConv1.isChecked() & rdoCInd1.isChecked() & rdoLeth1.isChecked() & rdoUCon1.isChecked() & rdoDrink1.isChecked() & rdoVomit1.isChecked() & rdoNone2.isChecked()) && (!rdoCSPne1.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "1কাশি এবং শ্বাস কষ্টের লক্ষণ হ্যাঁ কিন্ত সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "1কাশি এবং শ্বাস কষ্টের লক্ষণ হ্যাঁ কিন্ত সম্ভাব্য মারাত্বক নিউমোনিয়া না হতে পারবেনা");
                     return;
                 }
                 else if ((rdoConv2.isChecked() & rdoFBrea1.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone2.isChecked()) && (!rdoCPPne1.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "দ্রুত শ্বাস  হ্যাঁ  এবং  সম্ভাব্য নিউমোনিয়া  না  হতে পারবে না");
+                    Connection.MessageBox(AssPneu_24102020.this, "দ্রুত শ্বাস  হ্যাঁ  এবং  সম্ভাব্য নিউমোনিয়া  না  হতে পারবে না");
                     return;
                 }
 
                 else if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone2.isChecked()) && (rdoCSPne1.isChecked() || rdoCPPne1.isChecked() || rdoCNPne1.isChecked()))
                 {
-                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের সবগুলো লক্ষণ না সুতরাং শ্রেনী বিভাগ হ্যাঁ  হতে পারবে না");
+                    Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের সবগুলো লক্ষণ না সুতরাং শ্রেনী বিভাগ হ্যাঁ  হতে পারবে না");
                     return;
                 }
 
@@ -3271,7 +3262,7 @@ public class AssPneu extends Activity {
 
                 if (rr >=50 & rdoFBrea2.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ২ মাস থেকে ১২ এবং শ্বাসের হার ৫০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ২ মাস থেকে ১২ এবং শ্বাসের হার ৫০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
                     return;
                 }
             }
@@ -3284,7 +3275,7 @@ public class AssPneu extends Activity {
 
                 if (rr >= 40 & rdoFBrea2.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "শিশুর বয়স ১২ মাস থেকে ৫ বছরের মধ্যে এবং শ্বাসের হার ৪০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
+                    Connection.MessageBox(AssPneu_24102020.this, "শিশুর বয়স ১২ মাস থেকে ৫ বছরের মধ্যে এবং শ্বাসের হার ৪০ বা তার বেশী, তাহলে দ্রুত শ্বাস না হবেনা।");
                     return;
                 }
             }
@@ -3293,12 +3284,12 @@ public class AssPneu extends Activity {
             Float Temp9 =  Float.parseFloat(a1.length()==0?"0":a1);
             if(!rdoAsses1.isChecked() & !rdoAsses2.isChecked())
             {
-                Connection.MessageBox(AssPneu.this, "শিশুকে পরীক্ষা করেছেন হ্যাঁ/না সিলেক্ট করা হয় নাই");
+                Connection.MessageBox(AssPneu_24102020.this, "শিশুকে পরীক্ষা করেছেন হ্যাঁ/না সিলেক্ট করা হয় নাই");
                 return;
             }
             else if((rdoConv1.isChecked() || rdoFBrea1.isChecked() || rdoCInd1.isChecked() || rdoLeth1.isChecked() || rdoUCon1.isChecked() || rdoDrink1.isChecked() || rdoVomit1.isChecked()) && (rdoNone1.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের  উপর্সগ  হ্যাঁ  এবং কোন লক্ষণ নেই  হ্যাঁ  হতে পারবে না.");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের  উপর্সগ  হ্যাঁ  এবং কোন লক্ষণ নেই  হ্যাঁ  হতে পারবে না.");
                 return;
             }
 //            else if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone1.isChecked()) & (!rdoCNPne1.isChecked()))
@@ -3308,7 +3299,7 @@ public class AssPneu extends Activity {
 //            }
             else if((rdoConv2.isChecked() & rdoFBrea2.isChecked() & rdoCInd2.isChecked() & rdoLeth2.isChecked() & rdoUCon2.isChecked() & rdoDrink2.isChecked() & rdoVomit2.isChecked() & rdoNone2.isChecked()) && (rdoCough1.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "মা বলেছে কাশি  তাহলে কাশি এবং শ্বাস কষ্টের সব  উপর্সগ  না  হতে পারবে না.");
+                Connection.MessageBox(AssPneu_24102020.this, "মা বলেছে কাশি  তাহলে কাশি এবং শ্বাস কষ্টের সব  উপর্সগ  না  হতে পারবে না.");
                 return;
             }
 
@@ -3316,65 +3307,65 @@ public class AssPneu extends Activity {
 
             else if((rdoCSPne2.isChecked() & rdoCPPne2.isChecked() & rdoCNPne2.isChecked()) && (!rdoTSPne2.isChecked() || !rdoTPPne2.isChecked() || !rdoTNPne2.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "শ্রেনী বিভাগ না হোলে  ব্যবস্থাপনা হ্যাঁ হতে পারবেনা");
+                Connection.MessageBox(AssPneu_24102020.this, "শ্রেনী বিভাগ না হোলে  ব্যবস্থাপনা হ্যাঁ হতে পারবেনা");
                 return;
             }
             else if((rdoConv1.isChecked()==true || rdoCInd1.isChecked()==true || rdoLeth1.isChecked()==true || rdoUCon1.isChecked()==true || rdoDrink1.isChecked()==true || rdoVomit1.isChecked()==true) && (rdoCSPne2.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের  লক্ষণগুলো  হ্যাঁ  এবং সম্ভাব্য মারাত্বক নিউমোনিয়া  না  হতে পারবে না");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের  লক্ষণগুলো  হ্যাঁ  এবং সম্ভাব্য মারাত্বক নিউমোনিয়া  না  হতে পারবে না");
                 return;
             }
             //------------Menin
             else if((rdoNeck2.isChecked() & rdoFonta2.isChecked() & rdoConv22.isChecked() & rdoLeth22.isChecked() & rdoUcon22.isChecked() & rdoDrink22.isChecked() & rdoVomit22.isChecked()) && (rdoCMenin1.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "জ্বরের সবগুলো  উপর্সগ না এবং সম্ভাব্য মেনিনজাইটিস  হ্যাঁ সঠিক নয়");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বরের সবগুলো  উপর্সগ না এবং সম্ভাব্য মেনিনজাইটিস  হ্যাঁ সঠিক নয়");
                 return;
             }
             else if((rdoNeck1.isChecked() || rdoFonta1.isChecked() || rdoConv21.isChecked() || rdoLeth21.isChecked() || rdoUcon21.isChecked() || rdoDrink21.isChecked() || rdoVomit21.isChecked()) && (rdoCMenin2.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "জ্বরের উপর্সগ হ্যাঁ   এবং সম্ভাব্য মেনিনজাইটিস  না সঠিক নয়");
+                Connection.MessageBox(AssPneu_24102020.this, "জ্বরের উপর্সগ হ্যাঁ   এবং সম্ভাব্য মেনিনজাইটিস  না সঠিক নয়");
                 return;
             }
             else if(rdoCMenin1.isChecked() & rdoTMenin2.isChecked())
             {
-                Connection.MessageBox(AssPneu.this, "সম্ভাব্য মেনিনজাইটিস  হ্যাঁ  এবং জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ  না  সঠিক নয়");
+                Connection.MessageBox(AssPneu_24102020.this, "সম্ভাব্য মেনিনজাইটিস  হ্যাঁ  এবং জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ  না  সঠিক নয়");
                 return;
             }
             else if(rdoCMenin2.isChecked() & rdoTMenin1.isChecked())
             {
-                Connection.MessageBox(AssPneu.this, "সম্ভাব্য মেনিনজাইটিস  না  এবং জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ  হ্যাঁ  সঠিক নয়");
+                Connection.MessageBox(AssPneu_24102020.this, "সম্ভাব্য মেনিনজাইটিস  না  এবং জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ  হ্যাঁ  সঠিক নয়");
                 return;
             }
             //------------Menin end
             else if((rdoCSPne1.isChecked() || rdoCMFever1.isChecked() || rdoCHFever1.isChecked() || rdoCMenin1.isChecked()) && (rdoRef3.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "রেফার এর লক্ষণগুলো হ্যাঁ কিন্তু     রেফার করা হয়নি   হতে পারবে না");
+                Connection.MessageBox(AssPneu_24102020.this, "রেফার এর লক্ষণগুলো হ্যাঁ কিন্তু     রেফার করা হয়নি   হতে পারবে না");
                 return;
             }
             else if((!rdoCSPne1.isChecked() & !rdoCMFever1.isChecked() & !rdoCHFever1.isChecked() & !rdoCMenin1.isChecked()) && (rdoRef1.isChecked() || rdoRef2.isChecked()))
             {
-                Connection.MessageBox(AssPneu.this, "রেফার এর লক্ষণগুলো না  কিন্তু রেফার করা  হয়েছে   হতে পারবে না");
+                Connection.MessageBox(AssPneu_24102020.this, "রেফার এর লক্ষণগুলো না  কিন্তু রেফার করা  হয়েছে   হতে পারবে না");
                 return;
             }
 //            25/08/2020 ruma complaint
             else if (rdoConv1.isChecked() & !rdoConv21.isChecked() & secConv2.isShown())   {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
                 return;
             }
             else if (rdoUCon1.isChecked() & !rdoUcon21.isChecked() & secUcon2.isShown()) {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে অজ্ঞান থাকলে জ্বরের উপর্সগ অজ্ঞান হ্যাঁ হবে");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে অজ্ঞান থাকলে জ্বরের উপর্সগ অজ্ঞান হ্যাঁ হবে");
                 return;
             }
             else if (rdoLeth1.isChecked() & !rdoLeth21.isChecked() & secLeth2.isShown()) {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে শিশুটি নেতিয়ে পড়েছে থাকলে জ্বরের উপর্সগ শিশুটি নেতিয়ে পড়েছে হ্যাঁ হবে");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে শিশুটি নেতিয়ে পড়েছে থাকলে জ্বরের উপর্সগ শিশুটি নেতিয়ে পড়েছে হ্যাঁ হবে");
                 return;
             }
             else if (rdoVomit1.isChecked() & !rdoVomit21.isChecked() & secVomit2.isShown()) {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
                 return;
             }
             else if (rdoDrink1.isChecked() & !rdoDrink21.isChecked() & secDrink2.isShown()) {
-                Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'বুকের দুধ বা পানি পান না করতে পারলে' থাকলে জ্বরের উপর্সগ 'বুকের দুধ বা পানি পান না করতে পারলে' হ্যাঁ হবে");
+                Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'বুকের দুধ বা পানি পান না করতে পারলে' থাকলে জ্বরের উপর্সগ 'বুকের দুধ বা পানি পান না করতে পারলে' হ্যাঁ হবে");
                 return;
             }
 //
@@ -3423,24 +3414,24 @@ public class AssPneu extends Activity {
             //21 Jul 2020
             if ((Temp >= 99.5) && (rdoTemp1.isChecked())) {
                 if (rdoConv1.isChecked() & !rdoConv21.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
+                    Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে খিঁচুনী থাকলে জ্বরের উপর্সগ খিঁচুনী হ্যাঁ হবে");
                     return;
                 }
                 //25 04 2016
                 else if (rdoLeth1.isChecked() & !rdoLeth21.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে শিশুটি নেতিয়ে পড়েছে থাকলে জ্বরের উপর্সগ শিশুটি নেতিয়ে পড়েছে হ্যাঁ হবে");
+                    Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে শিশুটি নেতিয়ে পড়েছে থাকলে জ্বরের উপর্সগ শিশুটি নেতিয়ে পড়েছে হ্যাঁ হবে");
                     return;
                 }
                 else if (rdoUCon1.isChecked() & !rdoUcon21.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে অজ্ঞান থাকলে জ্বরের উপর্সগ অজ্ঞান হ্যাঁ হবে");
+                    Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে অজ্ঞান থাকলে জ্বরের উপর্সগ অজ্ঞান হ্যাঁ হবে");
                     return;
                 }
                 else if (rdoDrink1.isChecked() & !rdoDrink21.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'বুকের দুধ বা পানি পান না করতে পারলে' থাকলে জ্বরের উপর্সগ 'বুকের দুধ বা পানি পান না করতে পারলে' হ্যাঁ হবে");
+                    Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'বুকের দুধ বা পানি পান না করতে পারলে' থাকলে জ্বরের উপর্সগ 'বুকের দুধ বা পানি পান না করতে পারলে' হ্যাঁ হবে");
                     return;
                 }
                 else if (rdoVomit1.isChecked() & !rdoVomit21.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
+                    Connection.MessageBox(AssPneu_24102020.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
                     return;
                 }
 
@@ -3449,15 +3440,15 @@ public class AssPneu extends Activity {
             if (!rdoConv2.isChecked() || !rdoFBrea2.isChecked() || !rdoCInd2.isChecked() || !rdoLeth2.isChecked() || !rdoUCon2.isChecked() || !rdoDrink2.isChecked() || !rdoVomit2.isChecked() || !rdoNone2.isChecked()) {
                 if(rdoCSPne1.isChecked() & !rdoTSPne1.isChecked())
                 {
-                    Connection.MessageBox(AssPneu.this, "সম্ভাব্য মারাত্বক নিউমোনিয়া হ্যাঁ হলে জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "সম্ভাব্য মারাত্বক নিউমোনিয়া হ্যাঁ হলে জরুরী ভিত্তিতে কুমুদিনী হাসপাতালে প্রেরণ না হতে পারবেনা");
                     return;
                 }
                 else if (rdoCPPne1.isChecked() & !rdoTPPne1.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "সম্ভাব্য নিউমোনিয়া হ্যাঁ হলে নিকটতম স্বাস্থ্যকেন্দ্রে প্রেরণ না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "সম্ভাব্য নিউমোনিয়া হ্যাঁ হলে নিকটতম স্বাস্থ্যকেন্দ্রে প্রেরণ না হতে পারবেনা");
                     return;
                 }
                 else if (rdoCNPne1.isChecked() & !rdoTNPne1.isChecked()) {
-                    Connection.MessageBox(AssPneu.this, "নিউমোনিয়া নয়  না এবং বাড়ীতে চিকিৎসা না হতে পারবেনা");
+                    Connection.MessageBox(AssPneu_24102020.this, "নিউমোনিয়া নয়  না এবং বাড়ীতে চিকিৎসা না হতে পারবেনা");
                     return;
                 }
             }
@@ -3469,7 +3460,7 @@ public class AssPneu extends Activity {
                 //RFNo = C.ReturnSingleValue("Select RSlip  from AssNewBorn WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and childid<>'"+ ChildID +"'");
                 RFNo = C.ReturnSingleValue("Select rslip from AssNewBorn where rslip='"+ txtRSlip.getText().toString() +"' and childid||week||vtype||visit not in('"+ (ChildID+txtWeek.getSelectedItem().toString()+VisitType+txtVisit.getSelectedItem().toString()) +"') limit 1");
                 if (RFNo.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
-                    Connection.MessageBox(AssPneu.this, "এই রেফারাল স্লিপ নং পূর্বে নবজাতকে-এ ব্যবহার করা হয়েছে");
+                    Connection.MessageBox(AssPneu_24102020.this, "এই রেফারাল স্লিপ নং পূর্বে নবজাতকে-এ ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
                     return;
                 }
@@ -3477,7 +3468,7 @@ public class AssPneu extends Activity {
                 //R2 = C.ReturnSingleValue("Select RSlip  from AssPneu WHERE   RSlip = '" + txtRSlip.getText().toString() + "' and childid<>'"+ txtChildId.getText().toString() +"'");
                 R2 = C.ReturnSingleValue("Select rslip from AssPneu where rslip='"+ txtRSlip.getText().toString() +"' and childid||week||vtype||visit not in('"+ (ChildID+txtWeek.getSelectedItem().toString()+VisitType+txtVisit.getSelectedItem().toString()) +"') limit 1");
                 if (R2.trim().equalsIgnoreCase(txtRSlip.getText().toString().trim())) {
-                    Connection.MessageBox(AssPneu.this, "এই রেফারাল স্লিপ নং পূর্বে (০-৫৯ মাস)-এ  ব্যবহার করা হয়েছে");
+                    Connection.MessageBox(AssPneu_24102020.this, "এই রেফারাল স্লিপ নং পূর্বে (০-৫৯ মাস)-এ  ব্যবহার করা হয়েছে");
                     txtRSlip.requestFocus();
                     return;
                 }
@@ -3720,9 +3711,9 @@ public class AssPneu extends Activity {
                         VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
 
                         CONTACT_NO = txtPhone.getText().toString();
-//                        String sms_sending_mobile = CONTACT_NO;
-                        String[] mob={CONTACT_NO,"01817533950"};
-//                        String[] mob={CONTACT_NO,"01995207371"};
+
+//                        String[] mob={CONTACT_NO,"01739957707"};
+                        String[] mob={CONTACT_NO,"01995207371"};
 //                        String[] mob={CONTACT_NO};
 //                        String[] mob = {CONTACT_NO,"01995207371"};
                        // String[] mob={"01725083337","01766668008"};
@@ -3738,15 +3729,8 @@ public class AssPneu extends Activity {
                                 "\nVHW Cluster:" + VHWCl + "" +
                                 "\nতত্ত্বাবধানে: সি এইচ আর এফ";
 
-
-//                        String[] mob={sms_sending_mobile,"01817533950"};
-                        for(int i=0; i < mob.length; i++)
-                        {
-                            sendSMS(mob[i].trim(),SMS);
-                        }
-
-//                        for (int i = 0; i < mob.length;i++)
-//                           sendSMS(mob[i], SMS);
+                        for (int i = 0; i < mob.length;i++)
+                           sendSMS(mob[i], SMS);
                     //    sendSMS("01766668008", SMS);
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -3801,12 +3785,12 @@ public class AssPneu extends Activity {
                     //******************RSV
                 }
             }
-            Connection.MessageBox(AssPneu.this, "Saved Successfully");
+            Connection.MessageBox(AssPneu_24102020.this, "Saved Successfully");
 
 
 
         } catch (Exception e) {
-            Connection.MessageBox(AssPneu.this, e.getMessage());
+            Connection.MessageBox(AssPneu_24102020.this, e.getMessage());
             return;
         }
     }
@@ -3830,6 +3814,8 @@ public class AssPneu extends Activity {
             }
             sms.sendMultipartTextMessage(phoneNumber, null, mSMSMessage,
                     sentPendingIntents, deliveredPendingIntents);
+
+
 
         } catch (Exception e) {
 
@@ -3857,7 +3843,7 @@ public class AssPneu extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssPneu.this, e.getMessage());
+            Connection.MessageBox(AssPneu_24102020.this, e.getMessage());
             return;
         }
     }
@@ -4277,7 +4263,7 @@ public class AssPneu extends Activity {
 
             DataSearchPhone(ChildId);
         } catch (Exception e) {
-            Connection.MessageBox(AssPneu.this, e.getMessage());
+            Connection.MessageBox(AssPneu_24102020.this, e.getMessage());
             return;
         }
     }
@@ -4365,7 +4351,7 @@ public class AssPneu extends Activity {
         }
         catch(Exception  e)
         {
-            Connection.MessageBox(AssPneu.this, e.getMessage());
+            Connection.MessageBox(AssPneu_24102020.this, e.getMessage());
             return;
         }
     }
@@ -4442,7 +4428,7 @@ public class AssPneu extends Activity {
 
     private void StopWatch(Integer time)
     {
-        final Dialog dialog = new Dialog(AssPneu.this);
+        final Dialog dialog = new Dialog(AssPneu_24102020.this);
         try
         {
             dialog.setTitle("Clock");
@@ -4582,7 +4568,7 @@ public class AssPneu extends Activity {
                 )
 
         {
-            Connection.MessageBox(AssPneu.this, ex.getMessage());
+            Connection.MessageBox(AssPneu_24102020.this, ex.getMessage());
             return;
         }
 

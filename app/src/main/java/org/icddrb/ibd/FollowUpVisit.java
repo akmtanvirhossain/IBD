@@ -377,7 +377,8 @@ public class FollowUpVisit extends Activity {
                         String[] VS1 = spnVstat.getSelectedItem().toString().split("-");
                         String spnData = VS1[0];
                         if((spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("21"))  & (rbData.equalsIgnoreCase("1"))) {
-                            if (moo <= 24) {
+                            if (daa <= 731) {
+//                            if (moo <= 24) {
                                 secRSVStatus.setVisibility(View.VISIBLE);
                                 lineRSVStatus.setVisibility(View.VISIBLE);
                             }
@@ -568,7 +569,7 @@ public class FollowUpVisit extends Activity {
             C.Save(SQL);
 
             String EX = VS[0].toString(); // Global.Left(spnVstat.getSelectedItem().toString(),1);
-            if(EX.equals("4")|EX.equals("5")|EX.equals("6")|EX.equals("7"))
+            if(EX.equals("4")|EX.equals("5")|EX.equals("6")|EX.equals("7")|EX.equals("26")|EX.equals("27"))
             {
                 C.Save("Update Child set upload='2',ExType='"+ EX +"',ExDate='"+ Global.DateConvertYMD(dtpExDate.getText().toString()) +"' Where ChildId='"+ ChildID +"'");
             }
@@ -590,14 +591,15 @@ public class FollowUpVisit extends Activity {
             int mo = (int)(da/30.44);
 
             if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
-                if (mo <= 24) {
+                if (da <= 731) {
+//                if (mo <= 24) {
 
                     Bundle IDbundle = new Bundle();
                     Intent f1;
                     IDbundle.putString("childid", ChildID);
-                    IDbundle.putString("pid", txtPID.getText().toString());
+                    IDbundle.putString("pid", PID);
                     IDbundle.putString("weekno", WeekNo);
-                IDbundle.putString("fm", FatherMother.getText().toString());
+                    IDbundle.putString("fm", FatherMother.getText().toString());
                     IDbundle.putString("aged", AgeD);
                     IDbundle.putString("agem", AgeM);
                     IDbundle.putString("agedm", AgeDM);

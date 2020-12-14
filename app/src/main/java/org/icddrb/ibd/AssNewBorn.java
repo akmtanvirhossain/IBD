@@ -2685,32 +2685,6 @@ public class AssNewBorn extends Activity {
             }
 
 
-//            if(rdoRef1.isChecked()) {
-//                //Format a Text message. Including these variables:
-//                //--------------------------------------------------------------------------------------
-//                //CID-PNO,Name, Father/Mother’s name,DOB/Age,Village,Date of refer.
-//                //(message will send to mother/parents’s phone and OPD person DC Razia)
-//                CONTACT_NO = txtPhone.getText().toString();
-//                //String[] mob={CONTACT_NO,"01995207371"};
-//                //String[] mob={"01813364948"};
-//                String[] mob = {CONTACT_NO, "01739957707"};
-//                String SMS = "" +
-//                        "CID:" + CID + "," +
-//                        "PNO:" + PID + "," +
-//                        "Name" + NAME + "," +
-//                        "Father/Mother:" + FM + "," +
-//                        "DOB:" + Global.DateConvertDMY(BDATE) + "," +
-//                        "Vill:" + VILLAGE.split(",")[1] + "," +
-//                        "Slip:" + txtRSlip.getText().toString() + "," +
-//                        "Refer DT:" + dtpVDate.getText().toString();
-//                for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
-//
-//
-//                Intent returnIntent = new Intent();
-//                setResult(Activity.RESULT_OK, returnIntent);
-////            finish();
-//            }
-
             if(rdoRef1.isChecked()) {
 
                 AlertDialog.Builder alert=new AlertDialog.Builder(this);

@@ -1,13 +1,18 @@
 package org.icddrb.ibd;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -48,6 +53,61 @@ public class LoginActivity extends Activity{
     private String Cluster;
     MySharedPreferences sp;
 
+    //------------------------------------24/10/20 SMS----------------------------------------------------------------------------------------
+    public static final String SECURITY_TAG = "Security Permission";
+    private static final int REQUEST_Code = 0;
+    private static String[] PERMISSIONS_LIST = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.CAMERA,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.RECEIVE_SMS
+    };
+
+    private void checkPermission() {
+        Log.e(SECURITY_TAG, "Checking Permission.");
+        if (
+                (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) &
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) &
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED)
+        ) {
+            Log.e(SECURITY_TAG, "Calling Requesting Permission!!!");
+            requestPermission();
+        } else {
+            Log.e(SECURITY_TAG, "Your permission has already been granted.");
+
+//            Activity_Load();
+        }
+    }
+
+    private void requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+            Log.e(SECURITY_TAG, "Requesting Permission to User.");
+            ActivityCompat.requestPermissions(this, PERMISSIONS_LIST, REQUEST_Code);
+        } else {
+            Log.e(SECURITY_TAG, "Requesting Permission Directly.");
+            ActivityCompat.requestPermissions(this, PERMISSIONS_LIST, REQUEST_Code);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (grantResults.length == PERMISSIONS_LIST.length && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //********* Granted ********
+//            Activity_Load();
+        } else {
+            //********* Not Granted ********
+            ActivityCompat.requestPermissions(this, PERMISSIONS_LIST, REQUEST_Code);
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------------------
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +129,7 @@ public class LoginActivity extends Activity{
             //Need to update date every time whenever shared updated system
             //Format: DDMMYYYY
             //*********************************************************************
-            SystemUpdateDT = "25082020";
+            SystemUpdateDT = "28092020";
             lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
             //Check for Internet connectivity
