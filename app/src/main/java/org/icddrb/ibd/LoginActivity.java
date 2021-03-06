@@ -43,7 +43,7 @@ import Utility.MySharedPreferences;
 public class LoginActivity extends Activity{
     Connection C;
     Global g;
-    boolean netwoekAvailable=false;
+    boolean networkAvailable=false;
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog dialog;
     int count = 0;
@@ -129,14 +129,14 @@ public class LoginActivity extends Activity{
             //Need to update date every time whenever shared updated system
             //Format: DDMMYYYY
             //*********************************************************************
-            SystemUpdateDT = "30012021";
+            SystemUpdateDT = "06032021";
             lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
             //Check for Internet connectivity
             if (Connection.haveNetworkConnection(LoginActivity.this)) {
-                netwoekAvailable=true;
+                networkAvailable=true;
             } else {
-                netwoekAvailable=false;
+                networkAvailable=false;
             }
 
             //Update data for Training Purpose
@@ -154,7 +154,7 @@ public class LoginActivity extends Activity{
             String TotalTab = C.ReturnSingleValue("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence'");
             if(Integer.valueOf(TotalTab) == 0)
             {
-                if(netwoekAvailable)
+                if(networkAvailable)
                 {
                     //Call Setting Form
                     finish();
@@ -177,7 +177,7 @@ public class LoginActivity extends Activity{
             g.setClusterCode(Cluster);
             sp.save(this,"cluster",Cluster);
 
-            if (netwoekAvailable)
+            if (networkAvailable)
             {
                 Intent syncService = new Intent(this, Sync_Service.class);
                 startService(syncService);
@@ -198,20 +198,30 @@ public class LoginActivity extends Activity{
             String VariableList;
             String UniqueField;
 
-            //C.Save("Update child set extype='',exdate='' where childid='32602887188'");
+            try {
+                C.CreateTable("process_tab", "Create table process_tab(process_id int)");
+                String resp = "";
+                if (!C.Existence("Select * from process_tab where process_id=1")) {
+                    C.Save("Delete from weeklyvstdt where week=600");
+                    if(resp.length()==0) C.Save("Insert into process_tab(process_id)values(1)");
+                }
+
+            }catch (Exception ex){
+
+            }
 
             //download from 300 week
-            if(netwoekAvailable & !C.Existence("Select Week from weeklyvstdt where Week=250")) {
+            /*if(netwoekAvailable & !C.Existence("Select Week from weeklyvstdt where Week=250")) {
                 TableName = "WeeklyVstDt";
                 SQLStr = "Select Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +
                         "(cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate" +
                         " from WeeklyVstDt where week >= 250";
                 VariableList = "Week, StDate, EnDate";
                 Res = C.DownloadJSON(SQLStr, "WeeklyVstDt", "Week, StDate, EnDate", "Week");
-            }
+            }*/
 
-            //need to update weeklu visit data
-            if(netwoekAvailable & !C.Existence("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)"))
+            //need to update weekly visit data
+            if(networkAvailable & !C.Existence("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)"))
             {
                 //WeeklyVstDt
                 TableName = "WeeklyVstDt";
@@ -220,13 +230,6 @@ public class LoginActivity extends Activity{
                         " from WeeklyVstDt where week <=(select week from WeeklyVstDt where GETDATE() between cast(stdate as datetime) and cast(endate as datetime)) order by CAST(week as numeric(8)) desc";
                 VariableList = "Week, StDate, EnDate";
                 Res = C.DownloadJSON(SQLStr, "WeeklyVstDt", "Week, StDate, EnDate", "Week");
-
-                //CodeList
-                /*TableName = "Bari";
-                SQLStr = "Select Vill, Bari, BariName, BariLoc, Cluster, Block from Bari Where Upload='3' and Cluster='"+ g.getClusterCode() +"'";
-                VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block";
-                Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "Vill,Bari");
-                */
             }
 
             uid.setAdapter(C.getArrayAdapter("Select l.UserId||'-'||v.VHWNAME from Login l,VHWs v where l.userid=cast(v.vhw as varchar(10))"));
@@ -310,7 +313,7 @@ public class LoginActivity extends Activity{
                         //Download Updated System
                         //...................................................................................
                         Bundle IDbundle = new Bundle();
-                        if(netwoekAvailable==true)
+                        if(networkAvailable==true)
                         {
                             if(C.Existence("Select * from vhws where BariChar is null or length(barichar)=0"))
                             {

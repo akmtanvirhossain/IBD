@@ -50,8 +50,8 @@
             </intent-filter>
         </activity>
         <receiver android:name="SmsSentReceiver" />
-
         <receiver android:name="SmsDeliveredReceiver" />
+
         <activity android:name=".SettingForm" android:label="Setting Form"/>
         <activity android:name=".mainmenu" android:label="Main Menu"/>
         <activity android:name=".MainActivity" android:label="IBD: Bari List"/>
