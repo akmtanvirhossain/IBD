@@ -205,6 +205,12 @@ public class RSV extends Activity {
     View lineReason;
     TextView VlblReason;
     EditText txtReason;
+    LinearLayout secSampleAgree;
+    View lineSampleAgree;
+    TextView VlblSampleAgree;
+    RadioGroup rdogrpSampleAgree;
+    RadioButton rdoSampleAgree1;
+    RadioButton rdoSampleAgree2;
 
     TextView txtFMName;
     TextView txtName;
@@ -747,22 +753,27 @@ public class RSV extends Activity {
 
                     if(rbData.equalsIgnoreCase("2"))
                     {
-                        secRSVlisted.setVisibility(View.GONE);
-                        lineRSVlisted.setVisibility(View.GONE);
-                        rdogrpRSVlisted.clearCheck();
-                        secRSVlistedDt.setVisibility(View.GONE);
-                        lineRSVlistedDt.setVisibility(View.GONE);
-                        dtpRSVlistedDt.setText("");
-                        secReason.setVisibility(View.GONE);
-                        lineReason.setVisibility(View.GONE);
-                        txtReason.setText("");
+//                        secRSVlisted.setVisibility(View.GONE);
+//                        lineRSVlisted.setVisibility(View.GONE);
+//                        rdogrpRSVlisted.clearCheck();
+//                        secRSVlistedDt.setVisibility(View.GONE);
+//                        lineRSVlistedDt.setVisibility(View.GONE);
+//                        dtpRSVlistedDt.setText("");
+//                        secReason.setVisibility(View.GONE);
+//                        lineReason.setVisibility(View.GONE);
+//                        txtReason.setText("");
+                        secSampleAgree.setVisibility(View.GONE);
+                        lineSampleAgree.setVisibility(View.GONE);
+                        rdogrpSampleAgree.clearCheck();
                     }
                     else
                     {
-                        secRSVlisted.setVisibility(View.VISIBLE);
-                        lineRSVlisted.setVisibility(View.VISIBLE);
-                        secReason.setVisibility(View.VISIBLE);
-                        lineReason.setVisibility(View.VISIBLE);
+//                        secRSVlisted.setVisibility(View.VISIBLE);
+//                        lineRSVlisted.setVisibility(View.VISIBLE);
+//                        secReason.setVisibility(View.VISIBLE);
+//                        lineReason.setVisibility(View.VISIBLE);
+                        secSampleAgree.setVisibility(View.VISIBLE);
+                        lineSampleAgree.setVisibility(View.VISIBLE);
                     }
                 }
                 public void onNothingSelected(AdapterView<?> adapterView) {
@@ -823,7 +834,7 @@ public class RSV extends Activity {
                 public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
                     String rbData = "";
                     RadioButton rb;
-                    String[] d_rdogrpFever = new String[]{"1", "2","3","4"};
+                    String[] d_rdogrpFever = new String[]{"1","2","3","4"};
                     for (int i = 0; i < rdogrpFever.getChildCount(); i++) {
                         rb = (RadioButton) rdogrpFever.getChildAt(i);
                         if (rb.isChecked()) rbData = d_rdogrpFever[i];
@@ -840,6 +851,12 @@ public class RSV extends Activity {
                     return;
                 }
             });
+            secSampleAgree=(LinearLayout)findViewById(R.id.secSampleAgree);
+            lineSampleAgree=(View)findViewById(R.id.lineSampleAgree);
+            VlblSampleAgree = (TextView) findViewById(R.id.VlblSampleAgree);
+            rdogrpSampleAgree = (RadioGroup) findViewById(R.id.rdogrpSampleAgree);
+            rdoSampleAgree1 = (RadioButton) findViewById(R.id.rdoSampleAgree1);
+            rdoSampleAgree2 = (RadioButton) findViewById(R.id.rdoSampleAgree2);
         } catch (Exception e) {
             Connection.MessageBox(RSV.this, e.getMessage());
             return;
@@ -934,6 +951,15 @@ public class RSV extends Activity {
 
             objSave.setRSVlistedDt(dtpRSVlistedDt.getText().toString().length() > 0 ? Global.DateConvertYMD(dtpRSVlistedDt.getText().toString()) : dtpRSVlistedDt.getText().toString());
             objSave.setReason(txtReason.getText().toString());
+
+            String[] d_rdogrpSampleAgree = new String[] {"1","2"};
+            objSave.setSampleAgree("");
+            for (int i = 0; i < rdogrpSampleAgree.getChildCount(); i++)
+            {
+                rb = (RadioButton)rdogrpSampleAgree.getChildAt(i);
+                if (rb.isChecked()) objSave.setSampleAgree(d_rdogrpSampleAgree[i]);
+            }
+
             objSave.setStartTime(STARTTIME);
             objSave.setEndTime(g.CurrentTime24());
             objSave.setDeviceID(DEVICEID);
@@ -1093,10 +1119,24 @@ public class RSV extends Activity {
                 ValidationMsg += "\nRequired field/Not a valid date format: তারিখ.";
                 secRSVlistedDt.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
+
+            String Rdt = Global.DateConvertYMD(dtpRSVlistedDt.getText().toString());
+            String Vdt = Global.DateConvertYMD(dtpVDate.getText().toString());
+            int Rdt_difference = Global.DateDifferenceDays(Global.DateConvertDMY(Rdt), Global.DateConvertDMY(Vdt));
+
+            if (Rdt_difference < 0) {
+                ValidationMsg += "আর এস ভি গবেষণার জন্য তালিকাভুক্ত তারিখ" + Rdt + " অবশ্যই ভিজিটের তারিখ " + Vdt + "  এর সমান অথবা বেশী হতে হবে ।.";
+                secRSVlistedDt.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+            }
 //            if (txtReason.getText().toString().length() == 0 & secReason.isShown()) {
 //                ValidationMsg += "\nRequired field: তালিকাভুক্ত না হলে কারন .........( অনুপস্থিত, মৃত্যু, সম্মতি প্রত্যাহার,  অন্যান্য).";
 //                secReason.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
 //            }
+            if(!rdoSampleAgree1.isChecked() & !rdoSampleAgree2.isChecked() & secSampleAgree.isShown())
+            {
+                ValidationMsg += "\nRequired field: স্যাম্পল দিতে রাজি :.";
+                secSampleAgree.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+            }
         } catch (Exception e) {
             ValidationMsg += "\n" + e.getMessage();
         }
@@ -1227,6 +1267,15 @@ public class RSV extends Activity {
                 }
                 dtpRSVlistedDt.setText(item.getRSVlistedDt().toString().length() == 0 ? "" : Global.DateConvertDMY(item.getRSVlistedDt()));
                 txtReason.setText(item.getReason());
+                String[] d_rdogrpSampleAgree = new String[] {"1","2"};
+                for (int i = 0; i < d_rdogrpSampleAgree.length; i++)
+                {
+                    if (String.valueOf(item.getSampleAgree()).equals(String.valueOf(d_rdogrpSampleAgree[i])))
+                    {
+                        rb = (RadioButton)rdogrpSampleAgree.getChildAt(i);
+                        rb.setChecked(true);
+                    }
+                }
             }
         } catch (Exception e) {
             Connection.MessageBox(RSV.this, e.getMessage());

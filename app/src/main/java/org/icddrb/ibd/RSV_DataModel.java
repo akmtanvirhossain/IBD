@@ -167,6 +167,9 @@ import android.content.Context;
         public void setReason(String newValue){
               _Reason = newValue;
          }
+        private String _SampleAgree = "";
+        public String getSampleAgree(){ return _SampleAgree; }
+        public void setSampleAgree(String newValue){ _SampleAgree = newValue; }
         private String _StartTime = "";
         public void setStartTime(String newValue){
               _StartTime = newValue;
@@ -249,6 +252,7 @@ import android.content.Context;
                  contentValues.put("RSVlisted", _RSVlisted);
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
                  contentValues.put("Reason", _Reason);
+                 contentValues.put("SampleAgree", _SampleAgree);
                  contentValues.put("StartTime", _StartTime);
                  contentValues.put("EndTime", _EndTime);
                  contentValues.put("DeviceID", _DeviceID);
@@ -299,6 +303,7 @@ import android.content.Context;
                  contentValues.put("RSVlisted", _RSVlisted);
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
                  contentValues.put("Reason", _Reason);
+                 contentValues.put("SampleAgree", _SampleAgree);
                  contentValues.put("Upload", _Upload);
                  contentValues.put("modifyDate", _modifyDate);
                  C.UpdateData(TableName, "ChildID,Week,VType,Visit", (""+ _ChildID +", "+ _Week +", "+ _VType +", "+ _Visit +""), contentValues);
@@ -349,6 +354,7 @@ import android.content.Context;
                 d._RSVlisted = cur.getString(cur.getColumnIndex("RSVlisted"));
                 d._RSVlistedDt = cur.getString(cur.getColumnIndex("RSVlistedDt"));
                 d._Reason = cur.getString(cur.getColumnIndex("Reason"));
+                d._SampleAgree = cur.getString(cur.getColumnIndex("SampleAgree"));
                 data.add(d);
 
                 cur.moveToNext();
