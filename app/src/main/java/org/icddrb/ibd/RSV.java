@@ -211,6 +211,21 @@ public class RSV extends Activity {
     RadioGroup rdogrpSampleAgree;
     RadioButton rdoSampleAgree1;
     RadioButton rdoSampleAgree2;
+    LinearLayout secNotAgree;
+    View lineNotAgree;
+    TextView VlblNotAgree;
+    RadioGroup rdogrpNotAgree;
+    RadioButton rdoNotAgree1;
+    RadioButton rdoNotAgree2;
+    RadioButton rdoNotAgree3;
+    RadioButton rdoNotAgree4;
+    RadioButton rdoNotAgree5;
+    RadioButton rdoNotAgree6;
+    RadioButton rdoNotAgree7;
+    LinearLayout secOthersR;
+    View lineOthersR;
+    TextView VlblOthersR;
+    AutoCompleteTextView txtOthersR;
 
     TextView txtFMName;
     TextView txtName;
@@ -415,6 +430,10 @@ public class RSV extends Activity {
             }
 
             secFeverDt.setVisibility(View.GONE);
+            secNotAgree.setVisibility(View.GONE);
+            lineNotAgree.setVisibility(View.GONE);
+            secOthersR.setVisibility(View.GONE);
+            lineOthersR.setVisibility(View.GONE);
 
                 DataSearch(CHILDID, WEEK, VTYPE, VISIT);
 
@@ -765,6 +784,12 @@ public class RSV extends Activity {
                         secSampleAgree.setVisibility(View.GONE);
                         lineSampleAgree.setVisibility(View.GONE);
                         rdogrpSampleAgree.clearCheck();
+                        secNotAgree.setVisibility(View.GONE);
+                        lineNotAgree.setVisibility(View.GONE);
+                        rdogrpNotAgree.clearCheck();
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
                     }
                     else
                     {
@@ -774,6 +799,8 @@ public class RSV extends Activity {
 //                        lineReason.setVisibility(View.VISIBLE);
                         secSampleAgree.setVisibility(View.VISIBLE);
                         lineSampleAgree.setVisibility(View.VISIBLE);
+                        secNotAgree.setVisibility(View.VISIBLE);
+                        lineNotAgree.setVisibility(View.VISIBLE);
                     }
                 }
                 public void onNothingSelected(AdapterView<?> adapterView) {
@@ -857,6 +884,132 @@ public class RSV extends Activity {
             rdogrpSampleAgree = (RadioGroup) findViewById(R.id.rdogrpSampleAgree);
             rdoSampleAgree1 = (RadioButton) findViewById(R.id.rdoSampleAgree1);
             rdoSampleAgree2 = (RadioButton) findViewById(R.id.rdoSampleAgree2);
+            rdogrpSampleAgree.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup,int radioButtonID) {
+                    String rbData = "";
+                    RadioButton rb;
+                    String[] d_rdogrpSampleAgree = new String[] {"1","2"};
+                    for (int i = 0; i < rdogrpSampleAgree.getChildCount(); i++)
+                    {
+                        rb = (RadioButton)rdogrpSampleAgree.getChildAt(i);
+                        if (rb.isChecked()) rbData = d_rdogrpSampleAgree[i];
+                    }
+
+                    if(rbData.equalsIgnoreCase("1"))
+                    {
+                        secNotAgree.setVisibility(View.GONE);
+                        lineNotAgree.setVisibility(View.GONE);
+                        rdogrpNotAgree.clearCheck();
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else
+                    {
+                        secNotAgree.setVisibility(View.VISIBLE);
+                        lineNotAgree.setVisibility(View.VISIBLE);
+                    }
+                }
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    return;
+                }
+            });
+            secNotAgree=(LinearLayout)findViewById(R.id.secNotAgree);
+            lineNotAgree=(View)findViewById(R.id.lineNotAgree);
+            VlblNotAgree = (TextView) findViewById(R.id.VlblNotAgree);
+            rdogrpNotAgree = (RadioGroup) findViewById(R.id.rdogrpNotAgree);
+            rdoNotAgree1 = (RadioButton) findViewById(R.id.rdoNotAgree1);
+            rdoNotAgree2 = (RadioButton) findViewById(R.id.rdoNotAgree2);
+            rdoNotAgree3 = (RadioButton) findViewById(R.id.rdoNotAgree3);
+            rdoNotAgree4 = (RadioButton) findViewById(R.id.rdoNotAgree4);
+            rdoNotAgree5 = (RadioButton) findViewById(R.id.rdoNotAgree5);
+            rdoNotAgree6 = (RadioButton) findViewById(R.id.rdoNotAgree6);
+            rdoNotAgree7 = (RadioButton) findViewById(R.id.rdoNotAgree7);
+            rdogrpNotAgree.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup,int radioButtonID) {
+                    String rbData = "";
+                    RadioButton rb;
+                    String[] d_rdogrpNotAgree = new String[] {"1","2","3","4","5","6","7"};
+                    for (int i = 0; i < rdogrpNotAgree.getChildCount(); i++)
+                    {
+                        rb = (RadioButton)rdogrpNotAgree.getChildAt(i);
+                        if (rb.isChecked()) rbData = d_rdogrpNotAgree[i];
+                    }
+
+                    if(rbData.equalsIgnoreCase("1"))
+                    {
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else if(rbData.equalsIgnoreCase("2"))
+                    {
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else if(rbData.equalsIgnoreCase("3"))
+                    {
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else if(rbData.equalsIgnoreCase("4"))
+                    {
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else if(rbData.equalsIgnoreCase("5"))
+                    {
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else if(rbData.equalsIgnoreCase("6"))
+                    {
+                        secOthersR.setVisibility(View.GONE);
+                        lineOthersR.setVisibility(View.GONE);
+                        txtOthersR.setText("");
+                    }
+                    else
+                    {
+                        secOthersR.setVisibility(View.VISIBLE);
+                        lineOthersR.setVisibility(View.VISIBLE);
+                    }
+                }
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    return;
+                }
+            });
+            secOthersR=(LinearLayout)findViewById(R.id.secOthersR);
+            lineOthersR=(View)findViewById(R.id.lineOthersR);
+            VlblOthersR=(TextView) findViewById(R.id.VlblOthersR);
+            txtOthersR=(AutoCompleteTextView) findViewById(R.id.txtOthersR);
+            txtOthersR.setAdapter(C.getArrayAdapter("Select distinct OthersR from "+ TableName +" order by OthersR"));
+
+            txtOthersR.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View arg1, int pos,long id) {
+
+                }
+            });
+            txtOthersR.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    final int DRAWABLE_RIGHT = 2;
+
+                    if(event.getAction() == MotionEvent.ACTION_UP) {
+                        if(event.getRawX() >= (txtOthersR.getRight() - txtOthersR.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            ((EditText)v).setText("");
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
         } catch (Exception e) {
             Connection.MessageBox(RSV.this, e.getMessage());
             return;
@@ -959,6 +1112,14 @@ public class RSV extends Activity {
                 rb = (RadioButton)rdogrpSampleAgree.getChildAt(i);
                 if (rb.isChecked()) objSave.setSampleAgree(d_rdogrpSampleAgree[i]);
             }
+            String[] d_rdogrpNotAgree = new String[] {"1","2","3","4","5","6","7"};
+            objSave.setNotAgree("");
+            for (int i = 0; i < rdogrpNotAgree.getChildCount(); i++)
+            {
+                rb = (RadioButton)rdogrpNotAgree.getChildAt(i);
+                if (rb.isChecked()) objSave.setNotAgree(d_rdogrpNotAgree[i]);
+            }
+            objSave.setOthersR(txtOthersR.getText().toString());
 
             objSave.setStartTime(STARTTIME);
             objSave.setEndTime(g.CurrentTime24());
@@ -1137,6 +1298,16 @@ public class RSV extends Activity {
                 ValidationMsg += "\nRequired field: স্যাম্পল দিতে রাজি :.";
                 secSampleAgree.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
             }
+            if(!rdoNotAgree1.isChecked() & !rdoNotAgree2.isChecked() & !rdoNotAgree3.isChecked() & !rdoNotAgree4.isChecked() & !rdoNotAgree6.isChecked() & !rdoNotAgree7.isChecked() & !rdoNotAgree5.isChecked() & secNotAgree.isShown())
+            {
+                ValidationMsg += "\nRequired field: রাজী না হওয়ার কারণ.";
+                secNotAgree.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+            }
+            if(txtOthersR.getText().toString().length()==0 & secOthersR.isShown())
+            {
+                ValidationMsg += "\nRequired field: অন্যান্য (উল্লেখ করুন).";
+                secOthersR.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
+            }
         } catch (Exception e) {
             ValidationMsg += "\n" + e.getMessage();
         }
@@ -1172,6 +1343,8 @@ public class RSV extends Activity {
             secReason.setBackgroundColor(Color.WHITE);
             secFever.setBackgroundColor(Color.WHITE);
             secFeverDt.setBackgroundColor(Color.WHITE);
+            secNotAgree.setBackgroundColor(Color.WHITE);
+            secOthersR.setBackgroundColor(Color.WHITE);
         } catch (Exception e) {
         }
     }
@@ -1276,6 +1449,16 @@ public class RSV extends Activity {
                         rb.setChecked(true);
                     }
                 }
+                String[] d_rdogrpNotAgree = new String[] {"1","2","3","4","5","6","7"};
+                for (int i = 0; i < d_rdogrpNotAgree.length; i++)
+                {
+                    if (String.valueOf(item.getNotAgree()).equals(String.valueOf(d_rdogrpNotAgree[i])))
+                    {
+                        rb = (RadioButton)rdogrpNotAgree.getChildAt(i);
+                        rb.setChecked(true);
+                    }
+                }
+                txtOthersR.setText(item.getOthersR());
             }
         } catch (Exception e) {
             Connection.MessageBox(RSV.this, e.getMessage());

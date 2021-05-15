@@ -25,12 +25,16 @@
             <TextView android:id="@+id/txtFMName" android:layout_width="wrap_content" android:inputType="text" android:layout_height="wrap_content"  android:layout_marginRight="10sp" android:textSize="20sp" />
         </LinearLayout>
 
-        <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
             <TextView android:layout_width="130sp"  android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:text="বয়স" android:textColor="#000000" android:textSize="18sp" />
             <TextView android:id="@+id/Age"  android:textColor="#000000" android:layout_width="200sp"  android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:text="" android:textSize="18sp" />
             <TextView android:layout_width="90sp" android:layout_height="wrap_content"  android:layout_gravity="center_vertical" android:text="জন্ম তারিখ" android:textColor="#000000" android:textSize="18sp" />
             <TextView android:id="@+id/Dob"  android:textColor="#000000" android:layout_width="wrap_content"  android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:text="" android:textSize="18sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#CCCCCC" />
         </LinearLayout>
 
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />

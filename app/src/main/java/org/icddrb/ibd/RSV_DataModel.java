@@ -170,6 +170,12 @@ import android.content.Context;
         private String _SampleAgree = "";
         public String getSampleAgree(){ return _SampleAgree; }
         public void setSampleAgree(String newValue){ _SampleAgree = newValue; }
+        private String _NotAgree = "";
+        public String getNotAgree(){ return _NotAgree; }
+        public void setNotAgree(String newValue){ _NotAgree = newValue; }
+        private String _OthersR = "";
+        public String getOthersR(){ return _OthersR; }
+        public void setOthersR(String newValue){ _OthersR = newValue; }
         private String _StartTime = "";
         public void setStartTime(String newValue){
               _StartTime = newValue;
@@ -253,6 +259,8 @@ import android.content.Context;
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
                  contentValues.put("Reason", _Reason);
                  contentValues.put("SampleAgree", _SampleAgree);
+                 contentValues.put("NotAgree", _NotAgree);
+                 contentValues.put("OthersR", _OthersR);
                  contentValues.put("StartTime", _StartTime);
                  contentValues.put("EndTime", _EndTime);
                  contentValues.put("DeviceID", _DeviceID);
@@ -304,6 +312,8 @@ import android.content.Context;
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
                  contentValues.put("Reason", _Reason);
                  contentValues.put("SampleAgree", _SampleAgree);
+                 contentValues.put("NotAgree", _NotAgree);
+                 contentValues.put("OthersR", _OthersR);
                  contentValues.put("Upload", _Upload);
                  contentValues.put("modifyDate", _modifyDate);
                  C.UpdateData(TableName, "ChildID,Week,VType,Visit", (""+ _ChildID +", "+ _Week +", "+ _VType +", "+ _Visit +""), contentValues);
@@ -355,6 +365,8 @@ import android.content.Context;
                 d._RSVlistedDt = cur.getString(cur.getColumnIndex("RSVlistedDt"));
                 d._Reason = cur.getString(cur.getColumnIndex("Reason"));
                 d._SampleAgree = cur.getString(cur.getColumnIndex("SampleAgree"));
+                d._NotAgree = cur.getString(cur.getColumnIndex("NotAgree"));
+                d._OthersR = cur.getString(cur.getColumnIndex("OthersR"));
                 data.add(d);
 
                 cur.moveToNext();
