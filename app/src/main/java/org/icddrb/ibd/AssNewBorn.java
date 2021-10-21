@@ -2687,43 +2687,43 @@ public class AssNewBorn extends Activity {
 
             if(rdoRef1.isChecked()) {
 
-                AlertDialog.Builder alert=new AlertDialog.Builder(this);
-                alert.setTitle("Confirm");
-                alert.setMessage("Do you want to send the message?");
-                alert.setNegativeButton("No", null);
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int asd) {
-
-                        String VHWCl;
-                        VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
-
-                        CONTACT_NO = txtPhone.getText().toString();
-//                        String[] mob={CONTACT_NO};
-                        //String[] mob={"01813364948"};
-                        String[] mob = {CONTACT_NO,"01995207371"};
-//                        String[] mob = {CONTACT_NO,"01739957707"};
-                        String SMS = "" +
-                                "CID: " + CID + "" +
-                                "\nPNO: " + PID + "" +
-                                "\nনাম" + NAME + "" +
-                                "\nপিত/মাতা: " + FM + "" +
-                                "\nজন্ম তারিখ: " + Global.DateConvertDMY(BDATE) + "" +
-                                "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
-                                "\nSlip: " + txtRSlip.getText().toString() + "" +
-                                "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
-                                "\nVHW Cluster:" + VHWCl + "" +
-                                "\nতত্ত্বাবধানে: সি এইচ আর এফ";
-                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
-
-
-                        Intent returnIntent = new Intent();
-                        setResult(Activity.RESULT_OK, returnIntent);
-                    }
-                });
-
-                AlertDialog alertDialog=alert.create();
-                alertDialog.show();
+//                AlertDialog.Builder alert=new AlertDialog.Builder(this);
+//                alert.setTitle("Confirm");
+//                alert.setMessage("Do you want to send the message?");
+//                alert.setNegativeButton("No", null);
+//                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int asd) {
+//
+//                        String VHWCl;
+//                        VHWCl=C.ReturnSingleValue("select b.Cluster from Child c left outer join Bari b on b.Vill=SUBSTR(c.CID,1,3) and b.Bari=SUBSTR(c.CID,4,4) where CID='" + CID + "'");
+//
+//                        CONTACT_NO = txtPhone.getText().toString();
+////                        String[] mob={CONTACT_NO};
+//                        //String[] mob={"01813364948"};
+//                        String[] mob = {CONTACT_NO,"01995207371"};
+////                        String[] mob = {CONTACT_NO,"01739957707"};
+//                        String SMS = "" +
+//                                "CID: " + CID + "" +
+//                                "\nPNO: " + PID + "" +
+//                                "\nনাম" + NAME + "" +
+//                                "\nপিত/মাতা: " + FM + "" +
+//                                "\nজন্ম তারিখ: " + Global.DateConvertDMY(BDATE) + "" +
+//                                "\nগ্রাম: " + VILLAGE.split(",")[1] + "" +
+//                                "\nSlip: " + txtRSlip.getText().toString() + "" +
+//                                "\nRefer DT: " + dtpVDate.getText().toString()+ "" +
+//                                "\nVHW Cluster:" + VHWCl + "" +
+//                                "\nতত্ত্বাবধানে: সি এইচ আর এফ";
+//                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+//
+//
+//                        Intent returnIntent = new Intent();
+//                        setResult(Activity.RESULT_OK, returnIntent);
+//                    }
+//                });
+//
+//                AlertDialog alertDialog=alert.create();
+//                alertDialog.show();
 
 //            finish();
             }

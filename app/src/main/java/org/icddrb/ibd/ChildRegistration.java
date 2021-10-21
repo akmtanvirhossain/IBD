@@ -637,43 +637,43 @@ public class ChildRegistration extends Activity {
 //   ------------------------------------------------------
             if(!hasChild) {
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                alert.setTitle("Confirm");
-                alert.setMessage("Do you want to send the message?");
-                alert.setNegativeButton("No", null);
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int asd) {
-                        CONTACT_NO = txtPhone.getText().toString();
-                        String sex = rdoSex1.isChecked() ? "Male" : rdoSex2.isChecked() ? "Female" : "";
-
-//                        String[] mob = {CONTACT_NO, "01813364948"};
-                        String[] mob={CONTACT_NO};
-//                    String[] mob = {CONTACT_NO, "01739957707"};
-                        String SMS = "" +
-                                "CHRF:" + Card + "" +
-                                "\nCID:" + txtCID.getText().toString() + "" +
-                                "\nName:" + txtName.getText().toString() + "" +
-                                "\nSex:" + sex + "" +
-                                "\nDOB:" + dtpBdate.getText().toString() +
-                                "\nMother:" + txtMoName.getText().toString() + "" +
-                                "\nMo PNO:" + txtMoPNO.getText().toString() + "" +
-                                "\nFather:" + txtFaName.getText().toString() + "" +
-                                "\nDSS Cluster:" + Clst + "" +
-                                "\nDSS Block:" + Blc + "" +
-                                "\nUnion:" + UNc + "";
-
-                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
-
-
-                        Intent returnIntent = new Intent();
-                        setResult(Activity.RESULT_OK, returnIntent);
-//                    finish();
-                    }
-                });
-
-                AlertDialog alertDialog = alert.create();
-                alertDialog.show();
+//                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+//                alert.setTitle("Confirm");
+//                alert.setMessage("Do you want to send the message?");
+//                alert.setNegativeButton("No", null);
+//                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int asd) {
+//                        CONTACT_NO = txtPhone.getText().toString();
+//                        String sex = rdoSex1.isChecked() ? "Male" : rdoSex2.isChecked() ? "Female" : "";
+//
+////                        String[] mob = {CONTACT_NO, "01813364948"};
+//                        String[] mob={CONTACT_NO};
+////                    String[] mob = {CONTACT_NO, "01739957707"};
+//                        String SMS = "" +
+//                                "CHRF:" + Card + "" +
+//                                "\nCID:" + txtCID.getText().toString() + "" +
+//                                "\nName:" + txtName.getText().toString() + "" +
+//                                "\nSex:" + sex + "" +
+//                                "\nDOB:" + dtpBdate.getText().toString() +
+//                                "\nMother:" + txtMoName.getText().toString() + "" +
+//                                "\nMo PNO:" + txtMoPNO.getText().toString() + "" +
+//                                "\nFather:" + txtFaName.getText().toString() + "" +
+//                                "\nDSS Cluster:" + Clst + "" +
+//                                "\nDSS Block:" + Blc + "" +
+//                                "\nUnion:" + UNc + "";
+//
+//                        for (int i = 0; i < mob.length; i++) sendSMS(mob[i], SMS);
+//
+//
+//                        Intent returnIntent = new Intent();
+//                        setResult(Activity.RESULT_OK, returnIntent);
+////                    finish();
+//                    }
+//                });
+//
+//                AlertDialog alertDialog = alert.create();
+//                alertDialog.show();
 
 //            finish();
             }
