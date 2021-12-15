@@ -672,7 +672,7 @@ public class HouseholdIndex extends Activity {
                                     String TableName;
                                     String VariableList;
                                     String UniqueField;
-
+                                    C.Save("Delete from MWRA");
                                     SQLStr = "Select mwraId, c.Vill, c.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate,";
                                     SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
                                     SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,c.PStat,c.LMPDt,c.EnDt";
@@ -724,6 +724,7 @@ public class HouseholdIndex extends Activity {
                                     String TableName;
                                     String VariableList;
 
+                                    C.Save("Delete from DSSBari");
                                     TableName = "DSSBari";
                                     VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId";
                                     SQLStr  = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
