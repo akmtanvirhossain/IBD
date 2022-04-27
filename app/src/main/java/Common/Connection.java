@@ -790,6 +790,7 @@ public class Connection extends SQLiteOpenHelper {
                     if(j==0)
                     {
                         WhereClause = UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+//                        WhereClause = UField[j].toString()+"="+ "'32500999999'";
                         UID += VarData[varPos].toString();
                     }
                     else
@@ -1792,8 +1793,8 @@ public class Connection extends SQLiteOpenHelper {
 
             //NonComp
             //--------------------------------------------------------------------------------------
-            SQLStr = " select a.ChildId, a.CID, a.PID, Week, VType, Visit, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, a.UserId, a.EnDt, a.Upload";
             SQLStr += " from NonComp a";
+            SQLStr = " select a.ChildId, a.CID, a.PID, Week, VType, Visit, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, a.UserId, a.EnDt, a.Upload";
             SQLStr += " inner join Child c on a.ChildId=c.ChildId";
             SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
             SQLStr += " where b.Cluster='"+ Cluster +"'";
@@ -1801,6 +1802,8 @@ public class Connection extends SQLiteOpenHelper {
             TableName = "NonComp";
             VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
             Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
+
+
 
 
         } catch (Exception e) {
@@ -2666,11 +2669,19 @@ public class Connection extends SQLiteOpenHelper {
             C.TableStructureSync("AssNewBorn");
             C.TableStructureSync("Visits");
             C.TableStructureSync("RSV");
+            C.TableStructureSync("RSVSample");
 
             //C.Sync_DatabaseStructure(UniqueID);
             C.Sync_Download_Bari(CLUSTER);
             C.Sync_Download_Child(CLUSTER);
 
+            //********************* RSV Sample ************************
+            String SQLStrRSV = "Select ChildID,SlNo,(cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,'1' Upload,modifyDate from RSVSample";
+            String TableNameRSV = "RSVSample";
+            String VariableListRSV = "ChildID,SlNo,Vdate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt, Upload,modifyDate";
+
+            C.DownloadJSON(SQLStrRSV, TableNameRSV, VariableListRSV, "ChildID, SlNo");
+            //*********************
             if(!C.Existence("Select * from MDSSVill where vill='327'")) {
                 C.Save("Insert into MDSSVill(vill,vname,ucode,uname,cluster,status,oldunion)Values('327','Gorai West-1','17','Gorai','05','N',''))");
             }
@@ -2722,10 +2733,9 @@ public class Connection extends SQLiteOpenHelper {
     }
 
 
-    public boolean InsertData(String TableName, ContentValues content_value) {
+    public long InsertData(String TableName, ContentValues content_value) {
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(TableName, null, content_value);
-        return true;
+        return db.insertOrThrow(TableName, null, content_value);
     }
 
     public boolean UpdateData_Old(String TableName, String UniqueID_Field, String UniqueID, ContentValues content_value) {

@@ -3444,7 +3444,6 @@ public class AssPneu extends Activity {
                     Connection.MessageBox(AssPneu.this, "কাশি এবং শ্বাস কষ্টের লক্ষণের মধ্যে 'সবকিছু বমি করে দেয়' থাকলে জ্বরের উপর্সগ 'সবকিছু বমি করে দেয়' হ্যাঁ হবে");
                     return;
                 }
-
             }
 
             if (!rdoConv2.isChecked() || !rdoFBrea2.isChecked() || !rdoCInd2.isChecked() || !rdoLeth2.isChecked() || !rdoUCon2.isChecked() || !rdoDrink2.isChecked() || !rdoVomit2.isChecked() || !rdoNone2.isChecked()) {

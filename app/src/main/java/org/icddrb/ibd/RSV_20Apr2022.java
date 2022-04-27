@@ -2,66 +2,44 @@
 package org.icddrb.ibd;
 
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import android.app.*;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.provider.Settings;
-import android.view.KeyEvent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.support.v4.content.ContextCompat;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.graphics.Color;
-import android.view.WindowManager;
 
-import Utility.*;
-import Common.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
-import android.widget.AutoCompleteTextView;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import Common.Connection;
+import Common.Global;
+import Utility.MySharedPreferences;
 
-public class RSV extends Activity {
+public class RSV_20Apr2022 extends Activity {
     //Disabled Back/Home key
     //--------------------------------------------------------------------------------------------------
     @Override
@@ -191,24 +169,6 @@ public class RSV extends Activity {
     RadioGroup rdogrpRSVsuitable;
     RadioButton rdoRSVsuitable1;
     RadioButton rdoRSVsuitable2;
-    LinearLayout secSuitSam;
-    View lineSuitSam;
-    TextView VlblSuitSam;
-    RadioGroup rdogrpSuitSam;
-    RadioButton rdoSuitSam1;
-    RadioButton rdoSuitSam2;
-    LinearLayout secSuitSamRe;
-    View lineSuitSamRe;
-    TextView VlblSuitSamRe;
-    RadioGroup rdogrpSuitSamRe;
-    RadioButton rdoSuitSamRe1;
-    RadioButton rdoSuitSamRe2;
-    RadioButton rdoSuitSamRe3;
-    RadioButton rdoSuitSamRe4;
-    LinearLayout secSuitSamReO;
-    View lineSuitSamReO;
-    TextView VlblSuitSamReO;
-    EditText txtSuitSamReO;
     LinearLayout secRSVlisted;
     View lineRSVlisted;
     TextView VlblRSVlisted;
@@ -329,7 +289,7 @@ public class RSV extends Activity {
             ImageButton cmdBack = (ImageButton) findViewById(R.id.cmdBack);
             cmdBack.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    AlertDialog.Builder adb = new AlertDialog.Builder(RSV.this);
+                    AlertDialog.Builder adb = new AlertDialog.Builder(RSV_20Apr2022.this);
                     adb.setTitle("Close");
                     adb.setMessage("Do you want to close this form[Yes/No]?");
                     adb.setNegativeButton("No", null);
@@ -448,15 +408,6 @@ public class RSV extends Activity {
             }
 
             secFeverDt.setVisibility(View.GONE);
-
-            secSuitSam.setVisibility(View.GONE);
-            lineSuitSam.setVisibility(View.GONE);
-            secSuitSamRe.setVisibility(View.GONE);
-            lineSuitSamRe.setVisibility(View.GONE);
-            secSuitSamReO.setVisibility(View.GONE);
-            lineSuitSamReO.setVisibility(View.GONE);
-            secSampleAgree.setVisibility(View.GONE);
-            lineSampleAgree.setVisibility(View.GONE);
             secNotAgree.setVisibility(View.GONE);
             lineNotAgree.setVisibility(View.GONE);
             secOthersR.setVisibility(View.GONE);
@@ -472,7 +423,7 @@ public class RSV extends Activity {
                 }
             });
         } catch (Exception e) {
-            Connection.MessageBox(RSV.this, e.getMessage());
+            Connection.MessageBox(RSV_20Apr2022.this, e.getMessage());
             return;
         }
     }
@@ -808,15 +759,6 @@ public class RSV extends Activity {
 //                        secReason.setVisibility(View.GONE);
 //                        lineReason.setVisibility(View.GONE);
 //                        txtReason.setText("");
-                        secSuitSam.setVisibility(View.GONE);
-                        lineSuitSam.setVisibility(View.GONE);
-                        rdogrpSuitSam.clearCheck();
-                        secSuitSamRe.setVisibility(View.GONE);
-                        lineSuitSamRe.setVisibility(View.GONE);
-                        rdogrpSuitSamRe.clearCheck();
-                        secSuitSamReO.setVisibility(View.GONE);
-                        lineSuitSamReO.setVisibility(View.GONE);
-                        txtSuitSamReO.setText("");
                         secSampleAgree.setVisibility(View.GONE);
                         lineSampleAgree.setVisibility(View.GONE);
                         rdogrpSampleAgree.clearCheck();
@@ -833,16 +775,10 @@ public class RSV extends Activity {
 //                        lineRSVlisted.setVisibility(View.VISIBLE);
 //                        secReason.setVisibility(View.VISIBLE);
 //                        lineReason.setVisibility(View.VISIBLE);
-                        secSuitSam.setVisibility(View.VISIBLE);
-                        lineSuitSam.setVisibility(View.VISIBLE);
-//                        secSuitSamRe.setVisibility(View.VISIBLE);
-//                        lineSuitSamRe.setVisibility(View.VISIBLE);
-//                        secSuitSamReO.setVisibility(View.VISIBLE);
-//                        lineSuitSamReO.setVisibility(View.VISIBLE);
                         secSampleAgree.setVisibility(View.VISIBLE);
                         lineSampleAgree.setVisibility(View.VISIBLE);
-//                        secNotAgree.setVisibility(View.VISIBLE);
-//                        lineNotAgree.setVisibility(View.VISIBLE);
+                        secNotAgree.setVisibility(View.VISIBLE);
+                        lineNotAgree.setVisibility(View.VISIBLE);
                     }
                 }
                 public void onNothingSelected(AdapterView<?> adapterView) {
@@ -920,160 +856,6 @@ public class RSV extends Activity {
                     return;
                 }
             });
-            secSuitSam=(LinearLayout)findViewById(R.id.secSuitSam);
-            lineSuitSam=(View)findViewById(R.id.lineSuitSam);
-            VlblSuitSam = (TextView) findViewById(R.id.VlblSuitSam);
-            rdogrpSuitSam = (RadioGroup) findViewById(R.id.rdogrpSuitSam);
-            rdoSuitSam1 = (RadioButton) findViewById(R.id.rdoSuitSam1);
-            rdoSuitSam2 = (RadioButton) findViewById(R.id.rdoSuitSam2);
-            rdogrpSuitSam.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-                @Override
-                public void onCheckedChanged(RadioGroup radioGroup,int radioButtonID) {
-                    String rbData = "";
-                    RadioButton rb;
-                    String[] d_rdogrpSuitSam = new String[] {"1","2"};
-                    for (int i = 0; i < rdogrpSuitSam.getChildCount(); i++)
-                    {
-                        rb = (RadioButton)rdogrpSuitSam.getChildAt(i);
-                        if (rb.isChecked()) rbData = d_rdogrpSuitSam[i];
-                    }
-
-                    if(rbData.equalsIgnoreCase("1"))
-                    {
-                        secSuitSamRe.setVisibility(View.GONE);
-                        lineSuitSamRe.setVisibility(View.GONE);
-                        rdogrpSuitSamRe.clearCheck();
-                        secSuitSamReO.setVisibility(View.GONE);
-                        lineSuitSamReO.setVisibility(View.GONE);
-                        txtSuitSamReO.setText("");
-                        secSampleAgree.setVisibility(View.VISIBLE);
-                        lineSampleAgree.setVisibility(View.VISIBLE);
-                        rdogrpSampleAgree.clearCheck();
-                        secNotAgree.setVisibility(View.GONE);
-                        lineNotAgree.setVisibility(View.GONE);
-                        rdogrpNotAgree.clearCheck();
-                        secOthersR.setVisibility(View.GONE);
-                        lineOthersR.setVisibility(View.GONE);
-                        txtOthersR.setText("");
-
-                        //******************* Sample Date Check
-//                        String count=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date('now'))-julianday(date(VDate))) as int),0)) as int)Diff  FROM RSVSample where Status='1'");
-//                        if(Integer.parseInt(count)>0 && Integer.parseInt(count)<15){
-//                            Connection.MessageBox(RSV.this,"Last Sample collect diff=2");
-//                        }
-                        //******************* Sample Date Check Shahidul
-                        String Day14;
-//                        Day14=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date(e)max(VDat))-julianday(date('"+Global.DateConvertYMD(dtpVDate.getText().toString())+"'))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-                        Day14=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-                        int dy1=Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14));
-                        if (dy1>=0 & dy1<=15) {
-//                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম ("+Global.DateConvertYMD(dtpVDate.getText().toString())+" "+Day14+" "+dy1+" দিন)");
-                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ ("+Day14+") হইতে আজকের তারিখের (পার্থক্য : "+dy1+" দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত পারে না)");
-                        }
-                        //******************* Sample Date Check
-                    }
-                    else
-                    {
-                        secSuitSamRe.setVisibility(View.VISIBLE);
-                        lineSuitSamRe.setVisibility(View.VISIBLE);
-                        secSampleAgree.setVisibility(View.GONE);
-                        lineSampleAgree.setVisibility(View.GONE);
-                        rdogrpSampleAgree.clearCheck();
-                        secNotAgree.setVisibility(View.GONE);
-                        lineNotAgree.setVisibility(View.GONE);
-                        rdogrpNotAgree.clearCheck();
-                        secOthersR.setVisibility(View.GONE);
-                        lineOthersR.setVisibility(View.GONE);
-                        txtOthersR.setText("");
-                    }
-                }
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                    return;
-                }
-            });
-            secSuitSamRe=(LinearLayout)findViewById(R.id.secSuitSamRe);
-            lineSuitSamRe=(View)findViewById(R.id.lineSuitSamRe);
-            VlblSuitSamRe = (TextView) findViewById(R.id.VlblSuitSamRe);
-            rdogrpSuitSamRe = (RadioGroup) findViewById(R.id.rdogrpSuitSamRe);
-            rdoSuitSamRe1 = (RadioButton) findViewById(R.id.rdoSuitSamRe1);
-            rdoSuitSamRe2 = (RadioButton) findViewById(R.id.rdoSuitSamRe2);
-            rdoSuitSamRe3 = (RadioButton) findViewById(R.id.rdoSuitSamRe3);
-            rdoSuitSamRe4 = (RadioButton) findViewById(R.id.rdoSuitSamRe4);
-            rdogrpSuitSamRe.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-                @Override
-                public void onCheckedChanged(RadioGroup radioGroup,int radioButtonID) {
-                    String rbData = "";
-                    RadioButton rb;
-                    String[] d_rdogrpSuitSamRe = new String[] {"1","2","3","7"};
-                    for (int i = 0; i < rdogrpSuitSamRe.getChildCount(); i++)
-                    {
-                        rb = (RadioButton)rdogrpSuitSamRe.getChildAt(i);
-                        if (rb.isChecked()) rbData = d_rdogrpSuitSamRe[i];
-                    }
-
-                    if(rbData.equalsIgnoreCase("1"))
-                    {
-                        secSuitSamReO.setVisibility(View.GONE);
-                        lineSuitSamReO.setVisibility(View.GONE);
-                        txtSuitSamReO.setText("");
-                        secSampleAgree.setVisibility(View.GONE);
-                        lineSampleAgree.setVisibility(View.GONE);
-                        rdogrpSampleAgree.clearCheck();
-                        secNotAgree.setVisibility(View.GONE);
-                        lineNotAgree.setVisibility(View.GONE);
-                        rdogrpNotAgree.clearCheck();
-                        secOthersR.setVisibility(View.GONE);
-                        lineOthersR.setVisibility(View.GONE);
-                        txtOthersR.setText("");
-                    }
-                    else if(rbData.equalsIgnoreCase("2"))
-                    {
-                        secSuitSamReO.setVisibility(View.GONE);
-                        lineSuitSamReO.setVisibility(View.GONE);
-                        txtSuitSamReO.setText("");
-                        secSampleAgree.setVisibility(View.GONE);
-                        lineSampleAgree.setVisibility(View.GONE);
-                        rdogrpSampleAgree.clearCheck();
-                        secNotAgree.setVisibility(View.GONE);
-                        lineNotAgree.setVisibility(View.GONE);
-                        rdogrpNotAgree.clearCheck();
-                        secOthersR.setVisibility(View.GONE);
-                        lineOthersR.setVisibility(View.GONE);
-                        txtOthersR.setText("");
-                    }
-                    else if(rbData.equalsIgnoreCase("3"))
-                    {
-                        secSuitSamReO.setVisibility(View.GONE);
-                        lineSuitSamReO.setVisibility(View.GONE);
-                        txtSuitSamReO.setText("");
-                        secSampleAgree.setVisibility(View.GONE);
-                        lineSampleAgree.setVisibility(View.GONE);
-                        rdogrpSampleAgree.clearCheck();
-                        secNotAgree.setVisibility(View.GONE);
-                        lineNotAgree.setVisibility(View.GONE);
-                        rdogrpNotAgree.clearCheck();
-                        secOthersR.setVisibility(View.GONE);
-                        lineOthersR.setVisibility(View.GONE);
-                        txtOthersR.setText("");
-                    }
-                    else
-                    {
-                        secSuitSamReO.setVisibility(View.VISIBLE);
-                        lineSuitSamReO.setVisibility(View.VISIBLE);
-                        secSampleAgree.setVisibility(View.GONE);
-                        lineSampleAgree.setVisibility(View.GONE);
-                        secNotAgree.setVisibility(View.GONE);
-                        lineNotAgree.setVisibility(View.GONE);
-                    }
-                }
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                    return;
-                }
-            });
-            secSuitSamReO=(LinearLayout)findViewById(R.id.secSuitSamReO);
-            lineSuitSamReO=(View)findViewById(R.id.lineSuitSamReO);
-            VlblSuitSamReO=(TextView) findViewById(R.id.VlblSuitSamReO);
-            txtSuitSamReO=(EditText) findViewById(R.id.txtSuitSamReO);
             secSampleAgree=(LinearLayout)findViewById(R.id.secSampleAgree);
             lineSampleAgree=(View)findViewById(R.id.lineSampleAgree);
             VlblSampleAgree = (TextView) findViewById(R.id.VlblSampleAgree);
@@ -1207,7 +989,7 @@ public class RSV extends Activity {
                 }
             });
         } catch (Exception e) {
-            Connection.MessageBox(RSV.this, e.getMessage());
+            Connection.MessageBox(RSV_20Apr2022.this, e.getMessage());
             return;
         }
     }
@@ -1216,7 +998,7 @@ public class RSV extends Activity {
         try {
             String ValidationMSG = ValidationCheck();
             if (ValidationMSG.length() > 0) {
-                Connection.MessageBox(RSV.this, ValidationMSG);
+                Connection.MessageBox(RSV_20Apr2022.this, ValidationMSG);
                 return;
             }
 
@@ -1301,24 +1083,6 @@ public class RSV extends Activity {
             objSave.setRSVlistedDt(dtpRSVlistedDt.getText().toString().length() > 0 ? Global.DateConvertYMD(dtpRSVlistedDt.getText().toString()) : dtpRSVlistedDt.getText().toString());
             objSave.setReason(txtReason.getText().toString());
 
-            String[] d_rdogrpSuitSam = new String[] {"1","2"};
-            objSave.setSuitSam("");
-            for (int i = 0; i < rdogrpSuitSam.getChildCount(); i++)
-            {
-                rb = (RadioButton)rdogrpSuitSam.getChildAt(i);
-                if (rb.isChecked()) objSave.setSuitSam(d_rdogrpSuitSam[i]);
-            }
-
-            String[] d_rdogrpSuitSamRe = new String[] {"1","2","3","7"};
-            objSave.setSuitSamRe("");
-            for (int i = 0; i < rdogrpSuitSamRe.getChildCount(); i++)
-            {
-                rb = (RadioButton)rdogrpSuitSamRe.getChildAt(i);
-                if (rb.isChecked()) objSave.setSuitSamRe(d_rdogrpSuitSamRe[i]);
-            }
-
-            objSave.setSuitSamReO(txtSuitSamReO.getText().toString());
-
             String[] d_rdogrpSampleAgree = new String[] {"1","2"};
             objSave.setSampleAgree("");
             for (int i = 0; i < rdogrpSampleAgree.getChildCount(); i++)
@@ -1348,13 +1112,13 @@ public class RSV extends Activity {
                 returnIntent.putExtra("res", "");
                 setResult(Activity.RESULT_OK, returnIntent);
 
-                Connection.MessageBox(RSV.this, "Saved Successfully");
+                Connection.MessageBox(RSV_20Apr2022.this, "Saved Successfully");
             } else {
-                Connection.MessageBox(RSV.this, status);
+                Connection.MessageBox(RSV_20Apr2022.this, status);
                 return;
             }
         } catch (Exception e) {
-            Connection.MessageBox(RSV.this, e.getMessage());
+            Connection.MessageBox(RSV_20Apr2022.this, e.getMessage());
             return;
         }
     }
@@ -1368,8 +1132,6 @@ public class RSV extends Activity {
                 ValidationMsg += "\nRequired field: Child ID.";
                 secChildID.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
-
-
 //         if(secChildID.isShown() & (Integer.valueOf(txtChildID.getText().toString().length()==0 ? "1" : txtChildID.getText().toString()) < 1 || Integer.valueOf(txtChildID.getText().toString().length()==0 ? "9999999999999999" : txtChildID.getText().toString()) > 9999999))
 //           {
 //             ValidationMsg += "\nValue should be between 1 and 99999999999(Child ID).";
@@ -1483,24 +1245,6 @@ public class RSV extends Activity {
                 ValidationMsg += "\nRequired field: আর এস ভি গবেষণার জন্য উপযুক্ত.";
                 secRSVsuitable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
-//            //******************* Sample Date Check Shahidul
-//            String Day15;
-//            Day15=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date('now'))-julianday(date(VDate))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID +"' and Status='1'");
-//            int dy1=Global.DateDifferenceDays(dtpVDate.getText().toString(),Global.DateConvertDMY(Day15));
-//            if (dy1<15 & !rdoSuitSam2.isChecked()) {
-//                Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম। সুতরাং স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা");
-//            }
-//            //******************* Sample Date Check
-            //******************* Sample Date Check Shahidul
-            String Day14_day;
-//                        Day14=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date(e)max(VDat))-julianday(date('"+Global.DateConvertYMD(dtpVDate.getText().toString())+"'))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-            Day14_day=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-            int dy14=Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14_day));
-            if (dy14>=0 & dy14<=15 & !rdoSuitSam2.isChecked()) {
-//                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম ("+Global.DateConvertYMD(dtpVDate.getText().toString())+" "+Day14+" "+dy1+" দিন)");
-                Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ ("+Day14_day+") হইতে আজকের তারিখের (পার্থক্য : "+dy14+" দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)");
-            }
-            //******************* Sample Date Check
             if (!rdoRSVlisted1.isChecked() & !rdoRSVlisted2.isChecked() & secRSVlisted.isShown()) {
                 ValidationMsg += "\nRequired field: আর এস ভি গবেষণার জন্য তালিকাভুক্ত.";
                 secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
@@ -1527,21 +1271,6 @@ public class RSV extends Activity {
 //                ValidationMsg += "\nRequired field: তালিকাভুক্ত না হলে কারন .........( অনুপস্থিত, মৃত্যু, সম্মতি প্রত্যাহার,  অন্যান্য).";
 //                secReason.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
 //            }
-            if(!rdoSuitSam1.isChecked() & !rdoSuitSam2.isChecked() & secSuitSam.isShown())
-            {
-                ValidationMsg += "\nRequired field: স্যাম্পল দেওয়ার জন্য উপযুক্ত.";
-                secSuitSam.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-            }
-            if(!rdoSuitSamRe1.isChecked() & !rdoSuitSamRe2.isChecked() & !rdoSuitSamRe3.isChecked() & !rdoSuitSamRe4.isChecked() & secSuitSamRe.isShown())
-            {
-                ValidationMsg += "\nRequired field: উপযুক্ত না হওয়ার কারণ.";
-                secSuitSamRe.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-            }
-            if(txtSuitSamReO.getText().toString().length()==0 & secSuitSamReO.isShown())
-            {
-                ValidationMsg += "\nRequired field: অন্যান্য (উল্লেখ করুন).";
-                secSuitSamReO.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.color_Section_Highlight));
-            }
             if(!rdoSampleAgree1.isChecked() & !rdoSampleAgree2.isChecked() & secSampleAgree.isShown())
             {
                 ValidationMsg += "\nRequired field: স্যাম্পল দিতে রাজি :.";
@@ -1592,9 +1321,6 @@ public class RSV extends Activity {
             secReason.setBackgroundColor(Color.WHITE);
             secFever.setBackgroundColor(Color.WHITE);
             secFeverDt.setBackgroundColor(Color.WHITE);
-            secSuitSam.setBackgroundColor(Color.WHITE);
-            secSuitSamRe.setBackgroundColor(Color.WHITE);
-            secSuitSamReO.setBackgroundColor(Color.WHITE);
             secNotAgree.setBackgroundColor(Color.WHITE);
             secOthersR.setBackgroundColor(Color.WHITE);
         } catch (Exception e) {
@@ -1681,25 +1407,7 @@ public class RSV extends Activity {
                 }
                 dtpFeverDt.setText(item.getFeverDt().toString().length() == 0 ? "" : Global.DateConvertDMY(item.getFeverDt()));
 
-                String[] d_rdogrpSuitSam = new String[] {"1","2"};
-                for (int i = 0; i < d_rdogrpSuitSam.length; i++)
-                {
-                    if (String.valueOf(item.getSuitSam()).equals(String.valueOf(d_rdogrpSuitSam[i])))
-                    {
-                        rb = (RadioButton)rdogrpSuitSam.getChildAt(i);
-                        rb.setChecked(true);
-                    }
-                }
-                String[] d_rdogrpSuitSamRe = new String[] {"1","2","3","7"};
-                for (int i = 0; i < d_rdogrpSuitSamRe.length; i++)
-                {
-                    if (String.valueOf(item.getSuitSamRe()).equals(String.valueOf(d_rdogrpSuitSamRe[i])))
-                    {
-                        rb = (RadioButton)rdogrpSuitSamRe.getChildAt(i);
-                        rb.setChecked(true);
-                    }
-                }
-                txtSuitSamReO.setText(item.getSuitSamReO());
+
 
                 String[] d_rdogrpRSVlisted = new String[]{"1", "2"};
                 for (int i = 0; i < d_rdogrpRSVlisted.length; i++) {
@@ -1731,7 +1439,7 @@ public class RSV extends Activity {
                 txtOthersR.setText(item.getOthersR());
             }
         } catch (Exception e) {
-            Connection.MessageBox(RSV.this, e.getMessage());
+            Connection.MessageBox(RSV_20Apr2022.this, e.getMessage());
             return;
         }
     }

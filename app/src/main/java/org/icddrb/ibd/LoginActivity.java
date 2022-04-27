@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import Common.Connection;
@@ -129,7 +130,7 @@ public class LoginActivity extends Activity{
             //Need to update date every time whenever shared updated system
             //Format: DDMMYYYY
             //*********************************************************************
-            SystemUpdateDT = "15122021";
+            SystemUpdateDT = "14022022";
             lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
             //Check for Internet connectivity
@@ -138,6 +139,22 @@ public class LoginActivity extends Activity{
             } else {
                 networkAvailable=false;
             }
+
+            //**************************** Process **************************************
+            try {
+                C.CreateTable("process_tab", "Create table process_tab(process_id int)");
+                //14 Feb 2022
+                if (!C.Existence("Select * from process_tab where process_id=2")) {
+                    String resp = "";
+//                    C.Save("update rsv set upload=2 where notagree!=''");
+                    C.Save("update RSV set Upload=2 where length(NotAgree)>0");
+                    if (resp.length() == 0) C.Save("Insert into process_tab(process_id)values(2)");
+                }
+
+            }catch (Exception e){
+                Connection.MessageBox(this,e.getMessage());
+            }
+                //**************************** Process **************************************
 
             //Update data for Training Purpose
             //No data sync will work for VHW: 999
@@ -172,16 +189,11 @@ public class LoginActivity extends Activity{
             }
 
 
-
             Cluster = C.ReturnSingleValue("select Cluster from Cluster");
             g.setClusterCode(Cluster);
             sp.save(this,"cluster",Cluster);
 
-            if (networkAvailable)
-            {
-                Intent syncService = new Intent(this, Sync_Service.class);
-                startService(syncService);
-            }
+//
 
             /*String TableName = "WeeklyVstDt";
             String SQLStr = "Select top 20 Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +
@@ -209,6 +221,10 @@ public class LoginActivity extends Activity{
             }catch (Exception ex){
 
             }
+
+            Intent syncService = new Intent(this, Sync_Service.class);
+            startService(syncService);
+
 
             //download from 300 week
             /*if(netwoekAvailable & !C.Existence("Select Week from weeklyvstdt where Week=250")) {
@@ -259,6 +275,17 @@ public class LoginActivity extends Activity{
                         g.setWeekStartDate(WeekDate[0].toString());
                         g.setWeekEndDate(WeekDate[1].toString());
 
+                        if(networkAvailable==true)
+                        {
+//                            //********************* RSV Sample ************************
+//                            String SQLStrRSV = "Select ChildID,SlNo,(cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,'1' Upload,modifyDate from RSVSample";
+//                            String TableNameRSV = "RSVSample";
+//                            String VariableListRSV = "ChildID,SlNo,Vdate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt, Upload,modifyDate";
+//
+//                            C.DownloadJSON(SQLStrRSV, TableNameRSV, VariableListRSV, "ChildID, SlNo");
+                        }
+
+
                         /*
                         //Data Upload to Server (JSON Format)
                         //--------------------------------------------------------------------------
@@ -307,7 +334,6 @@ public class LoginActivity extends Activity{
                         String[] U = Connection.split(uid.getSelectedItem().toString(),'-');
                         g.setUserId(U[0]);
 
-
                         //netwoekAvailable=false;
 
                         //Download Updated System
@@ -315,6 +341,7 @@ public class LoginActivity extends Activity{
                         Bundle IDbundle = new Bundle();
                         if(networkAvailable==true)
                         {
+
                             if(C.Existence("Select * from vhws where BariChar is null or length(barichar)=0"))
                             {
                                 String SQLStr = "Select Cluster,VHW,BariChar from VHWs where VHW = '"+ g.getUserId() +"'";

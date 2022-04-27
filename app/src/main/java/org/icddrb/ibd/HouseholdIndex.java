@@ -45,6 +45,7 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -88,7 +89,7 @@ import Common.GlobalTextConverter;
 public class HouseholdIndex extends Activity {
     Connection C;
     Global g;
-    boolean netwoekAvailable=false;
+    boolean netwoekAvailable = false;
     ArrayList<HashMap<String, String>> mylistBari;
     ArrayList<HashMap<String, String>> mylistChild;
     ArrayList<HashMap<String, String>> evmylist = new ArrayList<HashMap<String, String>>();
@@ -124,22 +125,22 @@ public class HouseholdIndex extends Activity {
 
         switch (item.getItemId()) {
             case R.id.menuMemberSearch:
-                Intent f = new Intent(getApplicationContext(),MemSearch.class);
+                Intent f = new Intent(getApplicationContext(), MemSearch.class);
                 startActivity(f);
                 return true;
 
             case R.id.menuReport:
-                Intent f1 = new Intent(getApplicationContext(),WebReports.class);
+                Intent f1 = new Intent(getApplicationContext(), WebReports.class);
                 startActivity(f1);
                 return true;
 
             case R.id.menuVHWReport:
-                Intent f2 = new Intent(getApplicationContext(),VHWReports.class);
+                Intent f2 = new Intent(getApplicationContext(), VHWReports.class);
                 startActivity(f2);
                 return true;
 
             case R.id.menuClusterBlock:
-                if(g.getUserId().equals("999")) return true;
+                if (g.getUserId().equals("999")) return true;
 
                 //Check for Internet connectivity
                 //*******************************************************************************
@@ -158,7 +159,7 @@ public class HouseholdIndex extends Activity {
 
                         new Thread() {
                             public void run() {
-                                String ResponseString="Status:";
+                                String ResponseString = "Status:";
                                 String response;
                                 try {
                                     //Start
@@ -175,15 +176,15 @@ public class HouseholdIndex extends Activity {
                                     //4-Update Cluster and Block
                                     //----------------------------------------------------------------------------------
                                     //Upload update to server
-                                    TableName     = "Bari";
-                                    VariableList  = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload";
-                                    UniqueField   = "Vill, Bari";
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    TableName = "Bari";
+                                    VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload";
+                                    UniqueField = "Vill, Bari";
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Download Update from Server
                                     //3-Update Bari Information
                                     TableName = "Bari";
-                                    SQLStr = "Select Vill,Bari,Cluster,Block,BariName,BariLoc from Bari where Cluster='"+ Cluster +"' and Upload='3'";
+                                    SQLStr = "Select Vill,Bari,Cluster,Block,BariName,BariLoc from Bari where Cluster='" + Cluster + "' and Upload='3'";
                                     VariableList = "Vill,Bari,Cluster,Block,BariName,BariLoc";
                                     Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "Vill,Bari");
 
@@ -191,29 +192,29 @@ public class HouseholdIndex extends Activity {
                                     //--------------------------------------------------------------------------------------
                                     TableName = "Bari";
                                     VariableList = "Vill, Bari, Cluster, Block";
-                                    SQLStr = "Select Vill, Bari, Cluster, Block from BariRemove where Upload='1' and Cluster='"+ Cluster +"'";
+                                    SQLStr = "Select Vill, Bari, Cluster, Block from BariRemove where Upload='1' and Cluster='" + Cluster + "'";
                                     Res = C.DownloadJSON_BlockUpdate_UpdateServer(SQLStr, TableName, VariableList, "Vill, Bari");
 
                                     //4-Update Cluster and Block
-                                    String ServerVal  = C.ReturnResult("ReturnSingleValue","Select Count(*)Total from Bari where Cluster='"+ Cluster +"' and Upload='4'");
-                                    if(Integer.valueOf(ServerVal)>0) {
+                                    String ServerVal = C.ReturnResult("ReturnSingleValue", "Select Count(*)Total from Bari where Cluster='" + Cluster + "' and Upload='4'");
+                                    if (Integer.valueOf(ServerVal) > 0) {
                                         //DSS Bari
                                         //--------------------------------------------------------------------------------------
                                         TableName = "DSSBari";
                                         VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId";
-                                        SQLStr  = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
-                                        SQLStr += " from DSSBari d,Bari b where d.Vill+d.Bari=b.vill+b.bari and b.Cluster='"+ Cluster +"' and b.Upload='4'";
+                                        SQLStr = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
+                                        SQLStr += " from DSSBari d,Bari b where d.Vill+d.Bari=b.vill+b.bari and b.Cluster='" + Cluster + "' and b.Upload='4'";
                                         Res = C.DownloadJSON(SQLStr, TableName, VariableList, "Vill, Bari");
 
                                         //Visits
                                         //--------------------------------------------------------------------------------------
                                         TableName = "Visits";
                                         VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload, UploadDT";
-                                        SQLStr  = " select ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload, UploadDT from";
+                                        SQLStr = " select ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload, UploadDT from";
                                         SQLStr += " (Select ChildId, PID, CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate,";
                                         SQLStr += " VStat, SickStatus, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2)) ExDate,";
                                         SQLStr += " v.Lat, v.Lon, v.EnDt, v.UserId, v.Upload, v.UploadDT,rank() over (partition by childid order by week desc)total";
-                                        SQLStr += " from Visits v, Bari b where left(v.ChildId,7)=b.Vill+b.Bari and b.Cluster='"+ Cluster +"' and b.Upload='4')a";
+                                        SQLStr += " from Visits v, Bari b where left(v.ChildId,7)=b.Vill+b.Bari and b.Cluster='" + Cluster + "' and b.Upload='4')a";
                                         SQLStr += " where total  between 1 and 5";
                                         Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId,Week");
 
@@ -223,7 +224,7 @@ public class HouseholdIndex extends Activity {
                                         SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
                                         SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,";
                                         SQLStr += "(cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate,VHW, VHWCluster, VHWBlock, Referral, c.EnDt, c.UserId, c.Upload, c.UploadDt";
-                                        SQLStr += " from Child c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='"+ Cluster +"' and b.upload='4'";
+                                        SQLStr += " from Child c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='" + Cluster + "' and b.upload='4'";
 
                                         TableName = "Child";
                                         VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, EnDt, UserId, Upload, UploadDt";
@@ -234,7 +235,7 @@ public class HouseholdIndex extends Activity {
                                         SQLStr = "Select mwraId, c.Vill, c.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate,";
                                         SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
                                         SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,c.PStat,c.LMPDt,c.EnDt";
-                                        SQLStr += " from MWRA c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='"+ Cluster +"' and b.Upload='4'";
+                                        SQLStr += " from MWRA c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='" + Cluster + "' and b.Upload='4'";
 
                                         TableName = "MWRA";
                                         VariableList = "MwraId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate,PStat,LMPDt, EnDt";
@@ -246,7 +247,7 @@ public class HouseholdIndex extends Activity {
                                         SQLStr += " from AssNewBorn a";
                                         SQLStr += " inner join Child c on a.ChildId=c.ChildId";
                                         SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                        SQLStr += " where b.Cluster='"+ Cluster +"' and b.upload='4'";
+                                        SQLStr += " where b.Cluster='" + Cluster + "' and b.upload='4'";
 
                                         TableName = "AssNewBorn";
                                         VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload";
@@ -261,7 +262,7 @@ public class HouseholdIndex extends Activity {
                                         SQLStr += " from AssPneu a";
                                         SQLStr += " inner join Child c on a.ChildId=c.ChildId";
                                         SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                        SQLStr += " where b.Cluster='"+ Cluster +"' and b.upload='4'";
+                                        SQLStr += " where b.Cluster='" + Cluster + "' and b.upload='4'";
 
                                         TableName = "AssPneu";
                                         VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk";
@@ -273,11 +274,11 @@ public class HouseholdIndex extends Activity {
                                         SQLStr += " from NonComp a";
                                         SQLStr += " inner join Child c on a.ChildId=c.ChildId";
                                         SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                        SQLStr += " where b.Cluster='"+ Cluster +"' and b.upload='4'";
+                                        SQLStr += " where b.Cluster='" + Cluster + "' and b.upload='4'";
 
                                         TableName = "NonComp";
                                         VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
-                                        Res = C.DownloadJSON(SQLStr,TableName,VariableList,"ChildId, Week, Visit");
+                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week, Visit");
                                     }
 
                                     //Bari - finally change the status of Upload='4'
@@ -285,8 +286,8 @@ public class HouseholdIndex extends Activity {
                                     TableName = "Bari";
                                     VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, UploadDT";
                                     SQLStr = "Select Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, UploadDT" +
-                                            " from Bari where Cluster = '"+ Cluster +"' and Upload='4'";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"Vill, Bari");
+                                            " from Bari where Cluster = '" + Cluster + "' and Upload='4'";
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "Vill, Bari");
 
 
                                     Connection.MessageBox(HouseholdIndex.this, "তথ্য ডাটাবেজ সার্ভারে সম্পূর্ণ ভাবে আপলোড হয়েছে। ");
@@ -306,7 +307,7 @@ public class HouseholdIndex extends Activity {
 
                 return true;
             case R.id.menuSync:
-                if(g.getUserId().equals("999")) return true;
+                if (g.getUserId().equals("999")) return true;
 
                 //Check for Internet connectivity
                 //*******************************************************************************
@@ -325,7 +326,7 @@ public class HouseholdIndex extends Activity {
 
                         new Thread() {
                             public void run() {
-                                String ResponseString="Status:";
+                                String ResponseString = "Status:";
                                 String response;
                                 try {
                                     //Start --------------------------------------------------------------
@@ -335,16 +336,16 @@ public class HouseholdIndex extends Activity {
                                     String VariableList;
                                     String UniqueField;
 
-                                    TableName     = "MDSSVill";
-                                    VariableList  = "Vill, Vname, UCode, UName, Cluster, Status, OldUnion";
-                                    UniqueField   = "Vill";
-                                    C.Sync_Download_Vill(TableName,VariableList,UniqueField,g.getClusterCode());
+                                    TableName = "MDSSVill";
+                                    VariableList = "Vill, Vname, UCode, UName, Cluster, Status, OldUnion";
+                                    UniqueField = "Vill";
+                                    C.Sync_Download_Vill(TableName, VariableList, UniqueField, g.getClusterCode());
 
                                     //CID Update(CID_Update_Log)
-                                    TableName     = "CID_Update_Log";
-                                    VariableList  = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
-                                    UniqueField   = "ChildId, NewCID, OldCID";
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    TableName = "CID_Update_Log";
+                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
+                                    UniqueField = "ChildId, NewCID, OldCID";
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Download update from Server
                                     //3-Update Bari Information
@@ -356,86 +357,86 @@ public class HouseholdIndex extends Activity {
 
                                     //Upload
                                     //----------------------------------------------------------------------------------
-                                    C.ExecuteCommandOnServer("Insert into UploadMonitor(Cluster)Values('"+ g.getClusterCode() +"')");
+                                    C.ExecuteCommandOnServer("Insert into UploadMonitor(Cluster)Values('" + g.getClusterCode() + "')");
 
                                     //Bari(New/Old-Block Update)
-                                    TableName     = "Bari";
-                                    VariableList  = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload";
-                                    UniqueField   = "Vill, Bari";
+                                    TableName = "Bari";
+                                    VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload";
+                                    UniqueField = "Vill, Bari";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Child
-                                    TableName     = "Child";
-                                    VariableList  = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral,Referral_Add,Referral_Foll,Absent_Sick,ContactNo, EnDt, UserId, Upload";
-                                    UniqueField   = "ChildId";
+                                    TableName = "Child";
+                                    VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral,Referral_Add,Referral_Foll,Absent_Sick,ContactNo, EnDt, UserId, Upload";
+                                    UniqueField = "ChildId";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Visits
-                                    TableName     = "Visits";
-                                    VariableList  = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload";
-                                    UniqueField   = "ChildId,Week";
+                                    TableName = "Visits";
+                                    VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload";
+                                    UniqueField = "ChildId,Week";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //AssNewBorn
-                                    TableName     = "AssNewBorn";
-                                    VariableList  = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, ";
+                                    TableName = "AssNewBorn";
+                                    VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, ";
                                     VariableList += "HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload";
-                                    UniqueField   = "ChildId, Week, VType, Visit";
+                                    UniqueField = "ChildId, Week, VType, Visit";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //AssPneu
-                                    TableName     = "AssPneu";
-                                    VariableList  = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, ";
+                                    TableName = "AssPneu";
+                                    VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, ";
                                     VariableList += "CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk";
-                                    UniqueField   = "ChildId, Week, VType, Visit";
+                                    UniqueField = "ChildId, Week, VType, Visit";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //NonComp
-                                    TableName     = "NonComp";
-                                    VariableList  = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ";
+                                    TableName = "NonComp";
+                                    VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ";
                                     VariableList += "ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
-                                    UniqueField   = "ChildId, Week, VType, Visit";
+                                    UniqueField = "ChildId, Week, VType, Visit";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //CID Update(CID_Update_Log)
-                                    TableName     = "CID_Update_Log";
-                                    VariableList  = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
-                                    UniqueField   = "ChildId, NewCID, OldCID";
+                                    TableName = "CID_Update_Log";
+                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
+                                    UniqueField = "ChildId, NewCID, OldCID";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
 
-                                    TableName     = "RSV";
-                                    VariableList  = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt,Fever,FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SampleAgree, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
-                                    UniqueField   = "ChildID, Week, VType, Visit";
+                                    TableName = "RSV";
+                                    VariableList = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt,Fever,FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SampleAgree,NotAgree,OthersR, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
+                                    UniqueField = "ChildID, Week, VType, Visit";
 
-                                    C.UploadJSON(TableName,VariableList,UniqueField);
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Delete
                                     //-------------------------------------------------------------------
                                     //Child remove based on server data, Table: ChildRemove
-                                    SQLStr = "select ChildId,c.Vill,c.Bari from ChildRemove c,Bari b where c.vill+c.bari=b.Vill+b.bari and b.Cluster='"+ Cluster +"' and c.Upload='1'";
+                                    SQLStr = "select ChildId,c.Vill,c.Bari from ChildRemove c,Bari b where c.vill+c.bari=b.Vill+b.bari and b.Cluster='" + Cluster + "' and c.Upload='1'";
                                     VariableList = "ChildId,Vill,Bari";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Child", "ChildRemove", VariableList, "ChildId,Vill,Bari");
 
                                     //AssPneu remove based on server data, Table: AssPneu_Audit
-                                    SQLStr = "Select a.ChildId, Week, VType, Visit from AssPneu_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    SQLStr = "Select a.ChildId, Week, VType, Visit from AssPneu_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='" + Cluster + "' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VType, Visit";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssPneu", "AssPneu_Audit", VariableList, "ChildId, Week, VType, Visit");
 
                                     //AssNewBorn remove based on server data, Table: AssNewBorn_Audit
-                                    SQLStr = "Select a.ChildId, Week, VType, Visit from AssNewBorn_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    SQLStr = "Select a.ChildId, Week, VType, Visit from AssNewBorn_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='" + Cluster + "' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VType, Visit";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "AssNewBorn", "AssNewBorn_Audit", VariableList, "ChildId, Week, VType, Visit");
 
                                     //Visits remove based on server data, Table: Visits_Audit
-                                    SQLStr = "Select a.ChildId, a.Week, a.VDate from Visits_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='"+ Cluster +"' and a.Upload='1'";
+                                    SQLStr = "Select a.ChildId, a.Week, a.VDate from Visits_Audit a inner join Child c on a.childid=c.childid inner join Bari b on c.vill+c.bari=b.vill+b.bari where b.cluster='" + Cluster + "' and a.Upload='1'";
                                     VariableList = "ChildId, Week, VDate";
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Visits", "Visits_Audit", VariableList, "ChildId, Week, VDate");
 
@@ -457,10 +458,10 @@ public class HouseholdIndex extends Activity {
                                     //Visit
                                     TableName = "Visits";
                                     VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate";
-                                    SQLStr  = " select top 1000 v.ChildId, v.PID, v.CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate, VStat, SickStatus, v.ExDate";
+                                    SQLStr = " select top 1000 v.ChildId, v.PID, v.CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate, VStat, SickStatus, v.ExDate";
                                     SQLStr += " from Visits v, Child c, Bari b where v.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari";
-                                    SQLStr += " and b.Cluster='"+ Cluster +"' and v.Upload='3' order by Week asc";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"ChildId, Week");
+                                    SQLStr += " and b.Cluster='" + Cluster + "' and v.Upload='3' order by Week asc";
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week");
 
                                     //Assessment (0-28 days)
                                     TableName = "AssNewBorn";
@@ -477,9 +478,9 @@ public class HouseholdIndex extends Activity {
                                     SQLStr += " from AssNewBorn a";
                                     SQLStr += " inner join Child c on a.ChildId=c.ChildId";
                                     SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                    SQLStr += " where b.Cluster='"+ Cluster +"' and a.upload='3'";
+                                    SQLStr += " where b.Cluster='" + Cluster + "' and a.upload='3'";
 
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"ChildId, Week, VType, Visit");
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
 
                                     //Assessment (29-59 months)
                                     TableName = "AssPneu";
@@ -499,9 +500,9 @@ public class HouseholdIndex extends Activity {
                                     SQLStr += " from AssPneu a";
                                     SQLStr += " inner join Child c on a.ChildId=c.ChildId";
                                     SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                    SQLStr += " where b.Cluster='"+ Cluster +"' and a.upload='3'";
+                                    SQLStr += " where b.Cluster='" + Cluster + "' and a.upload='3'";
 
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"ChildId, Week, VType, Visit");
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
 
                                     //Non-Complience
                                     TableName = "NonComp";
@@ -519,8 +520,16 @@ public class HouseholdIndex extends Activity {
                                     SQLStr += " from NonComp a";
                                     SQLStr += " inner join Child c on a.ChildId=c.ChildId";
                                     SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                    SQLStr += " where b.Cluster='"+ Cluster +"' and a.upload='3'";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"ChildId, Week, VType, Visit");
+                                    SQLStr += " where b.Cluster='" + Cluster + "' and a.upload='3'";
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
+
+                                    //********************* RSV Sample ************************
+                                    SQLStr = "Select ChildID,SlNo,(cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,'1' Upload,modifyDate from RSVSample";
+                                    TableName = "RSVSample";
+                                    VariableList = "ChildID,SlNo,Vdate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt, Upload,modifyDate";
+
+                                    C.DownloadJSON(SQLStr, TableName, VariableList, "ChildID, SlNo");
+                                    //********************* RSV Sample ************************
 
                                     //Upload Database to Server : 09 Nov 2016
                                     C.DatabaseUploadZip(Cluster);
@@ -539,8 +548,6 @@ public class HouseholdIndex extends Activity {
                     }
                 });
                 adb.show();
-
-
 
 
                 return true;
@@ -563,7 +570,7 @@ public class HouseholdIndex extends Activity {
 
                         new Thread() {
                             public void run() {
-                                String ResponseString="Status:";
+                                String ResponseString = "Status:";
                                 String response;
                                 try {
                                     //Start --------------------------------------------------------------
@@ -622,7 +629,7 @@ public class HouseholdIndex extends Activity {
 
             //Household not visited due to some reason
             case R.id.menuNotVisited:
-                ShowVisitMissingForm(Cluster,lblBlock.getText().toString(),lblWeek.getText().toString());
+                ShowVisitMissingForm(Cluster, lblBlock.getText().toString(), lblWeek.getText().toString());
                 return true;
 
             case R.id.menuOutSideArea:
@@ -639,7 +646,7 @@ public class HouseholdIndex extends Activity {
                 Bundle IDbundle = new Bundle();
                 IDbundle.putString("weekno", WeekNo);
 
-                Intent f3 = new Intent(getApplicationContext(),HouseholdIndex_Outside.class);
+                Intent f3 = new Intent(getApplicationContext(), HouseholdIndex_Outside.class);
                 f3.putExtras(IDbundle);
                 startActivity(f3);
                 return true;
@@ -663,7 +670,7 @@ public class HouseholdIndex extends Activity {
 
                         new Thread() {
                             public void run() {
-                                String ResponseString="Status:";
+                                String ResponseString = "Status:";
                                 String response;
                                 try {
                                     //Start --------------------------------------------------------------
@@ -676,7 +683,7 @@ public class HouseholdIndex extends Activity {
                                     SQLStr = "Select mwraId, c.Vill, c.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate,";
                                     SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
                                     SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,c.PStat,c.LMPDt,c.EnDt";
-                                    SQLStr += " from MWRA c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='"+ Cluster +"'";
+                                    SQLStr += " from MWRA c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='" + Cluster + "'";
 
                                     TableName = "MWRA";
                                     VariableList = "MwraId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate,PStat,LMPDt, EnDt";
@@ -715,7 +722,7 @@ public class HouseholdIndex extends Activity {
 
                         new Thread() {
                             public void run() {
-                                String ResponseString="Status:";
+                                String ResponseString = "Status:";
                                 String response;
                                 try {
                                     //Start --------------------------------------------------------------
@@ -727,8 +734,8 @@ public class HouseholdIndex extends Activity {
                                     C.Save("Delete from DSSBari");
                                     TableName = "DSSBari";
                                     VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId";
-                                    SQLStr  = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
-                                    SQLStr += " from DSSBari d,Bari b where d.Vill+d.Bari=b.vill+b.bari and b.Cluster='"+ Cluster +"'";
+                                    SQLStr = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
+                                    SQLStr += " from DSSBari d,Bari b where d.Vill+d.Bari=b.vill+b.bari and b.Cluster='" + Cluster + "'";
                                     Res = C.DownloadJSON(SQLStr, TableName, VariableList, "Vill, Bari");
                                     //End-----------------------------------------------------------------
 
@@ -803,7 +810,7 @@ public class HouseholdIndex extends Activity {
 
             //C.Save("update Visits set cid=replace(cid,'-','') where Week=332 and LENgth(cid)<>11");
 
-            chkMWRA = (CheckBox)findViewById(R.id.chkMWRA);
+            chkMWRA = (CheckBox) findViewById(R.id.chkMWRA);
             cmdBlock1 = (Button) findViewById(R.id.cmdBlock1);
             cmdBlock2 = (Button) findViewById(R.id.cmdBlock2);
             cmdBlock3 = (Button) findViewById(R.id.cmdBlock3);
@@ -815,24 +822,23 @@ public class HouseholdIndex extends Activity {
             cmdBackToBariList = (Button) findViewById(R.id.cmdBackToBariList);
 
             Cluster = g.getClusterCode();
-            Block   = "1"; //default block 1
+            Block = "1"; //default block 1
 
             //WeekNo  = "100";
             Bundle B = new Bundle();
-            B	     = getIntent().getExtras();
+            B = getIntent().getExtras();
             WeekNo = B.getString("weekno");
 
             //WeekNo  = C.ReturnSingleValue("select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)");
-            if(WeekNo.length()==0)
-            {
-                Connection.MessageBox(HouseholdIndex.this,"Weekly visit schedule information is not available in database.");
+            if (WeekNo.length() == 0) {
+                Connection.MessageBox(HouseholdIndex.this, "Weekly visit schedule information is not available in database.");
                 return;
             }
             lblWeek.setText(WeekNo);
             lblPageHeading.setText("  Bari List");
 
 
-            VillageList = (Spinner)findViewById(R.id.VillageList);
+            VillageList = (Spinner) findViewById(R.id.VillageList);
             //VillageList.setAdapter(C.getArrayAdapter("select distinct ifnull(b.vill,'')||', '||ifnull(v.vname,'') from bari b,mdssvill v where b.vill=v.vill and b.cluster='" + Cluster + "' and b.block='" + Block + "'"));
 
             list = (ListView) findViewById(R.id.listHHIndex);
@@ -877,9 +883,9 @@ public class HouseholdIndex extends Activity {
                     String VillCode = Global.Left(VillageList.getSelectedItem().toString(), 3);
 
 
-                    String BariChar   = C.ReturnSingleValue("select ifnull(BariChar,'') from Vhws where active='1' and VHW='" + g.getUserId() + "' limit 1");
+                    String BariChar = C.ReturnSingleValue("select ifnull(BariChar,'') from Vhws where active='1' and VHW='" + g.getUserId() + "' limit 1");
                     String SQL = "select substr('000'||cast(ifnull(max(substr(Bari,2,4)),0)+1 as text),length('000'||cast(ifnull(max(substr(Bari,2,4)),0)+1 as text))-2,3)BariSl  from Bari";
-                    SQL += " where vill='"+ VillCode +"' and substr(bari,1,1)='"+ BariChar +"' order by substr(Bari,2,3) desc limit 1";
+                    SQL += " where vill='" + VillCode + "' and substr(bari,1,1)='" + BariChar + "' order by substr(Bari,2,3) desc limit 1";
                     String LastBariNo = C.ReturnSingleValue(SQL);
                     CurrentBariNo = BariChar + LastBariNo;
 
@@ -892,11 +898,11 @@ public class HouseholdIndex extends Activity {
                 public void onClick(View arg0) {
                     //if (BariList.getSelectedItemPosition() == 0) return;
                     if (BariList.getSelectedItem().toString().trim().equalsIgnoreCase("all bari")) {
-                        Connection.MessageBox(HouseholdIndex.this,"বাড়ীর তালিকা থেকে সঠিক বাড়ী সিলেক্ট করুন.");
+                        Connection.MessageBox(HouseholdIndex.this, "বাড়ীর তালিকা থেকে সঠিক বাড়ী সিলেক্ট করুন.");
                         return;
                     }
 
-                    String VillCode = Global.Left(VillageList.getSelectedItem().toString(),3);
+                    String VillCode = Global.Left(VillageList.getSelectedItem().toString(), 3);
                     String CurrentBariNo = Global.Left(BariList.getSelectedItem().toString(), 4);
                     ShowBariForm(VillCode, VillageList.getSelectedItem().toString(), CurrentBariNo, "u");
                 }
@@ -907,10 +913,9 @@ public class HouseholdIndex extends Activity {
                 public void onClick(View arg0) {
                     String CurrentBariNo = "";
                     if (BariList.getSelectedItemPosition() == 0) {
-                        Connection.MessageBox(HouseholdIndex.this,"বাড়ীর তালিকা থেকে সঠিক বাড়ী সিলেক্ট করুন.");
+                        Connection.MessageBox(HouseholdIndex.this, "বাড়ীর তালিকা থেকে সঠিক বাড়ী সিলেক্ট করুন.");
                         return;
-                    }
-                    else {
+                    } else {
                         String[] B = BariList.getSelectedItem().toString().split(",");
                         CurrentBariNo = B[0];
                     }
@@ -929,17 +934,15 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("Cluster", Cluster);
                     IDbundle.putString("Block", Block);
 //                    IDbundle.putString("Union", UCode );
-                    Intent f1 = new Intent(getApplicationContext(),ChildRegistration.class);
+                    Intent f1 = new Intent(getApplicationContext(), ChildRegistration.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);
                 }
             });
 
 
-            chkMWRA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
+            chkMWRA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     String CurrentBariNo = "";
                     if (BariList.getSelectedItemPosition() == 0)
                         CurrentBariNo = "%";
@@ -950,9 +953,9 @@ public class HouseholdIndex extends Activity {
 
 
                     if (BariList.getSelectedItem().toString().trim().equalsIgnoreCase("all bari")) {
-                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),"%",WeekNo);
+                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), "%", WeekNo);
                     } else {
-                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),CurrentBariNo,WeekNo);
+                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
                     }
                 }
             });
@@ -977,7 +980,7 @@ public class HouseholdIndex extends Activity {
                             VillageWiseBariList(false, Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3), "%");
                         */
 
-                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),"%",WeekNo);
+                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), "%", WeekNo);
                     } else {
                         /*if(cmdBackToBariList.isShown())
                             BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),CurrentBariNo,WeekNo);
@@ -985,7 +988,7 @@ public class HouseholdIndex extends Activity {
                             VillageWiseBariList(false, Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo);
                         */
 
-                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),CurrentBariNo,WeekNo);
+                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
                     }
                 }
             });
@@ -1028,7 +1031,7 @@ public class HouseholdIndex extends Activity {
 
             });
 
-            spnFilterOption = (Spinner)findViewById(R.id.spnFilterOption);
+            spnFilterOption = (Spinner) findViewById(R.id.spnFilterOption);
             spnFilterOption.setAdapter(C.getArrayAdapter("Select '1-বর্তমানে সক্রিয়' union Select '2-সকল শিশু' union Select '3-ভিজিট সম্পন্ন হয়েছে' union Select '4-ভিজিট সম্পন্ন হয়নি' union Select '5-বয়স উত্তীর্ণ' union Select '6-নবজাতক' union Select '7-মৃত্যু বরণ' union Select '8-অসুস্থ্য শিশু' union Select '9-স্থানান্তর'"));
             spnFilterOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -1041,7 +1044,7 @@ public class HouseholdIndex extends Activity {
                         CurrentBariNo = B[0];
                     }
 
-                    BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),CurrentBariNo,WeekNo);
+                    BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
                 }
 
                 @Override
@@ -1065,7 +1068,7 @@ public class HouseholdIndex extends Activity {
                     btnInMigration.setEnabled(false);
 
                     String CurrentBariNo = "";
-                    if(BariList.getCount() > 0) {
+                    if (BariList.getCount() > 0) {
                         if (BariList.getSelectedItemPosition() == 1)
                             CurrentBariNo = "%";
                         else if (BariList.getSelectedItemPosition() > 1)
@@ -1083,7 +1086,7 @@ public class HouseholdIndex extends Activity {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     //VillageWiseBariList(false,  Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3),"");
-                    BariList.setAdapter(C.getArrayAdapter("Select ' All Bari' union select trim(ifnull(bari,''))||', '||trim(ifnull(bariname,'')) from bari where cluster='" + Cluster + "' and block='" + Block + "' and Vill='"+ Global.Left(VillageList.getSelectedItem().toString(), 3) +"'"));
+                    BariList.setAdapter(C.getArrayAdapter("Select ' All Bari' union select trim(ifnull(bari,''))||', '||trim(ifnull(bariname,'')) from bari where cluster='" + Cluster + "' and block='" + Block + "' and Vill='" + Global.Left(VillageList.getSelectedItem().toString(), 3) + "'"));
 
                     String CurrentBariNo = "";
                     if (BariList.getSelectedItemPosition() == 0)
@@ -1121,7 +1124,7 @@ public class HouseholdIndex extends Activity {
             });
 
             String CurrentBariNo = "";
-            if(BariList.getCount() > 0) {
+            if (BariList.getCount() > 0) {
                 if (BariList.getSelectedItemPosition() == 0)
                     CurrentBariNo = "%";
                 else
@@ -1137,7 +1140,6 @@ public class HouseholdIndex extends Activity {
             }
 
 
-
             BlockWiseVillageBari(Block);
 
 
@@ -1148,13 +1150,12 @@ public class HouseholdIndex extends Activity {
 
     }
 
-    private void BlockWiseVillageBari(String BlockCode)
-    {
+    private void BlockWiseVillageBari(String BlockCode) {
         Block = BlockCode;
         lblBlock.setText(BlockCode);
 
         VillageList.setAdapter(C.getArrayAdapter("select distinct ifnull(b.vill,'')||', '||ifnull(v.vname,'') from bari b,mdssvill v where b.vill=v.vill and b.cluster='" + Cluster + "' and b.block='" + BlockCode + "'"));
-        BariList.setAdapter(C.getArrayAdapter("Select ' All Bari' union select trim(ifnull(bari,''))||', '||trim(ifnull(bariname,'')) from bari where cluster='" + Cluster + "' and block='" + BlockCode + "' and Vill='"+ Global.Left(VillageList.getSelectedItem().toString(), 3) +"'"));
+        BariList.setAdapter(C.getArrayAdapter("Select ' All Bari' union select trim(ifnull(bari,''))||', '||trim(ifnull(bariname,'')) from bari where cluster='" + Cluster + "' and block='" + BlockCode + "' and Vill='" + Global.Left(VillageList.getSelectedItem().toString(), 3) + "'"));
 
 
         if (BariList.getSelectedItem().toString().trim().equalsIgnoreCase("all bari")) {
@@ -1167,7 +1168,7 @@ public class HouseholdIndex extends Activity {
         }
 
 
-        if(BlockCode.equals("1")) {
+        if (BlockCode.equals("1")) {
             cmdBlock1.setBackgroundColor(Color.GREEN);
             cmdBlock1.setTextColor(Color.BLACK);
             cmdBlock2.setBackgroundColor(Color.DKGRAY);
@@ -1178,8 +1179,7 @@ public class HouseholdIndex extends Activity {
             cmdBlock4.setTextColor(Color.WHITE);
             cmdBlock5.setBackgroundColor(Color.DKGRAY);
             cmdBlock5.setTextColor(Color.WHITE);
-        }
-        else if(BlockCode.equals("2")) {
+        } else if (BlockCode.equals("2")) {
             cmdBlock1.setBackgroundColor(Color.DKGRAY);
             cmdBlock1.setTextColor(Color.WHITE);
             cmdBlock2.setBackgroundColor(Color.GREEN);
@@ -1190,8 +1190,7 @@ public class HouseholdIndex extends Activity {
             cmdBlock4.setTextColor(Color.WHITE);
             cmdBlock5.setBackgroundColor(Color.DKGRAY);
             cmdBlock5.setTextColor(Color.WHITE);
-        }
-        else if(BlockCode.equals("3")) {
+        } else if (BlockCode.equals("3")) {
             cmdBlock1.setBackgroundColor(Color.DKGRAY);
             cmdBlock1.setTextColor(Color.WHITE);
             cmdBlock2.setBackgroundColor(Color.DKGRAY);
@@ -1202,9 +1201,7 @@ public class HouseholdIndex extends Activity {
             cmdBlock4.setTextColor(Color.WHITE);
             cmdBlock5.setBackgroundColor(Color.DKGRAY);
             cmdBlock5.setTextColor(Color.WHITE);
-        }
-        else if(BlockCode.equals("4"))
-        {
+        } else if (BlockCode.equals("4")) {
             cmdBlock1.setBackgroundColor(Color.DKGRAY);
             cmdBlock1.setTextColor(Color.WHITE);
             cmdBlock2.setBackgroundColor(Color.DKGRAY);
@@ -1215,8 +1212,7 @@ public class HouseholdIndex extends Activity {
             cmdBlock4.setTextColor(Color.BLACK);
             cmdBlock5.setBackgroundColor(Color.DKGRAY);
             cmdBlock5.setTextColor(Color.WHITE);
-            }
-        else if(BlockCode.equals("5")) {
+        } else if (BlockCode.equals("5")) {
             cmdBlock1.setBackgroundColor(Color.DKGRAY);
             cmdBlock1.setTextColor(Color.WHITE);
             cmdBlock2.setBackgroundColor(Color.DKGRAY);
@@ -1232,6 +1228,7 @@ public class HouseholdIndex extends Activity {
 
 
     ListView listChild;
+
     public void BariWiseChildList(String Village, String BariCode, String WeekNo) {
         mScheduleBari = null;
         mScheduleChild = null;
@@ -1243,48 +1240,47 @@ public class HouseholdIndex extends Activity {
 
         try {
             String BCode = "";
-            String SQL   = "";
+            String SQL = "";
 
             String WeekEndDate = g.getWeekEndDate();
 
             //Active Child
-            if(spnFilterOption.getSelectedItemPosition()==0)
-            {
+            if (spnFilterOption.getSelectedItemPosition() == 0) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
-                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
+                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    SQL += " where b.vill='"+ Village +"' ";
-                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end)<=date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end)<=date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
 
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
-                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
+                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    SQL += " where b.vill='"+ Village +"' ";
-                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) < date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) < date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
                 }
             }
             //All Child
-            else if(spnFilterOption.getSelectedItemPosition()==1) {
+            else if (spnFilterOption.getSelectedItemPosition() == 1) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    SQL += " where b.vill='"+ Village +"' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
@@ -1292,202 +1288,197 @@ public class HouseholdIndex extends Activity {
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    SQL += " where b.vill='"+ Village +"' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
                 }
             }
             //Visit Completed
-            else if(spnFilterOption.getSelectedItemPosition()==2) {
+            else if (spnFilterOption.getSelectedItemPosition() == 2) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
                     SQL += " and (case when v.ChildId is null then '2' else '1' end)='1' ";
 
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
                     SQL += " and (case when v.ChildId is null then '2' else '1' end)='1' ";
                 }
             }
             //Not Yet Visited
-            else if(spnFilterOption.getSelectedItemPosition()==3) {
+            else if (spnFilterOption.getSelectedItemPosition() == 3) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
                     SQL += " and (case when v.ChildId is null then '2' else '1' end)='2' ";
 
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
                     SQL += " and (case when v.ChildId is null then '2' else '1' end)='2' ";
 
                 }
             }
             //Over Age
-            else if(spnFilterOption.getSelectedItemPosition()==4)
-            {
+            else if (spnFilterOption.getSelectedItemPosition() == 4) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) > 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) > 1825";
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) > 1825";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) > 1825";
                 }
             }
             //Neonate
-            else if(spnFilterOption.getSelectedItemPosition()==5)
-            {
+            else if (spnFilterOption.getSelectedItemPosition() == 5) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 28";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 28";
 
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
-                    SQL += " and cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int) <= 28";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 28";
                 }
             }
             //death
-            else if(spnFilterOption.getSelectedItemPosition()==6)
-            {
+            else if (spnFilterOption.getSelectedItemPosition() == 6) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                     SQL += " and v.vstat='6'";
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
                     SQL += " and v.vstat='6'";
                 }
             }
             //sick
-            else if(spnFilterOption.getSelectedItemPosition()==7)
-            {
+            else if (spnFilterOption.getSelectedItemPosition() == 7) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' and (c.extype is null or length(c.extype)=0) and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " where b.vill='" + Village + "' and (c.extype is null or length(c.extype)=0) and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                     SQL += " and ifnull(v.sickstatus,'')='2'";
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' and (c.extype is null or length(c.extype)=0) and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " where b.vill='" + Village + "' and (c.extype is null or length(c.extype)=0) and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
                     SQL += " and ifnull(v.sickstatus,'')='2'";
                 }
             }
             //migration
-            else if(spnFilterOption.getSelectedItemPosition()==8)
-            {
+            else if (spnFilterOption.getSelectedItemPosition() == 8) {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                     SQL += " and v.vstat='5'";
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
-                    SQL += " where b.vill='"+ Village +"' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
                     SQL += " and v.vstat='5'";
                 }
             }
 
-            if(chkMWRA.isChecked()) {
+            if (chkMWRA.isChecked()) {
                 SQL += " Union Select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'm' childmwra, c.BDate as bdate,'' as referral,'' as referral_add,'' as referral_foll,'' as absent_sick,  b.Cluster cluster,b.Block block,c.mwraid childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                 SQL += " c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))/365.25) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,pstat as pstat,lmpdt as lmpdt";
                 SQL += " ,'' contactno,'' vstat,'' sickstatus from MWRA c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
@@ -1498,7 +1489,7 @@ public class HouseholdIndex extends Activity {
             Cursor cur = C.ReadData(SQL);
             cur.moveToFirst();
 
-            int i=0;
+            int i = 0;
             while (!cur.isAfterLast()) {
                 map = new HashMap<String, String>();
                 map.put("sl", String.valueOf(i));
@@ -1536,8 +1527,8 @@ public class HouseholdIndex extends Activity {
                 map.put("vstat", cur.getString(cur.getColumnIndex("vstat")).trim());
                 map.put("sickstatus", cur.getString(cur.getColumnIndex("sickstatus")).trim());
 
-                if(cur.getString(cur.getColumnIndex("childmwra")).trim().equals("c"))
-                    i+=1;
+                if (cur.getString(cur.getColumnIndex("childmwra")).trim().equals("c"))
+                    i += 1;
 
                 mylistChild.add(map);
 
@@ -1548,7 +1539,7 @@ public class HouseholdIndex extends Activity {
                     new String[]{"bari"},
                     new int[]{R.id.Bari});
 
-            lblPageHeading.setText("  শিশুর তালিকা ( "+String.valueOf(i)+" )");
+            lblPageHeading.setText("  শিশুর তালিকা ( " + String.valueOf(i) + " )");
             listChild.setAdapter(new ChildListAdapter(this));
 
         } catch (Exception e) {
@@ -1563,6 +1554,7 @@ public class HouseholdIndex extends Activity {
 
 
     String FM;
+
     public class ChildListAdapter extends BaseAdapter {
         private Context context;
 
@@ -1600,17 +1592,17 @@ public class HouseholdIndex extends Activity {
             TextView BariLocation = (TextView) convertView.findViewById(R.id.BariLocation);
 
             TextView lblDSSCluster = (TextView) convertView.findViewById(R.id.lblDSSCluster);
-            TextView lblDSSBlock   = (TextView) convertView.findViewById(R.id.lblDSSBlock);
-            TextView lblContactNo   = (TextView) convertView.findViewById(R.id.lblContactNo);
-            LinearLayout secContactNo   = (LinearLayout) convertView.findViewById(R.id.secContactNo);
-            TextView lblFM_Husband = (TextView)convertView.findViewById(R.id.lblFM_Husband);
+            TextView lblDSSBlock = (TextView) convertView.findViewById(R.id.lblDSSBlock);
+            TextView lblContactNo = (TextView) convertView.findViewById(R.id.lblContactNo);
+            LinearLayout secContactNo = (LinearLayout) convertView.findViewById(R.id.secContactNo);
+            TextView lblFM_Husband = (TextView) convertView.findViewById(R.id.lblFM_Husband);
 
-            TextView lblVisitStatus = (TextView)convertView.findViewById(R.id.lblVisitStatus);
-            LinearLayout secVisitStatus = (LinearLayout)convertView.findViewById(R.id.secVisitStatus);
+            TextView lblVisitStatus = (TextView) convertView.findViewById(R.id.lblVisitStatus);
+            LinearLayout secVisitStatus = (LinearLayout) convertView.findViewById(R.id.secVisitStatus);
 
             final HashMap<String, String> o = (HashMap<String, String>) mScheduleChild.getItem(position);
 
-            if(o.get("vstat").toString().length()>0)
+            if (o.get("vstat").toString().length() > 0)
                 secVisitStatus.setVisibility(View.VISIBLE);
             else
                 secVisitStatus.setVisibility(View.GONE);
@@ -1618,93 +1610,93 @@ public class HouseholdIndex extends Activity {
             String VS = o.get("vstat").toString();
             String SS = o.get("sickstatus").toString();
             String SStatus = "";
-            if(SS.equals("1")) SStatus = "সুস্থ আছে";
-            else if(SS.equals("2")) SStatus = "অসুস্থ";
-            else if(SS.equals("3")) SStatus = "জানিনা";
+            if (SS.equals("1")) SStatus = "সুস্থ আছে";
+            else if (SS.equals("2")) SStatus = "অসুস্থ";
+            else if (SS.equals("3")) SStatus = "জানিনা";
 
-            if(VS.equals("1"))
-                lblVisitStatus.setText(": শিশু উপস্থিত ("+ SStatus +")");
-            else if(VS.equals("2"))
-                lblVisitStatus.setText(": শিশু অনুপস্থিত ("+ SStatus +")");
-            else if(VS.equals("3"))
-                lblVisitStatus.setText(": চিকিৎসার জন্য অনুপস্থিত ("+ SStatus +")");
-            else if(VS.equals("4"))
+            if (VS.equals("1"))
+                lblVisitStatus.setText(": শিশু উপস্থিত (" + SStatus + ")");
+            else if (VS.equals("2"))
+                lblVisitStatus.setText(": শিশু অনুপস্থিত (" + SStatus + ")");
+            else if (VS.equals("3"))
+                lblVisitStatus.setText(": চিকিৎসার জন্য অনুপস্থিত (" + SStatus + ")");
+            else if (VS.equals("4"))
                 lblVisitStatus.setText(": বয়স উত্তীর্ণ");
-            else if(VS.equals("5"))
+            else if (VS.equals("5"))
                 lblVisitStatus.setText(": স্থানান্তর");
-            else if(VS.equals("6"))
+            else if (VS.equals("6"))
                 lblVisitStatus.setText(": মৃত্যুবরন");
-            else if(VS.equals("7"))
+            else if (VS.equals("7"))
                 lblVisitStatus.setText(": সার্ভিলেন্সে থাকতে অসম্মতি");
-            else if(VS.equals("8"))
+            else if (VS.equals("8"))
                 lblVisitStatus.setText(": VHW ছুটিতে আছে");
-            else if(VS.equals("9"))
+            else if (VS.equals("9"))
                 lblVisitStatus.setText(": তথ্য পাওয়া জায়নি");
-            else if(VS.equals("10"))
+            else if (VS.equals("10"))
                 lblVisitStatus.setText(": অপ্রত্যাশিত কারণ");
-            else if(VS.equals("11"))
+            else if (VS.equals("11"))
                 lblVisitStatus.setText(": ঝড় / বৃষ্টির কারণ");
-            else if(VS.equals("12"))
+            else if (VS.equals("12"))
                 lblVisitStatus.setText(": বন্যার কারণ");
-            else if(VS.equals("0"))
+            else if (VS.equals("0"))
                 lblVisitStatus.setText(": পুনঃ আগমন");
-            else if(VS.equals("13"))
+            else if (VS.equals("13"))
                 lblVisitStatus.setText(": সরকারী ছুটির দিন");
-            else if(VS.equals("15"))
+            else if (VS.equals("15"))
                 lblVisitStatus.setText(": Training/Meeting");
-            else if(VS.equals("14"))
+            else if (VS.equals("14"))
                 lblVisitStatus.setText(": অন্যান্য কারণ");
 //            else if(VS.equals("16"))
 //                lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছে");
-            else if(VS.equals("17"))
+            else if (VS.equals("17"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে রাজি নন");
-            else if(VS.equals("18"))
+            else if (VS.equals("18"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ করেনি");
-            else if(VS.equals("19"))
+            else if (VS.equals("19"))
                 lblVisitStatus.setText(": ফোন সুইচ অফ");
-            else if(VS.equals("20"))
+            else if (VS.equals("20"))
                 lblVisitStatus.setText(": ভুল নম্বর");
-            else if(VS.equals("21"))
+            else if (VS.equals("21"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু উপস্থিত(সুস্থ আছে)");
-            else if(VS.equals("22"))
+            else if (VS.equals("22"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু উপস্থিত(অসুস্থ আছে)");
-            else if(VS.equals("23"))
+            else if (VS.equals("23"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু অনুপস্থিত(সুস্থ আছে)");
-            else if(VS.equals("24"))
+            else if (VS.equals("24"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু অনুপস্থিত(অসুস্থ আছে)");
-            else if(VS.equals("25"))
+            else if (VS.equals("25"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। শিশু চিকিৎসার জন্য অনুপস্থিত(অসুস্থ আছে)");
-            else if(VS.equals("26"))
+            else if (VS.equals("26"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (স্থানান্তর)");
-            else if(VS.equals("27"))
+            else if (VS.equals("27"))
                 lblVisitStatus.setText(": ফোন কল রিসিভ: সাক্ষাতকার দিতে সম্মত হয়েছেহয়েছে। (মৃত্যুবরণ)");
 
             //CID.setText(": " + o.get("cid"));
-            CID.setText(": "+ o.get("vill")+"-"+o.get("bari")+"-"+o.get("hh")+"-"+o.get("sno"));
-            PID.setText(": "+ o.get("pid"));
+            CID.setText(": " + o.get("vill") + "-" + o.get("bari") + "-" + o.get("hh") + "-" + o.get("sno"));
+            PID.setText(": " + o.get("pid"));
 
             FM = o.get("father");
-            if(o.get("mother").toString().length()>0)
-                FM += "/"+ o.get("mother");
+            if (o.get("mother").toString().length() > 0)
+                FM += "/" + o.get("mother");
 
-            FatherMother.setText(": "+ FM);
+            FatherMother.setText(": " + FM);
 
-            if(Integer.valueOf(o.get("aged")) <= 28)
-                Age.setText(": "+ o.get("aged")+ " দিন");
+            if (Integer.valueOf(o.get("aged")) <= 28)
+                Age.setText(": " + o.get("aged") + " দিন");
             else
-                Age.setText(": "+ o.get("agem")+ " মাস");
+                Age.setText(": " + o.get("agem") + " মাস");
 
-            double m = Integer.valueOf(o.get("aged"))/30.44;
-            double d = Integer.valueOf(o.get("aged"))%30.44;
+            double m = Integer.valueOf(o.get("aged")) / 30.44;
+            double d = Integer.valueOf(o.get("aged")) % 30.44;
 
-            final String AgeDayMonth = String.valueOf((int)m)+" মাস "+ String.valueOf((int)d)+"  দিন";
+            final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
 
-            Sex.setText(": "+ Global.DateConvertDMY(o.get("bdate").toString()));
+            Sex.setText(": " + Global.DateConvertDMY(o.get("bdate").toString()));
 
             lblDSSCluster.setText(": " + o.get("dssc"));
-            lblDSSBlock.setText(": "+ o.get("dssb"));
-            lblContactNo.setText(": "+ o.get("contactno"));
-            if(o.get("contactno").length()>0)
+            lblDSSBlock.setText(": " + o.get("dssb"));
+            lblContactNo.setText(": " + o.get("contactno"));
+            if (o.get("contactno").length() > 0)
                 secContactNo.setVisibility(View.VISIBLE);
             else
                 secContactNo.setVisibility(View.GONE);
@@ -1717,7 +1709,7 @@ public class HouseholdIndex extends Activity {
                     Bundle IDbundle = new Bundle();
                     IDbundle.putString("childid", "");
 
-                    IDbundle.putString("mothercid", o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"));
+                    IDbundle.putString("mothercid", o.get("vill") + o.get("bari") + o.get("hh") + o.get("sno"));
                     IDbundle.putString("motherpid", o.get("pid"));
                     IDbundle.putString("mother", o.get("name"));
                     IDbundle.putString("father", o.get("father"));
@@ -1734,7 +1726,7 @@ public class HouseholdIndex extends Activity {
             });
 
 
-            Button btnUpdate   = (Button)convertView.findViewById(R.id.btnUpdate);
+            Button btnUpdate = (Button) convertView.findViewById(R.id.btnUpdate);
             btnUpdate.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
                     Bundle IDbundle = new Bundle();
@@ -1752,25 +1744,25 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("hh", "");
                     IDbundle.putString("status", "update");
 
-                    Intent f1 = new Intent(getApplicationContext(),ChildRegistration.class);
+                    Intent f1 = new Intent(getApplicationContext(), ChildRegistration.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);
                 }
             });
 
-            Button btnFollowUp = (Button)convertView.findViewById(R.id.btnFollowUp);
+            Button btnFollowUp = (Button) convertView.findViewById(R.id.btnFollowUp);
             btnFollowUp.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
                     FM = o.get("father");
-                    if(o.get("mother").toString().length()>0)
-                        FM += "/"+ o.get("mother");
+                    if (o.get("mother").toString().length() > 0)
+                        FM += "/" + o.get("mother");
 
                     Bundle IDbundle = new Bundle();
                     IDbundle.putString("childid", o.get("childid"));
                     IDbundle.putString("name", o.get("name"));
                     IDbundle.putString("fm", FM);
                     IDbundle.putString("agedm", AgeDayMonth);
-                    IDbundle.putString("cid", o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"));
+                    IDbundle.putString("cid", o.get("vill") + o.get("bari") + o.get("hh") + o.get("sno"));
                     IDbundle.putString("pid", o.get("pid"));
                     IDbundle.putString("aged", o.get("aged"));
                     IDbundle.putString("agem", o.get("agem"));
@@ -1781,52 +1773,49 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("village", VillageList.getSelectedItem().toString().split("-")[0]);
                     IDbundle.putString("contactno", o.get("contactno"));
 
-                    if(Integer.valueOf(o.get("aged"))>=1826)
-                    {
-                        Connection.MessageBox(HouseholdIndex.this,"শিশুর বয়স ৫ বৎসরের বেশী.");
+                    if (Integer.valueOf(o.get("aged")) >= 1826) {
+                        Connection.MessageBox(HouseholdIndex.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
                         return;
                     }
 
-                    Intent f1 = new Intent(getApplicationContext(),FollowUpVisit.class);
+                    Intent f1 = new Intent(getApplicationContext(), FollowUpVisit.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);
                 }
             });
 
-            Button btnAdditionalFollowUp = (Button)convertView.findViewById(R.id.btnAdditionalFollowUp);
+            Button btnAdditionalFollowUp = (Button) convertView.findViewById(R.id.btnAdditionalFollowUp);
             btnAdditionalFollowUp.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
                     FM = o.get("father");
-                    if(o.get("mother").toString().length()>0)
-                        FM += "/"+ o.get("mother");
+                    if (o.get("mother").toString().length() > 0)
+                        FM += "/" + o.get("mother");
 
-                    VisitForm_Additional(FM,o.get("childid"),o.get("name"),AgeDayMonth,o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"),o.get("pid"),o.get("aged"),o.get("agem"),o.get("bdate"),WeekNo,"3","y");
+                    VisitForm_Additional(FM, o.get("childid"), o.get("name"), AgeDayMonth, o.get("vill") + o.get("bari") + o.get("hh") + o.get("sno"), o.get("pid"), o.get("aged"), o.get("agem"), o.get("bdate"), WeekNo, "3", "y");
                 }
             });
 
-            Button btnFollowUpVisit = (Button)convertView.findViewById(R.id.btnFollowUpVisit);
+            Button btnFollowUpVisit = (Button) convertView.findViewById(R.id.btnFollowUpVisit);
             btnFollowUpVisit.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
                     FM = o.get("father");
-                    if(o.get("mother").toString().length()>0)
-                        FM += "/"+ o.get("mother");
+                    if (o.get("mother").toString().length() > 0)
+                        FM += "/" + o.get("mother");
 
-                    VisitForm_Additional(FM,o.get("childid"),o.get("name"),AgeDayMonth,o.get("vill")+o.get("bari")+o.get("hh")+o.get("sno"),o.get("pid"),o.get("aged"),o.get("agem"),o.get("bdate"),WeekNo,"2","y");
+                    VisitForm_Additional(FM, o.get("childid"), o.get("name"), AgeDayMonth, o.get("vill") + o.get("bari") + o.get("hh") + o.get("sno"), o.get("pid"), o.get("aged"), o.get("agem"), o.get("bdate"), WeekNo, "2", "y");
                 }
             });
 
-            LinearLayout secChildNameRow = (LinearLayout)convertView.findViewById(R.id.secChildNameRow);
+            LinearLayout secChildNameRow = (LinearLayout) convertView.findViewById(R.id.secChildNameRow);
             //TextView lblChildName = (TextView)convertView.findViewById(R.id.lblChildName);
 
-            if(o.get("visit").equals("1")) {
+            if (o.get("visit").equals("1")) {
                 //ChildName.setTextColor(Color.GREEN);
-                if(o.get("vstat").equals("1") | o.get("vstat").equals("2") | o.get("vstat").equals("3")) {
+                if (o.get("vstat").equals("1") | o.get("vstat").equals("2") | o.get("vstat").equals("3")) {
                     secChildNameRow.setBackgroundColor(Color.GREEN);
                     lblChildName.setTextColor(Color.BLACK);
                     ChildName.setTextColor(Color.BLACK);
-                }
-                else
-                {
+                } else {
                     secChildNameRow.setBackgroundColor(Color.YELLOW);
                     lblChildName.setTextColor(Color.BLACK);
                     ChildName.setTextColor(Color.BLACK);
@@ -1836,8 +1825,7 @@ public class HouseholdIndex extends Activity {
                 btnAdditionalFollowUp.setEnabled(true);
                 btnFollowUpVisit.setEnabled(true);
 
-            }
-            else {
+            } else {
                 lblChildName.setTextColor(Color.parseColor("#006699"));
                 ChildName.setTextColor(Color.parseColor("#006699"));
                 secChildNameRow.setBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -1847,11 +1835,11 @@ public class HouseholdIndex extends Activity {
                 btnFollowUpVisit.setEnabled(false);
             }
 
-            TextView childStatus = (TextView)convertView.findViewById(R.id.childStatus);
+            TextView childStatus = (TextView) convertView.findViewById(R.id.childStatus);
             childStatus.setText("");
             childStatus.setTextColor(Color.RED);
 
-            if(o.get("childmwra").equals("c")) {
+            if (o.get("childmwra").equals("c")) {
                 //if (o.get("extype").equals("4") || Integer.valueOf(o.get("aged")) > 1825) {
                 if (o.get("extype").equals("5")) {
                     lblChildName.setTextColor(Color.BLUE);
@@ -1874,56 +1862,50 @@ public class HouseholdIndex extends Activity {
                     btnFollowUpVisit.setEnabled(false);
                     btnFollowUp.setEnabled(false);
                     childStatus.setText("মৃত্যুবরন");
-                }else if (Integer.valueOf(o.get("aged")) > 1825) {
+                } else if (Integer.valueOf(o.get("aged")) > 1825) {
                     lblChildName.setTextColor(Color.BLUE);
                     ChildName.setTextColor(Color.BLUE);
                     btnAdditionalFollowUp.setEnabled(false);
                     btnFollowUpVisit.setEnabled(false);
                     btnFollowUp.setEnabled(false);
                     childStatus.setText("বয়স উত্তীর্ণ");
-                }
-                else
-                {
+                } else {
                     btnFollowUp.setEnabled(true);
                 }
-            }
-            else
-            {
+            } else {
                 lblChildName.setTextColor(Color.BLACK);
                 ChildName.setTextColor(Color.BLACK);
             }
 
 
-            Button btnReferral = (Button)convertView.findViewById(R.id.btnReferral);
-            Button btnAdditionalFollowUp_R = (Button)convertView.findViewById(R.id.btnAdditionalFollowUp_R);
-            Button btnFollowUpVisit_R = (Button)convertView.findViewById(R.id.btnFollowUpVisit_R);
-            Button btnAbsent_Sick_R = (Button)convertView.findViewById(R.id.btnAbsent_Sick_R);
+            Button btnReferral = (Button) convertView.findViewById(R.id.btnReferral);
+            Button btnAdditionalFollowUp_R = (Button) convertView.findViewById(R.id.btnAdditionalFollowUp_R);
+            Button btnFollowUpVisit_R = (Button) convertView.findViewById(R.id.btnFollowUpVisit_R);
+            Button btnAbsent_Sick_R = (Button) convertView.findViewById(R.id.btnAbsent_Sick_R);
 
-            LinearLayout secReferralButton = (LinearLayout)convertView.findViewById(R.id.secReferralButton);
-            if(o.get("referral").length()==0 & o.get("referral_add").length()==0 & o.get("referral_foll").length()==0 & o.get("absent_sick").length()==0) {
+            LinearLayout secReferralButton = (LinearLayout) convertView.findViewById(R.id.secReferralButton);
+            if (o.get("referral").length() == 0 & o.get("referral_add").length() == 0 & o.get("referral_foll").length() == 0 & o.get("absent_sick").length() == 0) {
                 secReferralButton.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 secReferralButton.setVisibility(View.VISIBLE);
                 btnReferral.setVisibility(View.GONE);
                 btnAdditionalFollowUp_R.setVisibility(View.GONE);
                 btnFollowUpVisit_R.setVisibility(View.GONE);
                 btnAbsent_Sick_R.setVisibility(View.GONE);
 
-                if(o.get("referral").length()>0) {
+                if (o.get("referral").length() > 0) {
                     btnReferral.setVisibility(View.VISIBLE);
                 }
-                if(o.get("referral_add").length()>0) {
+                if (o.get("referral_add").length() > 0) {
                     btnAdditionalFollowUp_R.setVisibility(View.VISIBLE);
                 }
-                if(o.get("referral_foll").length()>0) {
+                if (o.get("referral_foll").length() > 0) {
                     btnFollowUpVisit_R.setVisibility(View.VISIBLE);
                 }
-                if(o.get("absent_sick").length()>0) {
+                if (o.get("absent_sick").length() > 0) {
                     btnAbsent_Sick_R.setVisibility(View.VISIBLE);
                 }
             }
-
 
 
             btnReferral.setOnClickListener(new View.OnClickListener() {
@@ -1945,7 +1927,7 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("visitno", ref[3]);
                     IDbundle.putString("child_outside_area", "n");
 
-                    Intent f1 = new Intent(getApplicationContext(),NonComp.class);
+                    Intent f1 = new Intent(getApplicationContext(), NonComp.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);
                 }
@@ -1970,7 +1952,7 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("visitno", ref[3]);
                     IDbundle.putString("child_outside_area", "n");
 
-                    Intent f1 = new Intent(getApplicationContext(),NonComp.class);
+                    Intent f1 = new Intent(getApplicationContext(), NonComp.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);
                 }
@@ -1996,7 +1978,7 @@ public class HouseholdIndex extends Activity {
                     IDbundle.putString("visitno", ref[3]);
                     IDbundle.putString("child_outside_area", "n");
 
-                    Intent f1 = new Intent(getApplicationContext(),NonComp.class);
+                    Intent f1 = new Intent(getApplicationContext(), NonComp.class);
                     f1.putExtras(IDbundle);
                     startActivity(f1);
                 }
@@ -2025,29 +2007,26 @@ public class HouseholdIndex extends Activity {
 
                     Intent f1;
                     //Call Assessment based on age of child
-                    if(Integer.valueOf(o.get("aged"))<=28)
-                    {
-                        f1 = new Intent(getApplicationContext(),AssNewBorn.class);
+                    if (Integer.valueOf(o.get("aged")) <= 28) {
+                        f1 = new Intent(getApplicationContext(), AssNewBorn.class);
                         f1.putExtras(IDbundle);
                         startActivity(f1);
-                    }
-                    else if(Integer.valueOf(o.get("aged"))>28 & Integer.valueOf(o.get("aged"))<=1825)
-                    {
-                        f1 = new Intent(getApplicationContext(),AssPneu.class);
+                    } else if (Integer.valueOf(o.get("aged")) > 28 & Integer.valueOf(o.get("aged")) <= 1825) {
+                        f1 = new Intent(getApplicationContext(), AssPneu.class);
                         f1.putExtras(IDbundle);
                         startActivity(f1);
                     }
                 }
             });
 
-            LinearLayout secCommandButton = (LinearLayout)convertView.findViewById(R.id.secCommandButton);
-            LinearLayout secCommandButtonMWRA = (LinearLayout)convertView.findViewById(R.id.secCommandButtonMWRA);
-            LinearLayout secPregStatus = (LinearLayout)convertView.findViewById(R.id.secPregStatus);
-            LinearLayout secChildDob   = (LinearLayout)convertView.findViewById(R.id.secChildDob);
-            TextView PregStatus        = (TextView)convertView.findViewById(R.id.PregStatus);
-            TextView DOB_MWRA          = (TextView)convertView.findViewById(R.id.DOB_MWRA);
+            LinearLayout secCommandButton = (LinearLayout) convertView.findViewById(R.id.secCommandButton);
+            LinearLayout secCommandButtonMWRA = (LinearLayout) convertView.findViewById(R.id.secCommandButtonMWRA);
+            LinearLayout secPregStatus = (LinearLayout) convertView.findViewById(R.id.secPregStatus);
+            LinearLayout secChildDob = (LinearLayout) convertView.findViewById(R.id.secChildDob);
+            TextView PregStatus = (TextView) convertView.findViewById(R.id.PregStatus);
+            TextView DOB_MWRA = (TextView) convertView.findViewById(R.id.DOB_MWRA);
 
-            if(o.get("childmwra").equals("c")) {
+            if (o.get("childmwra").equals("c")) {
                 lblChildName.setText("শিশুর নাম");
                 ChildName.setText(": " + o.get("name") + " (" + (o.get("sex").toString().equals("1") ? "ছেলে" : "মেয়ে") + ")");
                 secCommandButton.setVisibility(View.VISIBLE);
@@ -2055,16 +2034,15 @@ public class HouseholdIndex extends Activity {
                 secPregStatus.setVisibility(View.GONE);
                 secChildDob.setVisibility(View.VISIBLE);
                 lblFM_Husband.setText("পিতা/মাতা");
-            }
-            else {
+            } else {
                 lblChildName.setText("MWRA");
                 lblFM_Husband.setText("স্বামী");
-                ChildName.setText(": " + o.get("name")+" ("+ String.valueOf(o.get("aged")) +" বছর)");
-                DOB_MWRA.setText(": "+ Global.DateConvertDMY(o.get("bdate").toString()));
+                ChildName.setText(": " + o.get("name") + " (" + String.valueOf(o.get("aged")) + " বছর)");
+                DOB_MWRA.setText(": " + Global.DateConvertDMY(o.get("bdate").toString()));
                 secCommandButton.setVisibility(View.GONE);
                 secCommandButtonMWRA.setVisibility(View.VISIBLE);
                 secPregStatus.setVisibility(View.VISIBLE);
-                if(o.get("pstat").equals("41")) {
+                if (o.get("pstat").equals("41")) {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Calendar cal = Calendar.getInstance();
@@ -2077,10 +2055,9 @@ public class HouseholdIndex extends Activity {
                     cal.add(Calendar.DATE, 280); //minus number would decrement the days
                     String D = Global.DateConvertDMY(sdf.format(cal.getTime()));
 
-                    PregStatus.setText("LMP:" + Global.DateConvertDMY(o.get("lmpdt")) + ", EDD:" + D +"");
+                    PregStatus.setText("LMP:" + Global.DateConvertDMY(o.get("lmpdt")) + ", EDD:" + D + "");
                     PregStatus.setTextColor(Color.GREEN);
-                }
-                else{
+                } else {
                     PregStatus.setText("");
                 }
                 secChildDob.setVisibility(View.GONE);
@@ -2092,7 +2069,8 @@ public class HouseholdIndex extends Activity {
 
 
     ListView listBari;
-    public void VillageWiseBariList(Boolean heading, String Cluster, String Block,  String Village, String BariCode) {
+
+    public void VillageWiseBariList(Boolean heading, String Cluster, String Block, String Village, String BariCode) {
         mScheduleBari = null;
         mScheduleChild = null;
 
@@ -2107,9 +2085,9 @@ public class HouseholdIndex extends Activity {
             //BariCode = g.getBariCode().length()==0?BariCode:g.getBariCode();
 
             if (BariCode.length() > 1) {
-                SQL = "Select vill,bari,bariname,bariloc from bari where Cluster='"+ Cluster +"' and Block='"+ Block +"' and Vill='"+ Village +"' and bari like('"+ BariCode +"') order by bari";
+                SQL = "Select vill,bari,bariname,bariloc from bari where Cluster='" + Cluster + "' and Block='" + Block + "' and Vill='" + Village + "' and bari like('" + BariCode + "') order by bari";
             } else {
-                SQL = "Select vill,bari,bariname,bariloc from bari where Cluster='"+ Cluster +"' and Block='"+ Block +"' and Vill='"+ Village +"'  order by bari";
+                SQL = "Select vill,bari,bariname,bariloc from bari where Cluster='" + Cluster + "' and Block='" + Block + "' and Vill='" + Village + "'  order by bari";
             }
             Cursor cur = C.ReadData(SQL);
 
@@ -2119,7 +2097,7 @@ public class HouseholdIndex extends Activity {
                 //list.addHeaderView(header);
             }
 
-            int i=0;
+            int i = 0;
 
             while (!cur.isAfterLast()) {
                 map = new HashMap<String, String>();
@@ -2128,7 +2106,7 @@ public class HouseholdIndex extends Activity {
                 map.put("bariname", cur.getString(2));
                 map.put("barilocation", cur.getString(3));
                 map.put("sl", String.valueOf(i));
-                i+=1;
+                i += 1;
                 mylistBari.add(map);
 
                 cur.moveToNext();
@@ -2138,7 +2116,7 @@ public class HouseholdIndex extends Activity {
                     new String[]{"bari"},
                     new int[]{R.id.Bari});
 
-            lblPageHeading.setText("  বাড়ীর তালিকা ( "+String.valueOf(i)+" )");
+            lblPageHeading.setText("  বাড়ীর তালিকা ( " + String.valueOf(i) + " )");
             listBari.setAdapter(new HHListAdapter(this));
 
         } catch (Exception e) {
@@ -2150,7 +2128,6 @@ public class HouseholdIndex extends Activity {
         }
 
     }
-
 
 
     public class HHListAdapter extends BaseAdapter {
@@ -2188,11 +2165,11 @@ public class HouseholdIndex extends Activity {
 
             final HashMap<String, String> o = (HashMap<String, String>) mScheduleBari.getItem(position);
 
-            Bari.setText(": "+ o.get("bari"));
+            Bari.setText(": " + o.get("bari"));
             BariN.setText(o.get("bariname"));
-            BariLocation.setText(": "+ o.get("barilocation"));
+            BariLocation.setText(": " + o.get("barilocation"));
 
-            LinearLayout bariListRow = (LinearLayout)convertView.findViewById(R.id.bariListRow);
+            LinearLayout bariListRow = (LinearLayout) convertView.findViewById(R.id.bariListRow);
             /*if( Integer.valueOf(o.get("sl"))%2==0)
                 bariListRow.setBackgroundColor(Color.WHITE);
             else
@@ -2227,14 +2204,14 @@ public class HouseholdIndex extends Activity {
 
                     if (BariList.getSelectedItem().toString().trim().equalsIgnoreCase("all bari")) {
                         //g.setBariCode("");
-                        if(cmdBackToBariList.isShown())
-                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),"%",WeekNo);
+                        if (cmdBackToBariList.isShown())
+                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), "%", WeekNo);
                         else
                             VillageWiseBariList(false, Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3), "%");
                     } else {
                         //g.setBariCode(BariList.getSelectedItem().toString());
-                        if(cmdBackToBariList.isShown())
-                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),CurrentBariNo,WeekNo);
+                        if (cmdBackToBariList.isShown())
+                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
                         else
                             VillageWiseBariList(false, Cluster, Block, Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo);
                     }
@@ -2245,20 +2222,15 @@ public class HouseholdIndex extends Activity {
         }
     }
 
-    public int SpinnerItem_Position(Spinner spn, String Value)
-    {
+    public int SpinnerItem_Position(Spinner spn, String Value) {
         int pos = 0;
-        if(Value.length()!=0)
-        {
-            for(int i=0;i<spn.getCount();i++)
-            {
+        if (Value.length() != 0) {
+            for (int i = 0; i < spn.getCount(); i++) {
                 String[] b = spn.getItemAtPosition(i).toString().split(",");
-                if(spn.getItemAtPosition(i).toString().length()!=0)
-                {
-                    if(b[0].equalsIgnoreCase(Value))
-                    {
+                if (spn.getItemAtPosition(i).toString().length() != 0) {
+                    if (b[0].equalsIgnoreCase(Value)) {
                         pos = i;
-                        i   = spn.getCount();
+                        i = spn.getCount();
                     }
                 }
             }
@@ -2305,8 +2277,7 @@ public class HouseholdIndex extends Activity {
                 if (txtBName.getText().length() == 0) {
                     Connection.MessageBox(HouseholdIndex.this, "বাড়ীর নাম খালি রাখা যাবে না।");
                     return;
-                }
-                else if (txtBari.getText().length() < 4) {
+                } else if (txtBari.getText().length() < 4) {
                     Connection.MessageBox(HouseholdIndex.this, "বাড়ী নম্বর ৪ সংখ্যার কম হবেনা");
                     return;
                 }
@@ -2343,29 +2314,26 @@ public class HouseholdIndex extends Activity {
                         int selBari = BariList.getSelectedItemPosition();
 
                         if (Status.equalsIgnoreCase("s")) {
-                            if(C.Existence("Select Vill from Bari where Vill='"+ Vill +"' and Bari='" + txtBari.getText() + "'"))
-                            {
-                                Connection.MessageBox(HouseholdIndex.this,"বাড়ী নম্বর "+ txtBari.getText().toString() +" ডাটাবেজে আছে।");
+                            if (C.Existence("Select Vill from Bari where Vill='" + Vill + "' and Bari='" + txtBari.getText() + "'")) {
+                                Connection.MessageBox(HouseholdIndex.this, "বাড়ী নম্বর " + txtBari.getText().toString() + " ডাটাবেজে আছে।");
                                 return;
                             }
 
                             SQL = "Insert into Bari (Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId,Upload)Values(";
-                            SQL += "'" + Vill + "','" + txtBari.getText() + "','"+ txtBName.getText() +"','"+ txtBLoc.getText() +"','"+ txtCluster.getText() +"','" + txtBlock.getSelectedItem().toString() + "','','','"+ Global.DateTimeNowYMDHMS() +"','"+ g.getUserId() +"','2')";
+                            SQL += "'" + Vill + "','" + txtBari.getText() + "','" + txtBName.getText() + "','" + txtBLoc.getText() + "','" + txtCluster.getText() + "','" + txtBlock.getSelectedItem().toString() + "','','','" + Global.DateTimeNowYMDHMS() + "','" + g.getUserId() + "','2')";
                             C.Save(SQL);
                         } else if (Status.equalsIgnoreCase("u")) {
 
-                            if(!txtBari.getText().toString().toUpperCase().equals(BariNo.toUpperCase()) & C.Existence("Select Vill from Bari where Vill='"+ Vill +"' and Bari='" + txtBari.getText() + "'"))
-                            {
-                                Connection.MessageBox(HouseholdIndex.this,"বাড়ী নম্বর "+ txtBari.getText().toString() +" ডাটাবেজে আছে।");
+                            if (!txtBari.getText().toString().toUpperCase().equals(BariNo.toUpperCase()) & C.Existence("Select Vill from Bari where Vill='" + Vill + "' and Bari='" + txtBari.getText() + "'")) {
+                                Connection.MessageBox(HouseholdIndex.this, "বাড়ী নম্বর " + txtBari.getText().toString() + " ডাটাবেজে আছে।");
                                 return;
-                            }
-                            else if (txtBari.getText().length() < 4) {
+                            } else if (txtBari.getText().length() < 4) {
                                 Connection.MessageBox(HouseholdIndex.this, "বাড়ী নম্বর ৪ সংখ্যার কম হবেনা");
                                 return;
                             }
                             //Update Bari File
                             SQL = "Update Bari Set upload='2',";
-                            SQL += " Bari='" + txtBari.getText() + "',BariName='" + txtBName.getText() + "',BariLoc='" + txtBLoc.getText() + "',Block='"+ txtBlock.getSelectedItem().toString() +"',Upload='2'";
+                            SQL += " Bari='" + txtBari.getText() + "',BariName='" + txtBName.getText() + "',BariLoc='" + txtBLoc.getText() + "',Block='" + txtBlock.getSelectedItem().toString() + "',Upload='2'";
                             SQL += " Where Vill='" + Vill + "' and Bari='" + BariNo + "'";
                             C.Save(SQL);
 
@@ -2377,11 +2345,10 @@ public class HouseholdIndex extends Activity {
                         BariList.setAdapter(C.getArrayAdapter("Select ' All Bari' union select trim(ifnull(bari,''))||', '||trim(ifnull(bariname,'')) from bari where cluster='" + Cluster + "' and block='" + Block + "'"));
 
                         try {
-                            if(BariList.getCount() > selBari)
+                            if (BariList.getCount() > selBari)
                                 BariList.setSelection(selBari);
                             //BlockList(false, Global.Left(BariList.getSelectedItem().toString(),4));
-                        }
-                        catch(Exception ee){
+                        } catch (Exception ee) {
                         }
 
                     } catch (Exception ex) {
@@ -2430,68 +2397,65 @@ public class HouseholdIndex extends Activity {
                     Connection.MessageBox(HouseholdIndex.this, "আইডি সার্চ করার জন্য ইন্টারনেট এর সংযোগ নেই।");
                     return;
                 }
-            try {
-                String SQL = "select top 1 Name+','+Sex+','+(cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))+','+cast(DATEDIFF(D,BDate,getdate())as varchar(5))+','+MoName+','+FaName+','+cast(DATEDIFF(d,BDate,getdate()) as varchar(10))+','+PID from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'";
-                final String[] childinfo = C.ReturnResult("ReturnSingleValue", SQL).split(",");
+                try {
+                    String SQL = "select top 1 Name+','+Sex+','+(cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))+','+cast(DATEDIFF(D,BDate,getdate())as varchar(5))+','+MoName+','+FaName+','+cast(DATEDIFF(d,BDate,getdate()) as varchar(10))+','+PID from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'";
+                    final String[] childinfo = C.ReturnResult("ReturnSingleValue", SQL).split(",");
 
-                if (childinfo.length > 1) {
+                    if (childinfo.length > 1) {
 
-                } else {
-                    Connection.MessageBox(HouseholdIndex.this, "শিশুটির আইডি নম্বর সঠিক নয়।");
+                    } else {
+                        Connection.MessageBox(HouseholdIndex.this, "শিশুটির আইডি নম্বর সঠিক নয়।");
+                        return;
+                    }
+
+                    if (C.Existence("Select childid from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'")) {
+                        Connection.MessageBox(HouseholdIndex.this, "শিশুটি আপনার নিজের এলাকার শিশু।");
+                        return;
+                    }
+
+                    Bundle IDbundle = new Bundle();
+                    Integer aged = Integer.valueOf(childinfo[6].toString());
+                    double m = Integer.valueOf(aged) / 30.44;
+                    double d = Integer.valueOf(aged) % 30.44;
+
+                    final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
+
+                    IDbundle.putString("childid", txtCID.getText().toString() + txtSNo.getText().toString());
+                    IDbundle.putString("name", childinfo[0].toString());
+                    IDbundle.putString("fm", childinfo[4].toString() + "," + childinfo[5].toString());
+                    IDbundle.putString("agedm", AgeDayMonth);
+                    IDbundle.putString("cid", txtCID.getText().toString());
+                    //IDbundle.putString("pid", txtPID.getText().toString());
+                    //IDbundle.putString("pid", childinfo[7].toString());
+                    IDbundle.putString("pid", "");
+                    IDbundle.putString("aged", aged.toString());
+                    IDbundle.putString("agem", "");
+                    IDbundle.putString("bdate", childinfo[2]);
+                    IDbundle.putString("weekno", WeekNo);
+                    IDbundle.putString("visittype", "3");
+                    IDbundle.putString("visitno", "");
+                    IDbundle.putString("childpresent", "y");
+                    IDbundle.putString("child_outside_area", "y");
+
+                    //Call Assessment based on age of child
+                    if (Integer.valueOf(aged) <= 28) {
+                        dialog.dismiss();
+                        Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) > 28 & Integer.valueOf(aged) <= 1825) {
+                        dialog.dismiss();
+                        Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
+                        f1.putExtras(IDbundle);
+                        startActivity(f1);
+                    } else if (Integer.valueOf(aged) >= 1826) {
+                        Connection.MessageBox(HouseholdIndex.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
+                        return;
+                    }
+                } catch (Exception ex) {
+                    Connection.MessageBox(HouseholdIndex.this, ex.getMessage());
                     return;
                 }
-
-                if(C.Existence("Select childid from Child where Vill+Bari+HH+SNo='" + txtCID.getText().toString() + txtSNo.getText().toString() + "'"))
-                {
-                    Connection.MessageBox(HouseholdIndex.this, "শিশুটি আপনার নিজের এলাকার শিশু।");
-                    return;
-                }
-
-                Bundle IDbundle = new Bundle();
-                Integer aged = Integer.valueOf(childinfo[6].toString());
-                double m = Integer.valueOf(aged) / 30.44;
-                double d = Integer.valueOf(aged) % 30.44;
-
-                final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
-
-                IDbundle.putString("childid", txtCID.getText().toString() + txtSNo.getText().toString());
-                IDbundle.putString("name", childinfo[0].toString());
-                IDbundle.putString("fm", childinfo[4].toString() + "," + childinfo[5].toString());
-                IDbundle.putString("agedm", AgeDayMonth);
-                IDbundle.putString("cid", txtCID.getText().toString());
-                //IDbundle.putString("pid", txtPID.getText().toString());
-                //IDbundle.putString("pid", childinfo[7].toString());
-                IDbundle.putString("pid", "");
-                IDbundle.putString("aged", aged.toString());
-                IDbundle.putString("agem", "");
-                IDbundle.putString("bdate", childinfo[2]);
-                IDbundle.putString("weekno", WeekNo);
-                IDbundle.putString("visittype", "3");
-                IDbundle.putString("visitno", "");
-                IDbundle.putString("childpresent", "y");
-                IDbundle.putString("child_outside_area", "y");
-
-                //Call Assessment based on age of child
-                if (Integer.valueOf(aged) <= 28) {
-                    dialog.dismiss();
-                    Intent f1 = new Intent(getApplicationContext(), AssNewBorn.class);
-                    f1.putExtras(IDbundle);
-                    startActivity(f1);
-                } else if (Integer.valueOf(aged) > 28 & Integer.valueOf(aged) <= 1825) {
-                    dialog.dismiss();
-                    Intent f1 = new Intent(getApplicationContext(), AssPneu.class);
-                    f1.putExtras(IDbundle);
-                    startActivity(f1);
-                } else if (Integer.valueOf(aged) >= 1826) {
-                    Connection.MessageBox(HouseholdIndex.this, "শিশুর বয়স ৫ বৎসরের বেশী.");
-                    return;
-                }
-            }
-            catch(Exception ex)
-            {
-                Connection.MessageBox(HouseholdIndex.this,ex.getMessage());
-                return;
-            }
             }
         });
 
@@ -2536,7 +2500,7 @@ public class HouseholdIndex extends Activity {
         listVstat.add("15-Training/Meeting");
         listVstat.add("14-অন্যান্য কারণ");
 
-        ArrayAdapter<String> adptrVstat= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVstat);
+        ArrayAdapter<String> adptrVstat = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVstat);
         spnVstat.setAdapter(adptrVstat);
 
         ImageButton btnVDate = (ImageButton) dialog.findViewById(R.id.btnVDate);
@@ -2580,10 +2544,10 @@ public class HouseholdIndex extends Activity {
                         cur.moveToFirst();
                         while (!cur.isAfterLast()) {
                             ChildID = cur.getString(cur.getColumnIndex("childid"));
-                            CID  = cur.getString(cur.getColumnIndex("cid"));
-                            PID  = cur.getString(cur.getColumnIndex("pid"));
+                            CID = cur.getString(cur.getColumnIndex("cid"));
+                            PID = cur.getString(cur.getColumnIndex("pid"));
                             if (!C.Existence("Select ChildId from Visits  Where ChildId='" + ChildID + "' and Week='" + WeekNo + "'")) {
-                                SQL = "Insert into Visits(ChildId,CID,PID,Week,VDate,VStat,UserId,EnDt,Upload)Values('" + ChildID + "','"+ CID +"','"+ PID +"','" + WeekNo + "','" + Global.DateConvertYMD(dtpVDate.getText().toString()) + "','" + VisitStatus + "','" + g.getUserId() + "','" + Global.DateTimeNowYMDHMS() + "','2')";
+                                SQL = "Insert into Visits(ChildId,CID,PID,Week,VDate,VStat,UserId,EnDt,Upload)Values('" + ChildID + "','" + CID + "','" + PID + "','" + WeekNo + "','" + Global.DateConvertYMD(dtpVDate.getText().toString()) + "','" + VisitStatus + "','" + g.getUserId() + "','" + Global.DateTimeNowYMDHMS() + "','2')";
                                 C.Save(SQL);
                             }
 
@@ -2603,9 +2567,9 @@ public class HouseholdIndex extends Activity {
                         }
 
                         if (BariList.getSelectedItem().toString().trim().equalsIgnoreCase("all bari")) {
-                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),"%",WeekNo);
+                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), "%", WeekNo);
                         } else {
-                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3),CurrentBariNo,WeekNo);
+                            BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
                         }
                         dialog.dismiss();
                     }
@@ -2626,38 +2590,36 @@ public class HouseholdIndex extends Activity {
     }
 
 
-
-
     protected Dialog onCreateDialog(int id) {
         final Calendar c = Calendar.getInstance();
         switch (id) {
             case DATE_DIALOG:
-                return new DatePickerDialog(this, mDateSetListener,g.mYear,g.mMonth-1,g.mDay);
+                return new DatePickerDialog(this, mDateSetListener, g.mYear, g.mMonth - 1, g.mDay);
         }
         return null;
     }
+
     private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             mYear = year;
-            mMonth = monthOfYear+1;
+            mMonth = monthOfYear + 1;
             mDay = dayOfMonth;
-            if(VariableID.equals("btnVDate")) {
+            if (VariableID.equals("btnVDate")) {
                 dtpVDate.setText(new StringBuilder()
                         .append(Global.Right("00" + mDay, 2)).append("/")
                         .append(Global.Right("00" + mMonth, 2)).append("/")
                         .append(mYear));
-            }
-            else if(VariableID.equals("btnVVDate")) {
+            } else if (VariableID.equals("btnVVDate")) {
                 dtpVVDate.setText(new StringBuilder()
                         .append(Global.Right("00" + mDay, 2)).append("/")
                         .append(Global.Right("00" + mMonth, 2)).append("/")
                         .append(mYear));
 
-                String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVVDate.getText().toString(),txtDOB.getText().toString()));
-                double m = Integer.valueOf(AgeDay)/30.44;
-                double d = Integer.valueOf(AgeDay)%30.44;
+                String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVVDate.getText().toString(), txtDOB.getText().toString()));
+                double m = Integer.valueOf(AgeDay) / 30.44;
+                double d = Integer.valueOf(AgeDay) % 30.44;
 
-                String AgeDayMonth = String.valueOf((int)m)+" মাস "+ String.valueOf((int)d)+"  দিন";
+                String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
                 Age.setText(AgeDayMonth);
             }
 
@@ -2685,6 +2647,16 @@ public class HouseholdIndex extends Activity {
             public void onProviderDisabled(String provider) {
             }
         };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 

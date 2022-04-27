@@ -20,6 +20,7 @@ import Utility.MySharedPreferences;
  */
 public class Sync_Service extends Service {
     public Sync_Service m_service;
+    Connection C;
     MySharedPreferences sp;
 
     public class MyBinder extends Binder {
@@ -116,6 +117,7 @@ public class Sync_Service extends Service {
                     public void run() {
                         try {
                             Connection.SyncDataService(ID[0]);
+
 
                         } catch (Exception e) {
 

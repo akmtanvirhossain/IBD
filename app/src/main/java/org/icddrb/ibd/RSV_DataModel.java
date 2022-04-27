@@ -168,6 +168,17 @@ import android.content.Context;
               _Reason = newValue;
          }
         private String _SampleAgree = "";
+        private String _SuitSam = "";
+        public String getSuitSam(){ return _SuitSam; }
+        public void setSuitSam(String newValue){ _SuitSam = newValue; }
+        private String _SuitSamRe = "";
+        public String getSuitSamRe(){ return _SuitSamRe; }
+        public void setSuitSamRe(String newValue){ _SuitSamRe = newValue; }
+
+        private String _SuitSamReO = "";
+        public String getSuitSamReO(){ return _SuitSamReO; }
+        public void setSuitSamReO(String newValue){ _SuitSamReO = newValue; }
+
         public String getSampleAgree(){ return _SampleAgree; }
         public void setSampleAgree(String newValue){ _SampleAgree = newValue; }
         private String _NotAgree = "";
@@ -258,6 +269,9 @@ import android.content.Context;
                  contentValues.put("RSVlisted", _RSVlisted);
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
                  contentValues.put("Reason", _Reason);
+                  contentValues.put("SuitSam", _SuitSam);
+                  contentValues.put("SuitSamRe", _SuitSamRe);
+                  contentValues.put("SuitSamReO", _SuitSamReO);
                  contentValues.put("SampleAgree", _SampleAgree);
                  contentValues.put("NotAgree", _NotAgree);
                  contentValues.put("OthersR", _OthersR);
@@ -311,6 +325,9 @@ import android.content.Context;
                  contentValues.put("RSVlisted", _RSVlisted);
                  contentValues.put("RSVlistedDt", _RSVlistedDt);
                  contentValues.put("Reason", _Reason);
+                 contentValues.put("SuitSam", _SuitSam);
+                 contentValues.put("SuitSamRe", _SuitSamRe);
+                 contentValues.put("SuitSamReO", _SuitSamReO);
                  contentValues.put("SampleAgree", _SampleAgree);
                  contentValues.put("NotAgree", _NotAgree);
                  contentValues.put("OthersR", _OthersR);
@@ -364,6 +381,9 @@ import android.content.Context;
                 d._RSVlisted = cur.getString(cur.getColumnIndex("RSVlisted"));
                 d._RSVlistedDt = cur.getString(cur.getColumnIndex("RSVlistedDt"));
                 d._Reason = cur.getString(cur.getColumnIndex("Reason"));
+                d._SuitSam = cur.getString(cur.getColumnIndex("SuitSam"));
+                d._SuitSamRe = cur.getString(cur.getColumnIndex("SuitSamRe"));
+                d._SuitSamReO = cur.getString(cur.getColumnIndex("SuitSamReO"));
                 d._SampleAgree = cur.getString(cur.getColumnIndex("SampleAgree"));
                 d._NotAgree = cur.getString(cur.getColumnIndex("NotAgree"));
                 d._OthersR = cur.getString(cur.getColumnIndex("OthersR"));
