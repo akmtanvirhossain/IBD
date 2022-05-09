@@ -600,6 +600,7 @@ public class FollowUpVisit extends Activity {
                     Intent f1;
                     IDbundle.putString("childid", ChildID);
                     IDbundle.putString("pid", PID);
+//                    IDbundle.putString("pid", CID);
                     IDbundle.putString("weekno", WeekNo);
                     IDbundle.putString("fm", FatherMother.getText().toString());
                     IDbundle.putString("aged", AgeD);

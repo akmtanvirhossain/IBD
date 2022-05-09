@@ -2744,7 +2744,8 @@ public class AssNewBorn extends Activity {
                 IDbundle.putString("bdate", DOB);
                 IDbundle.putString("name", txtName.getText().toString());
                 IDbundle.putString("visittype", VisitType);
-                IDbundle.putString("visitno", "0");
+//                IDbundle.putString("visitno", "0");
+                IDbundle.putString("visitno",txtVisit.getSelectedItem().toString());
                 IDbundle.putString("visitdate", dtpVDate.getText().toString());
 
                 IDbundle.putString("temp", txttemp);
