@@ -413,7 +413,7 @@ public class HouseholdIndex extends Activity {
 
 
                                     TableName = "RSV";
-                                    VariableList = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt,Fever,FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SampleAgree,NotAgree,OthersR, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
+                                    VariableList = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt,Fever,FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason,SuitSam,SuitSamRe,SuitSamReO,SampleAgree,NotAgree,OthersR, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
                                     UniqueField = "ChildID, Week, VType, Visit";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);

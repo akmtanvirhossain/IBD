@@ -181,6 +181,7 @@ public class ChildRegistration extends Activity {
     String Card;
     String UNc;
 
+
     static boolean hasChild=false;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -502,7 +503,22 @@ public class ChildRegistration extends Activity {
                     return;
                 }
             }
+//            Duplicate CID****************************
 
+//            String CurrentCID = C.ReturnSingleValue("select CID from Child Where CID='" + txtCID.getText() + "'");
+//
+//            if (CurrentCID.equals(txtCID.getText())){
+//                Connection.MessageBox(ChildRegistration.this, "এই ID :(" + CurrentCID + ") পূর্বে নাম :(" + CurrentName + ") বাচ্চার জন্য ব্যবহার হয়েছে");
+//            }
+//            ************
+            String PreviousCID = C.ReturnSingleValue("select OldCID from CID_Update_Log Where OldCID='" + txtCID.getText().toString() + "'");
+            if (PreviousCID.equals(txtCID.getText().toString())){
+                String ChildIDLog = C.ReturnSingleValue("select ChildID from CID_Update_Log Where OldCID='" + txtCID.getText() + "'");
+                String CurrentName = C.ReturnSingleValue("select Name from Child Where ChildID='" + ChildIDLog + "'");
+//                Connection.MessageBox(ChildRegistration.this, "এই ID :(" + PreviousCID + ") পূর্বে ব্যবহার হয়েছে");
+                Connection.MessageBox(ChildRegistration.this, "এই ID :(" + PreviousCID + ") পূর্বে নাম :(" + CurrentName + ") বাচ্চার জন্য ব্যবহার হয়েছে");
+            }
+//            ***************End
             if (txtMoPNO.getText().toString().length() > 0){
                 if (!C.Existence("select vill from mdssvill where vill='" + Global.Left(txtMoPNO.getText().toString(), 3) + "'")) {
                     Connection.MessageBox(ChildRegistration.this, "মায়ের স্থায়ী ID নং. সঠিক নয়");

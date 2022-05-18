@@ -593,36 +593,42 @@ public class FollowUpVisit extends Activity {
             int mo = (int)(da/30.44);
 
             if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
-                if (da <= 731) {
+
+                String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
+                if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || RSVCluster.equals("016") || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
+
+                    if (da <= 731) {
 //                if (mo <= 24) {
 
-                    Bundle IDbundle = new Bundle();
-                    Intent f1;
-                    IDbundle.putString("childid", ChildID);
-                    IDbundle.putString("pid", PID);
+                        Bundle IDbundle = new Bundle();
+                        Intent f1;
+                        IDbundle.putString("childid", ChildID);
+                        IDbundle.putString("pid", PID);
 //                    IDbundle.putString("pid", CID);
-                    IDbundle.putString("weekno", WeekNo);
-                    IDbundle.putString("fm", FatherMother.getText().toString());
-                    IDbundle.putString("aged", AgeD);
-                    IDbundle.putString("agem", AgeM);
-                    IDbundle.putString("agedm", AgeDM);
-                    IDbundle.putString("bdate", DOB);
-                    IDbundle.putString("name", lblCName.getText().toString());
-                    IDbundle.putString("visittype", VisitType);
-                    IDbundle.putString("visitno", "0");
-                    IDbundle.putString("visitdate", dtpVDate.getText().toString());
-                    IDbundle.putString("temp", "");
-                    IDbundle.putString("Cough", "");
-                    IDbundle.putString("CoughDt", "");
-                    IDbundle.putString("DBrea", "");
-                    IDbundle.putString("DBreaDt", "");
-                    IDbundle.putString("source", "");
+                        IDbundle.putString("weekno", WeekNo);
+                        IDbundle.putString("fm", FatherMother.getText().toString());
+                        IDbundle.putString("aged", AgeD);
+                        IDbundle.putString("agem", AgeM);
+                        IDbundle.putString("agedm", AgeDM);
+                        IDbundle.putString("bdate", DOB);
+                        IDbundle.putString("name", lblCName.getText().toString());
+                        IDbundle.putString("visittype", VisitType);
+                        IDbundle.putString("visitno", "0");
+                        IDbundle.putString("visitdate", dtpVDate.getText().toString());
+                        IDbundle.putString("temp", "");
+                        IDbundle.putString("Cough", "");
+                        IDbundle.putString("CoughDt", "");
+                        IDbundle.putString("DBrea", "");
+                        IDbundle.putString("DBreaDt", "");
+                        IDbundle.putString("source", "");
 
-                    f1 = new Intent(getApplicationContext(), RSV.class);
-                    f1.putExtras(IDbundle);
-                    startActivityForResult(f1, 1);
-                    //******************RSV
+                        f1 = new Intent(getApplicationContext(), RSV.class);
+                        f1.putExtras(IDbundle);
+                        startActivityForResult(f1, 1);
+                        //******************RSV
+                    }
                 }
+
             }
 //
 
