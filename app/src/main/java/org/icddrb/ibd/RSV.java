@@ -1499,7 +1499,7 @@ public class RSV extends Activity {
             Day14d_day=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
             if (Day14d_day != null) {
                 int dy14 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day));
-                if (dy14 >= 0 & dy14 <= 15 & !rdoSuitSam2.isChecked()) {
+                if (dy14 >= 0 & dy14 <= 14 & !rdoSuitSam2.isChecked()) {
 //                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম ("+Global.DateConvertYMD(dtpVDate.getText().toString())+" "+Day14+" "+dy1+" দিন)");
 //                Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ ("+Day14d_day+") হইতে আজকের তারিখের (পার্থক্য : "+dy14+" দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)");
                     ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)";

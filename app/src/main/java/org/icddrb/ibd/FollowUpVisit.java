@@ -354,12 +354,10 @@ public class FollowUpVisit extends Activity {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
                         String CDOB1;
-                        CDOB1=C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '"+ ChildID +"'");
+                        CDOB1 = C.ReturnSingleValue("Select BDate  from Child WHERE   ChildID = '" + ChildID + "'");
 
-                        int daa = Global.DateDifferenceDays(dtpVDate.getText().toString(),Global.DateConvertDMY(CDOB1));
-                        int moo = (int)(daa/30.44);
-
-
+                        int daa = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(CDOB1));
+                        int moo = (int) (daa / 30.44);
 
 
                         String rbData = "";
@@ -370,7 +368,7 @@ public class FollowUpVisit extends Activity {
                             if (rb.isChecked()) rbData = d_rdogrpRSVsuitable[i];
                         }
 
-                        if (rbData.equalsIgnoreCase("2")) {
+                        if (rbData.equalsIgnoreCase("2") || rbData.equalsIgnoreCase("3")) {
                             secRSVStatus.setVisibility(View.GONE);
                             lineRSVStatus.setVisibility(View.GONE);
                             rdogrpRSVStatus.clearCheck();
@@ -378,15 +376,25 @@ public class FollowUpVisit extends Activity {
                         }
                         String[] VS1 = spnVstat.getSelectedItem().toString().split("-");
                         String spnData = VS1[0];
-                        if((spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("21"))  & (rbData.equalsIgnoreCase("1"))) {
-                            if (daa <= 731) {
+
+                        if (rbData.equalsIgnoreCase("1")) {
+//Cluster check for RSV***********************
+                            String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
+                            if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0, 3).equals("307")) || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
+
+
+                                if ((spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("21")) & (rbData.equalsIgnoreCase("1"))) {
+                                    if (daa <= 731) {
 //                            if (moo <= 24) {
-                                secRSVStatus.setVisibility(View.VISIBLE);
-                                lineRSVStatus.setVisibility(View.VISIBLE);
+                                        secRSVStatus.setVisibility(View.VISIBLE);
+                                        lineRSVStatus.setVisibility(View.VISIBLE);
+                                    }
+                                }
                             }
                         }
-                    }
+//
 
+                    }
                     public void onNothingSelected(AdapterView<?> adapterView) {
                         return;
                     }
@@ -594,8 +602,8 @@ public class FollowUpVisit extends Activity {
 
             if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
 
-                String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
-                if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || RSVCluster.equals("016") || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
+//                String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
+//                if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0,3).equals("307"))  || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
 
                     if (da <= 731) {
 //                if (mo <= 24) {
@@ -629,7 +637,7 @@ public class FollowUpVisit extends Activity {
                     }
                 }
 
-            }
+//            }
 //
 
 

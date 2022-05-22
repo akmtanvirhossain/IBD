@@ -3768,7 +3768,7 @@ public class AssPneu extends Activity {
 
 
             String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
-            if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || RSVCluster.equals("016") || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
+            if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0,3).equals("307")) || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
             if (!rdoAsses2.isChecked())
             {
                 if (d <= 731) {
