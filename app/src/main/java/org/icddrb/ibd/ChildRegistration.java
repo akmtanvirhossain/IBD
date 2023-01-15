@@ -134,6 +134,7 @@ public class ChildRegistration extends Activity {
     LinearLayout secName;
     TextView VlblName;
     EditText txtName;
+    EditText txtChildID;
     LinearLayout secSex;
     TextView VlblSex;
     RadioGroup rdogrpSex;
@@ -317,6 +318,8 @@ public class ChildRegistration extends Activity {
             secName=(LinearLayout)findViewById(R.id.secName);
             VlblName=(TextView) findViewById(R.id.VlblName);
             txtName=(EditText) findViewById(R.id.txtName);
+            txtChildID=(EditText) findViewById(R.id.txtChildID);
+            txtChildID.setEnabled(false);
             secSex=(LinearLayout)findViewById(R.id.secSex);
             VlblSex = (TextView) findViewById(R.id.VlblSex);
             rdogrpSex = (RadioGroup) findViewById(R.id.rdogrpSex);
@@ -503,7 +506,7 @@ public class ChildRegistration extends Activity {
                     return;
                 }
             }
-//            Duplicate CID****************************
+//            Duplicate CID in Log file****************************
             String PreviousCID = C.ReturnSingleValue("select OldCID from CID_Update_Log Where OldCID='" + txtCID.getText().toString() + "'");
             if (PreviousCID.equals(txtCID.getText().toString())){
                 String ChildIDLog = C.ReturnSingleValue("select ChildID from CID_Update_Log Where OldCID='" + txtCID.getText() + "'");
@@ -512,6 +515,18 @@ public class ChildRegistration extends Activity {
                 Connection.MessageBox(ChildRegistration.this, "এই ID :(" + PreviousCID + ") পূর্বে নাম :(" + CurrentName + ") বাচ্চার জন্য ব্যবহার হয়েছে");
                 return;
             }
+
+
+//            Duplicate CID for different child in Child file************15-11-2022****************
+            String CID1 = C.ReturnSingleValue("select CID from Child Where CID='" + txtCID.getText() + "'");
+            String ChildID1 = C.ReturnSingleValue("select ChildId from Child Where CID='" + CID1.toString() + "' and ChildId not in ('"+txtChildID.getText().toString()+"')");
+            String CurrentName = C.ReturnSingleValue("select Name from Child Where ChildId='" + ChildID1 + "'");
+
+            if (CID1.equals(txtCID.getText().toString()) & !ChildID1.equals(txtChildID.getText().toString())){
+                Connection.MessageBox(ChildRegistration.this, "এই CID :(" + CID1 + ") পূর্বে নাম :(" + CurrentName + ") বাচ্চার জন্য ব্যবহার হয়েছে");
+                return;
+            }
+
 //            ***************End
             if (txtMoPNO.getText().toString().length() > 0){
                 if (!C.Existence("select vill from mdssvill where vill='" + Global.Left(txtMoPNO.getText().toString(), 3) + "'")) {
@@ -780,7 +795,7 @@ public class ChildRegistration extends Activity {
         {
 
             RadioButton rb;
-            Cursor cur = C.ReadData("Select ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, ContactNo from  "+ TableName +"  Where ChildId='"+ ChildId +"'");
+            Cursor cur = C.ReadData("Select ChildId, Vill, bari, HH, SNo, PID, CID ,Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, ContactNo from  "+ TableName +"  Where ChildId='"+ ChildId +"'");
             cur.moveToFirst();
             while(!cur.isAfterLast())
             {
@@ -789,6 +804,7 @@ public class ChildRegistration extends Activity {
                 txtHH.setText(cur.getString(cur.getColumnIndex("HH")));
                 txtSNo.setText(cur.getString(cur.getColumnIndex("SNo")));
                 txtCID.setText(cur.getString(cur.getColumnIndex("CID")));
+                txtChildID.setText(cur.getString(cur.getColumnIndex("ChildId")));
                 Old_CID = cur.getString(cur.getColumnIndex("CID"));
 
                 txtPID.setText(cur.getString(cur.getColumnIndex("PID")));

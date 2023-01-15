@@ -37,6 +37,7 @@
 
             <TextView android:id="@+id/VlblName" android:text="নাম" android:layout_width="130sp" android:layout_height="wrap_content" android:textSize="20sp" />
             <EditText android:id="@+id/txtName" android:maxLength="50" android:layout_width="250sp" android:inputType="textCapCharacters" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
+            <EditText android:id="@+id/txtChildID" android:maxLength="11" android:layout_width="160sp" android:inputType="number" android:layout_height="wrap_content" style="@style/customEdit" android:layout_marginRight="10sp" android:textSize="20sp" />
         </LinearLayout>
         <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
         <LinearLayout android:id="@+id/secSex" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0">
