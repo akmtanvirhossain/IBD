@@ -175,6 +175,8 @@ public class HouseholdIndex extends Activity {
                                     //3-Update Block
                                     //4-Update Cluster and Block
                                     //----------------------------------------------------------------------------------
+
+
                                     //Upload update to server
                                     TableName = "Bari";
                                     VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload";
@@ -307,6 +309,7 @@ public class HouseholdIndex extends Activity {
 
                 return true;
             case R.id.menuSync:
+
                 if (g.getUserId().equals("999")) return true;
 
                 //Check for Internet connectivity
@@ -336,6 +339,7 @@ public class HouseholdIndex extends Activity {
                                     String VariableList;
                                     String UniqueField;
 
+
                                     TableName = "MDSSVill";
                                     VariableList = "Vill, Vname, UCode, UName, Cluster, Status, OldUnion";
                                     UniqueField = "Vill";
@@ -358,6 +362,11 @@ public class HouseholdIndex extends Activity {
                                     //Upload
                                     //----------------------------------------------------------------------------------
                                     C.ExecuteCommandOnServer("Insert into UploadMonitor(Cluster)Values('" + g.getClusterCode() + "')");
+
+                                    //Table: data_GAge
+                                    TableName = "data_GAge";
+                                    VariableList = "Vill,Bari,HH,SNo,PNo,GAge,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,Upload,modifyDate";
+                                    C.UploadJSON(TableName , VariableList , "Vill,Bari,HH,SNo");
 
                                     //Bari(New/Old-Block Update)
                                     TableName = "Bari";
@@ -455,6 +464,13 @@ public class HouseholdIndex extends Activity {
                                     */
                                     C.Sync_Download_Child(Cluster);
 
+
+                                    //data_GAge
+                                    SQLStr  = "select a.Vill,a.Bari,a.HH,a.SNo,a.PNo,a.GAge,a.StartTime,a.EndTime,a.DeviceID,a.EntryUser,a.Lat,a.Lon,convert(varchar(20),a.EnDt,120)modifyDate,'1' Upload,convert(varchar(20),a.modifyDate,120)modifyDate\n" +
+                                            "from data_GAge a inner join MDSSVill v on a.Vill=v.Vill where v.Cluster='"+ Cluster +"' and a.Upload='3'";
+                                    Res = C.DownloadJSON_UpdateServer(SQLStr, "data_GAge", "Vill,Bari,HH,SNo,PNo,GAge,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,Upload,modifyDate", "Vill,Bari,HH,SNo");
+
+
                                     //Visit
                                     TableName = "Visits";
                                     VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate";
@@ -548,6 +564,8 @@ public class HouseholdIndex extends Activity {
                     }
                 });
                 adb.show();
+
+
 
 
                 return true;
@@ -1140,6 +1158,7 @@ public class HouseholdIndex extends Activity {
             }
 
 
+
             BlockWiseVillageBari(Block);
 
 
@@ -1247,11 +1266,12 @@ public class HouseholdIndex extends Activity {
             //Active Child
             if (spnFilterOption.getSelectedItemPosition() == 0) {
                 if (BariCode.length() > 1) {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
                     SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end)<=date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
@@ -1259,11 +1279,12 @@ public class HouseholdIndex extends Activity {
                     SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
 
                 } else {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
                     SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) < date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
@@ -1274,18 +1295,20 @@ public class HouseholdIndex extends Activity {
             //All Child
             else if (spnFilterOption.getSelectedItemPosition() == 1) {
                 if (BariCode.length() > 1) {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                 } else {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
@@ -1294,10 +1317,11 @@ public class HouseholdIndex extends Activity {
             //Visit Completed
             else if (spnFilterOption.getSelectedItemPosition() == 2) {
                 if (BariCode.length() > 1) {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='" + Village + "' ";
@@ -1307,10 +1331,11 @@ public class HouseholdIndex extends Activity {
                     SQL += " and (case when v.ChildId is null then '2' else '1' end)='1' ";
 
                 } else {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " where b.vill='" + Village + "' ";
@@ -1323,10 +1348,11 @@ public class HouseholdIndex extends Activity {
             //Not Yet Visited
             else if (spnFilterOption.getSelectedItemPosition() == 3) {
                 if (BariCode.length() > 1) {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1337,10 +1363,11 @@ public class HouseholdIndex extends Activity {
                     SQL += " and (case when v.ChildId is null then '2' else '1' end)='2' ";
 
                 } else {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1355,10 +1382,11 @@ public class HouseholdIndex extends Activity {
             //Over Age
             else if (spnFilterOption.getSelectedItemPosition() == 4) {
                 if (BariCode.length() > 1) {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='" + Village + "' ";
@@ -1366,10 +1394,295 @@ public class HouseholdIndex extends Activity {
                     SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
                     SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) > 1825";
                 } else {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) > 1825";
+                }
+            }
+            //Neonate
+            else if (spnFilterOption.getSelectedItemPosition() == 5) {
+                if (BariCode.length() > 1) {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 28";
+
+                } else {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 28";
+                }
+            }
+            //death
+            else if (spnFilterOption.getSelectedItemPosition() == 6) {
+                if (BariCode.length() > 1) {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and v.vstat='6'";
+                } else {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and v.vstat='6'";
+                }
+            }
+            //sick
+            else if (spnFilterOption.getSelectedItemPosition() == 7) {
+                if (BariCode.length() > 1) {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' and (c.extype is null or length(c.extype)=0) and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and ifnull(v.sickstatus,'')='2'";
+                } else {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' and (c.extype is null or length(c.extype)=0) and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and ifnull(v.sickstatus,'')='2'";
+                }
+            }
+            //migration
+            else if (spnFilterOption.getSelectedItemPosition() == 8) {
+                if (BariCode.length() > 1) {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and v.vstat='5'";
+                } else {
+                    SQL = " select  ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and v.vstat='5'";
+                }
+            }
+
+            if (chkMWRA.isChecked()) {
+                SQL += " Union Select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'm' childmwra, c.BDate as bdate,'' as referral,'' as referral_add,'' as referral_foll,'' as absent_sick,  b.Cluster cluster,b.Block block,c.mwraid childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                SQL += " c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))/365.25) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,pstat as pstat,lmpdt as lmpdt";
+                SQL += " ,'' contactno,'' vstat,'' sickstatus from MWRA c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                SQL += " where b.vill='" + Village + "' and (c.extype is null or length(c.extype)=0) and  B.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "') order by c.cid asc";
+            }
+
+            /*//Active Child
+            if (spnFilterOption.getSelectedItemPosition() == 0) {
+                if (BariCode.length() > 1) {
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
+                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
+                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+
+                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end)<=date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end)<=date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
+
+                } else {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
+                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,";
+                    SQL += " (case when c.extype='4' then '' when length(c.extype)>0 and date(c.exdate)>=date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) then '' else ifnull(c.extype,'') end) extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'" + WeekEndDate + "' then date(v.vdate) else '" + WeekEndDate + "' end) < date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " where b.vill='"+ Village +"' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length(case when c.extype='4' or date(case when date(v.vdate)<'"+ WeekEndDate +"' then date(v.vdate) else '"+ WeekEndDate +"' end) < date(c.exdate) then '' else ifnull(c.extype,'') end)=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
+                }
+            }
+            //All Child
+            else if (spnFilterOption.getSelectedItemPosition() == 1) {
+                if (BariCode.length() > 1) {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                } else {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " where b.vill='" + Village + "' and b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                }
+            }
+            //Visit Completed
+            else if (spnFilterOption.getSelectedItemPosition() == 2) {
+                if (BariCode.length() > 1) {
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and (case when v.ChildId is null then '2' else '1' end)='1' ";
+
+                } else {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and (case when v.ChildId is null then '2' else '1' end)='1' ";
+                }
+            }
+            //Not Yet Visited
+            else if (spnFilterOption.getSelectedItemPosition() == 3) {
+                if (BariCode.length() > 1) {
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and (case when v.ChildId is null then '2' else '1' end)='2' ";
+
+                } else {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "'";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) <= 1825";
+                    SQL += " and (case when v.ChildId is null then '2' else '1' end)='2' ";
+
+                }
+            }
+            //Over Age
+            else if (spnFilterOption.getSelectedItemPosition() == 4) {
+                if (BariCode.length() > 1) {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll, ifnull(c.absent_sick,'') as absent_sick, b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
+                    SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+
+                    SQL += " where b.vill='" + Village + "' ";
+                    SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
+                    SQL += " and  b.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "')";
+                    SQL += " and cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int) > 1825";
+                } else {
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='" + Village + "' ";
@@ -1383,8 +1696,11 @@ public class HouseholdIndex extends Activity {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
                     SQL += " where b.vill='" + Village + "' ";
@@ -1395,9 +1711,13 @@ public class HouseholdIndex extends Activity {
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
+                    SQL += " where b.vill='"+ Village +"' ";
 
                     SQL += " where b.vill='" + Village + "' ";
                     SQL += " and ((case when c.extype='4' then '' else c.extype end) is null or length((case when c.extype='4' then '' else ifnull(c.extype,'') end))=0)";
@@ -1410,8 +1730,11 @@ public class HouseholdIndex extends Activity {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1420,8 +1743,11 @@ public class HouseholdIndex extends Activity {
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1434,8 +1760,11 @@ public class HouseholdIndex extends Activity {
                 if (BariCode.length() > 1) {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1444,8 +1773,11 @@ public class HouseholdIndex extends Activity {
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1456,10 +1788,11 @@ public class HouseholdIndex extends Activity {
             //migration
             else if (spnFilterOption.getSelectedItemPosition() == 8) {
                 if (BariCode.length() > 1) {
-                    SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
-                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1468,8 +1801,11 @@ public class HouseholdIndex extends Activity {
                 } else {
                     SQL = " select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                     SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('" + WeekEndDate + "') then date('now') else date('" + WeekEndDate + "') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
+                    SQL = " select ifnull(ga.vill,'')gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'c' childmwra, c.BDate as bdate,ifnull(c.referral,'') as referral,ifnull(c.referral_add,'') as referral_add,ifnull(c.referral_foll,'') as referral_foll,ifnull(c.absent_sick,'') as absent_sick,  b.Cluster cluster,b.Block block,c.ChildId childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+                    SQL += " c.PID pid,c.CID cid,Name name,Sex sex,cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)aged, Cast((cast(julianday(case when date('now')<date('"+ WeekEndDate +"') then date('now') else date('"+ WeekEndDate +"') end)-julianday(c.BDate) as int)/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,(case when v.ChildId is null then '2' else '1' end)visit,ifnull(c.extype,'') extype,'' pstat,'' lmpdt";
                     SQL += " ,ifnull(c.contactno,'') contactno,ifnull(v.vstat,'')vstat,ifnull(v.sickstatus,'')sickstatus from Child c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                     SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
+                    SQL += " left outer join data_GAge ga on c.vill||c.bari||c.hh||c.sno = ga.vill||ga.bari||ga.hh||ga.sno";
                     //SQL += " left outer join Visits v on c.childid=v.childid and v.week='" + WeekNo + "'";
                     SQL += " left outer join (select * from visits where week='" + WeekNo + "' group by childid,week order by childid,min(vstat)) v on c.childid=v.childid and v.week='" + WeekNo + "'";
 
@@ -1478,14 +1814,14 @@ public class HouseholdIndex extends Activity {
                 }
             }
 
-            if (chkMWRA.isChecked()) {
-                SQL += " Union Select ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'm' childmwra, c.BDate as bdate,'' as referral,'' as referral_add,'' as referral_foll,'' as absent_sick,  b.Cluster cluster,b.Block block,c.mwraid childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
+            if(chkMWRA.isChecked()) {
+                SQL += " Union Select '' gage,ifnull(db.cluster,'') dssc,ifnull(db.block,'') dssb, 'm' childmwra, c.BDate as bdate,'' as referral,'' as referral_add,'' as referral_foll,'' as absent_sick,  b.Cluster cluster,b.Block block,c.mwraid childid,c.Vill vill,c.bari bari,c.HH hh,c.SNo sno,";
                 SQL += " c.PID pid,c.CID cid,Name name,Sex sex,Cast(((julianday(date('now'))-julianday(c.BDate))/365.25) as int)aged, Cast(((julianday(date('now'))-julianday(c.BDate))/30.44) as int) agem,ifnull(FaName,'') father,ifnull(MoName,'') mother,'2' visit,ifnull(c.extype,'') extype,pstat as pstat,lmpdt as lmpdt";
                 SQL += " ,'' contactno,'' vstat,'' sickstatus from MWRA c inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
                 SQL += " left outer join DSSBari db on c.Vill=db.Vill and c.bari=db.Bari";
                 SQL += " where b.vill='" + Village + "' and (c.extype is null or length(c.extype)=0) and  B.Cluster='" + Cluster + "' and b.Block='" + Block + "' and b.bari like('" + BariCode + "') order by c.cid asc";
             }
-
+*/
             Cursor cur = C.ReadData(SQL);
             cur.moveToFirst();
 
@@ -1493,6 +1829,7 @@ public class HouseholdIndex extends Activity {
             while (!cur.isAfterLast()) {
                 map = new HashMap<String, String>();
                 map.put("sl", String.valueOf(i));
+                map.put("gage", cur.getString(cur.getColumnIndex("gage")));
                 map.put("childid", cur.getString(cur.getColumnIndex("childid")));
                 map.put("vill", cur.getString(cur.getColumnIndex("vill")));
                 map.put("bari", cur.getString(cur.getColumnIndex("bari")));
@@ -1702,6 +2039,33 @@ public class HouseholdIndex extends Activity {
                 secContactNo.setVisibility(View.GONE);
 
 
+            Button btnGAge = (Button) convertView.findViewById(R.id.btnGAge);
+            btnGAge.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    Bundle IDbundle = new Bundle();
+                    IDbundle.putString("vill", o.get("vill"));
+                    IDbundle.putString("bari", o.get("bari"));
+                    IDbundle.putString("hh", o.get("hh"));
+                    IDbundle.putString("sno", o.get("sno"));
+                    IDbundle.putString("pno", o.get("pid"));
+                    Intent f11 = new Intent(getApplicationContext(),data_GAge.class);
+                    f11.putExtras(IDbundle);
+                    startActivity(f11);
+
+                }
+            });
+
+            if(Integer.parseInt(o.get("aged"))<365){
+                btnGAge.setVisibility(View.VISIBLE);
+            }else{
+                btnGAge.setVisibility(View.GONE);
+            }
+            if(o.get("gage").length()>0){
+                btnGAge.setBackgroundColor(Color.GREEN);
+            }else{
+                btnGAge.setBackgroundColor(Color.RED);
+            }
+
             Button btnRegis = (Button) convertView.findViewById(R.id.btnRegis);
             btnRegis.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
@@ -1795,7 +2159,7 @@ public class HouseholdIndex extends Activity {
                 }
             });
 
-            Button btnFollowUpVisit = (Button) convertView.findViewById(R.id.btnFollowUpVisit);
+            Button btnFollowUpVisit = (Button)convertView.findViewById(R.id.btnFollowUpVisit);
             btnFollowUpVisit.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
                     FM = o.get("father");
@@ -2130,6 +2494,7 @@ public class HouseholdIndex extends Activity {
     }
 
 
+
     public class HHListAdapter extends BaseAdapter {
         private Context context;
 
@@ -2224,13 +2589,17 @@ public class HouseholdIndex extends Activity {
 
     public int SpinnerItem_Position(Spinner spn, String Value) {
         int pos = 0;
-        if (Value.length() != 0) {
-            for (int i = 0; i < spn.getCount(); i++) {
+        if(Value.length()!=0)
+        {
+            for(int i=0;i<spn.getCount();i++)
+            {
                 String[] b = spn.getItemAtPosition(i).toString().split(",");
-                if (spn.getItemAtPosition(i).toString().length() != 0) {
-                    if (b[0].equalsIgnoreCase(Value)) {
+                if(spn.getItemAtPosition(i).toString().length()!=0)
+                {
+                    if(b[0].equalsIgnoreCase(Value))
+                    {
                         pos = i;
-                        i = spn.getCount();
+                        i   = spn.getCount();
                     }
                 }
             }
@@ -2588,6 +2957,8 @@ public class HouseholdIndex extends Activity {
 
         dialog.show();
     }
+
+
 
 
     protected Dialog onCreateDialog(int id) {

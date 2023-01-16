@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import Common.Connection;
@@ -41,16 +40,16 @@ import Common.UploadData;
 import Common.UploadDataJSON;
 import Utility.MySharedPreferences;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity{
     Connection C;
     Global g;
-    boolean networkAvailable = false;
+    boolean networkAvailable=false;
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog dialog;
     int count = 0;
     TextView lblStaffType;
-    String SystemUpdateDT = "";
-    private String Password = "";
+    String   SystemUpdateDT="";
+    private  String Password="";
     private String Cluster;
     MySharedPreferences sp;
 
@@ -108,36 +107,36 @@ public class LoginActivity extends Activity {
             ActivityCompat.requestPermissions(this, PERMISSIONS_LIST, REQUEST_Code);
         }
     }
-
-    //----------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try {
+        try
+        {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.login);
             C = new Connection(this);
             g = Global.getInstance();
             sp = new MySharedPreferences();
-            sp.save(this, "cluster", "");
+            sp.save(this,"cluster","");
 
-            final Spinner uid = (Spinner) findViewById(R.id.userId);
-            final Spinner weekNo = (Spinner) findViewById(R.id.weekNo);
-            final EditText pass = (EditText) findViewById(R.id.pass);
-            TextView lblSystemDate = (TextView) findViewById(R.id.lblSystemDate);
+            final Spinner uid      = (Spinner)findViewById(R.id.userId);
+            final Spinner weekNo   = (Spinner)findViewById(R.id.weekNo);
+            final EditText pass    = (EditText)findViewById(R.id.pass);
+            TextView lblSystemDate = (TextView)findViewById(R.id.lblSystemDate);
 
             //Need to update date every time whenever shared updated system
             //Format: DDMMYYYY
             //*********************************************************************
-            SystemUpdateDT = "23052022";
+            SystemUpdateDT = "15122021";
             lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
             //Check for Internet connectivity
             if (Connection.haveNetworkConnection(LoginActivity.this)) {
-                networkAvailable = true;
+                networkAvailable=true;
             } else {
-                networkAvailable = false;
+                networkAvailable=false;
             }
 
             //**************************** Process **************************************
@@ -169,15 +168,19 @@ public class LoginActivity extends Activity {
 
             //Rebuild Database
             String TotalTab = C.ReturnSingleValue("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence'");
-            if (Integer.valueOf(TotalTab) == 0) {
-                if (networkAvailable) {
+            if(Integer.valueOf(TotalTab) == 0)
+            {
+                if(networkAvailable)
+                {
                     //Call Setting Form
                     finish();
-                    Intent f1 = new Intent(getApplicationContext(), SettingForm.class);
+                    Intent f1 = new Intent(getApplicationContext(),SettingForm.class);
                     startActivity(f1);
                     return;
-                } else {
-                    Connection.MessageBox(LoginActivity.this, "Internet connection is not available for building initial database.");
+                }
+                else
+                {
+                    Connection.MessageBox(LoginActivity.this,"Internet connection is not available for building initial database.");
                     //finish();
                     //System.exit(0);
                     return;
@@ -185,11 +188,16 @@ public class LoginActivity extends Activity {
             }
 
 
+
             Cluster = C.ReturnSingleValue("select Cluster from Cluster");
             g.setClusterCode(Cluster);
-            sp.save(this, "cluster", Cluster);
+            sp.save(this,"cluster",Cluster);
 
-//
+            if (networkAvailable)
+            {
+                Intent syncService = new Intent(this, Sync_Service.class);
+                startService(syncService);
+            }
 
             /*String TableName = "WeeklyVstDt";
             String SQLStr = "Select top 20 Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +
@@ -202,7 +210,7 @@ public class LoginActivity extends Activity {
 
             String SQLStr;
             String Res = "";
-            String TableName = "";
+            String TableName="";
             String VariableList;
             String UniqueField;
 
@@ -211,10 +219,16 @@ public class LoginActivity extends Activity {
                 String resp = "";
                 if (!C.Existence("Select * from process_tab where process_id=1")) {
                     C.Save("Delete from weeklyvstdt where week=600");
-                    if (resp.length() == 0) C.Save("Insert into process_tab(process_id)values(1)");
+                    if(resp.length()==0) C.Save("Insert into process_tab(process_id)values(1)");
                 }
 
-            } catch (Exception ex) {
+                //13012023
+                if (!C.Existence("Select * from process_tab where process_id=3")) {
+                    C.CreateTable("data_GAge", "Create table data_GAge(Vill varchar (3),Bari varchar (4),HH varchar (2),SNo varchar (2),PNo varchar (10),GAge varchar (2),StartTime varchar (5),EndTime varchar (5),DeviceID varchar (10),EntryUser varchar (10),Lat varchar (20),Lon varchar (20),EnDt datetime,Upload int,modifyDate datetime,Constraint pk_data_GAge Primary Key(Vill,Bari,HH,SNo))");
+                    C.Save("Insert into process_tab(process_id)values(3)");
+                }
+
+            }catch (Exception ex){
 
             }
 
@@ -233,7 +247,8 @@ public class LoginActivity extends Activity {
             }*/
 
             //need to update weekly visit data
-            if (networkAvailable & !C.Existence("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)")) {
+            if(networkAvailable & !C.Existence("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)"))
+            {
                 //WeeklyVstDt
                 TableName = "WeeklyVstDt";
                 SQLStr = "Select top 5 Week, (cast(YEAR(StDate) as varchar(4))+'-'+right('0'+ cast(MONTH(StDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(StDate) as varchar(2)),2))StDate," +
@@ -245,14 +260,14 @@ public class LoginActivity extends Activity {
 
             uid.setAdapter(C.getArrayAdapter("Select l.UserId||'-'||v.VHWNAME from Login l,VHWs v where l.userid=cast(v.vhw as varchar(10))"));
             weekNo.setAdapter(C.getArrayAdapter("Select week from WeeklyVstDt order by week desc limit 300"));
-            String Week = C.ReturnSingleValue("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)");
-            weekNo.setSelection(Global.SpinnerItemPosition(weekNo, Week.length(), Week));
+            String Week  = C.ReturnSingleValue("Select Week from weeklyvstdt where date('now') between date(stdate) and date(endate)");
+            weekNo.setSelection(Global.SpinnerItemPosition(weekNo,Week.length(),Week));
 
             //***********************************************
             //netwoekAvailable=false;
             //***********************************************
 
-            Button btnClose = (Button) findViewById(R.id.btnClose);
+            Button btnClose=(Button)findViewById(R.id.btnClose);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     finish();
@@ -264,8 +279,9 @@ public class LoginActivity extends Activity {
             Button loginButton = (Button) findViewById(R.id.btnLogin);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    try {
-                        String[] WeekDate = Connection.split(C.ReturnSingleValue("Select (stdate||','||endate) DT from weeklyvstdt where week='" + weekNo.getSelectedItem().toString() + "'"), ',');
+                    try
+                    {
+                        String[] WeekDate  = Connection.split(C.ReturnSingleValue("Select (stdate||','||endate) DT from weeklyvstdt where week='"+ weekNo.getSelectedItem().toString()  +"'"),',');
                         g.setWeekStartDate(WeekDate[0].toString());
                         g.setWeekEndDate(WeekDate[1].toString());
 
@@ -324,67 +340,79 @@ public class LoginActivity extends Activity {
                         }
                         */
 
-                        String[] U = Connection.split(uid.getSelectedItem().toString(), '-');
+                        String[] U = Connection.split(uid.getSelectedItem().toString(),'-');
                         g.setUserId(U[0]);
+
 
                         //netwoekAvailable=false;
 
                         //Download Updated System
                         //...................................................................................
                         Bundle IDbundle = new Bundle();
-                        if (networkAvailable == true) {
-
-                            if (C.Existence("Select * from vhws where BariChar is null or length(barichar)=0")) {
-                                String SQLStr = "Select Cluster,VHW,BariChar from VHWs where VHW = '" + g.getUserId() + "'";
+                        if(networkAvailable==true)
+                        {
+                            if(C.Existence("Select * from vhws where BariChar is null or length(barichar)=0"))
+                            {
+                                String SQLStr = "Select Cluster,VHW,BariChar from VHWs where VHW = '"+ g.getUserId() +"'";
                                 String VariableList = "Cluster,VHW,BariChar";
                                 String Res = C.DownloadJSON(SQLStr, "vhws", VariableList, "Cluster,VHW");
                             }
 
                             //Retrieve data from server for checking local device
-                            String[] ServerVal = Connection.split(C.ReturnResult("ReturnSingleValue", "sp_ServerCheck '" + g.getClusterCode() + "'"), ',');
-                            String ServerDate = ServerVal[0].toString();
-                            String UpdateDT = ServerVal[1].toString();
+                            String[] ServerVal  = Connection.split(C.ReturnResult("ReturnSingleValue","sp_ServerCheck '"+ g.getClusterCode() +"'"),',');
+                            String ServerDate            = ServerVal[0].toString();
+                            String UpdateDT              = ServerVal[1].toString();
 
                             //Check for New Version
                             if (!UpdateDT.equals(SystemUpdateDT)) {
                                 systemDownload d = new systemDownload();
                                 d.setContext(getApplicationContext());
                                 d.execute(Global.UpdatedSystem);
-                            } else {
+                            }
+                            else
+                            {
                                 //check for system date
-                                if (ServerDate.equals(Global.TodaysDateforCheck()) == false) {
-                                    Connection.MessageBox(LoginActivity.this, "আপনার ট্যাব এর তারিখ সঠিক নয় [" + Global.DateNowDMY() + "]।");
+                                if(ServerDate.equals(Global.TodaysDateforCheck())==false)
+                                {
+                                    Connection.MessageBox(LoginActivity.this, "আপনার ট্যাব এর তারিখ সঠিক নয় ["+ Global.DateNowDMY() +"]।");
                                     startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
                                     return;
                                 }
 
                                 finish();
                                 IDbundle.putString("weekno", weekNo.getSelectedItem().toString());
-                                Intent f1 = new Intent(getApplicationContext(), HouseholdIndex.class);
+                                Intent f1 = new Intent(getApplicationContext(),HouseholdIndex.class);
                                 f1.putExtras(IDbundle);
                                 startActivity(f1);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             finish();
                             IDbundle.putString("weekno", weekNo.getSelectedItem().toString());
-                            Intent f1 = new Intent(getApplicationContext(), HouseholdIndex.class);
+                            Intent f1 = new Intent(getApplicationContext(),HouseholdIndex.class);
                             f1.putExtras(IDbundle);
                             startActivity(f1);
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch(Exception ex)
+                    {
                         Connection.MessageBox(LoginActivity.this, ex.getMessage());
                         return;
                     }
                 }
             });
-        } catch (Exception ex) {
+        }
+        catch(Exception ex)
+        {
             Connection.MessageBox(LoginActivity.this, ex.getMessage());
         }
     }
 
     //Install application
-    private void InstallApplication() {
-        File apkfile = new File(Environment.getExternalStorageDirectory() + File.separator + Global.NewVersionName + ".apk");
+    private void InstallApplication()
+    {
+        File apkfile = new File(Environment.getExternalStorageDirectory() + File.separator + Global.NewVersionName +".apk");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
         intent.setDataAndType(Uri.parse("file://" + apkfile.toString()), "application/vnd.android.package-archive");
@@ -394,10 +422,10 @@ public class LoginActivity extends Activity {
 
 
     //Downloading updated system from the central server
-    class systemDownload extends AsyncTask<String, String, Void> {
+    class systemDownload extends AsyncTask<String,String,Void>{
         private Context context;
 
-        public void setContext(Context contextf) {
+        public void setContext(Context contextf){
             context = contextf;
         }
 
@@ -433,14 +461,16 @@ public class LoginActivity extends Activity {
                 c.connect();
                 int lenghtOfFile = c.getContentLength();
 
-                File file = Environment.getExternalStorageDirectory();
+                File file=Environment.getExternalStorageDirectory();
 
                 file.mkdirs();
-                File outputFile = new File(file.getAbsolutePath() + File.separator + Global.NewVersionName + ".apk");
+                File outputFile = new File(file.getAbsolutePath()+ File.separator + Global.NewVersionName +".apk");
 
-                if (outputFile.exists()) {
+                if(outputFile.exists()){
                     outputFile.delete();
-                } else {
+                }
+                else
+                {
                     outputFile.createNewFile();
                 }
 
