@@ -135,6 +135,8 @@
     static String HH = "";
     static String SNO = "";
     static String PNO = "";
+    static String CHILDID = "";
+    static String GAGE = "";
 
  public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
@@ -156,12 +158,15 @@
          HH = IDbundle.getString("hh");
          SNO = IDbundle.getString("sno");
          PNO = IDbundle.getString("pno");
+         CHILDID = IDbundle.getString("childid");
+         GAGE = IDbundle.getString("gage");
 
          TableName = "data_GAge";
 
 
         Initialization();
-        DataSearch(VILL,BARI,HH,SNO);
+//        DataSearch(VILL,BARI,HH,SNO);
+        DataSearch(CHILDID);
 
 
         Button cmdSave = (Button) findViewById(R.id.cmdSave);
@@ -209,15 +214,16 @@
          linePNo=(View)findViewById(R.id.linePNo);
          VlblPNo=(TextView) findViewById(R.id.VlblPNo);
          txtPNo=(EditText) findViewById(R.id.txtPNo);
-         txtPNo.setText(PNO);
-         if(PNO.length()>0)
+         txtPNo.setText(CHILDID);
+//         if(CHILDID.length()>0)
          txtPNo.setEnabled(false);
-         else
-         txtPNo.setEnabled(true);
+//         else
+//         txtPNo.setEnabled(true);
          secGAge=(LinearLayout)findViewById(R.id.secGAge);
          lineGAge=(View)findViewById(R.id.lineGAge);
          VlblGAge=(TextView) findViewById(R.id.VlblGAge);
          txtGAge=(EditText) findViewById(R.id.txtGAge);
+         txtGAge.setText(GAGE);
      }
      catch(Exception  e)
      {
@@ -245,7 +251,7 @@
          objSave.setBari(txtBari.getText().toString());
          objSave.setHH(txtHH.getText().toString());
          objSave.setSNo(txtSNo.getText().toString());
-         objSave.setPNo(txtPNo.getText().toString());
+         objSave.setChildId(txtPNo.getText().toString());
          objSave.setGAge(txtGAge.getText().toString());
          objSave.setStartTime(STARTTIME);
          objSave.setEndTime(g.CurrentTime24());
@@ -339,20 +345,22 @@
      }
  }
 
- private void DataSearch(String Vill, String Bari, String HH, String SNo)
+// private void DataSearch(String Vill, String Bari, String HH, String SNo)
+ private void DataSearch(String ChildId)
      {
        try
         {     
            RadioButton rb;
            data_GAge_DataModel d = new data_GAge_DataModel();
-           String SQL = "Select * from "+ TableName +"  Where Vill='"+ Vill +"' and Bari='"+ Bari +"' and HH='"+ HH +"' and SNo='"+ SNo +"'";
+           String SQL = "Select * from "+ TableName +"  Where ChildId='"+ ChildId +"'";
+//           String SQL = "Select * from "+ TableName +"  Where Vill='"+ Vill +"' and Bari='"+ Bari +"' and HH='"+ HH +"' and SNo='"+ SNo +"'";
            List<data_GAge_DataModel> data = d.SelectAll(this, SQL);
            for(data_GAge_DataModel item : data){
              txtVill.setText(item.getVill());
              txtBari.setText(item.getBari());
              txtHH.setText(item.getHH());
              txtSNo.setText(item.getSNo());
-             txtPNo.setText(item.getPNo());
+             txtPNo.setText(item.getChildId());
              txtGAge.setText(String.valueOf(item.getGAge()));
            }
         }

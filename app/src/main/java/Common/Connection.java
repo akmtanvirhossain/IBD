@@ -2670,6 +2670,7 @@ public class Connection extends SQLiteOpenHelper {
             C.TableStructureSync("Visits");
             C.TableStructureSync("RSV");
             C.TableStructureSync("RSVSample");
+            C.TableStructureSync("data_GAge");
 
             //C.Sync_DatabaseStructure(UniqueID);
             C.Sync_Download_Bari(CLUSTER);

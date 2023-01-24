@@ -519,10 +519,10 @@ public class ChildRegistration extends Activity {
 
 //            Duplicate CID for different child in Child file************15-11-2022****************
             String CID1 = C.ReturnSingleValue("select CID from Child Where CID='" + txtCID.getText() + "'");
-            String ChildID1 = C.ReturnSingleValue("select ChildId from Child Where CID='" + CID1.toString() + "' and ChildId not in ('"+txtChildID.getText().toString()+"')");
+            String ChildID1 = C.ReturnSingleValue("select ChildId from Child Where CID='" + CID1.toString() + "' and ChildId != ('"+txtChildID.getText().toString()+"')");
             String CurrentName = C.ReturnSingleValue("select Name from Child Where ChildId='" + ChildID1 + "'");
 
-            if (CID1.equals(txtCID.getText().toString()) & !ChildID1.equals(txtChildID.getText().toString())){
+            if (!ChildID1.equals("")){
                 Connection.MessageBox(ChildRegistration.this, "এই CID :(" + CID1 + ") পূর্বে নাম :(" + CurrentName + ") বাচ্চার জন্য ব্যবহার হয়েছে");
                 return;
             }

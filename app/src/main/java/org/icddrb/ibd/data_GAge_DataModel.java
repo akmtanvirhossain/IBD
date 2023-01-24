@@ -11,6 +11,13 @@ import Common.Connection;
 import Common.Global;
  public class data_GAge_DataModel{
 
+     private String _ChildId = "";
+     public String getChildId(){
+         return _ChildId;
+     }
+     public void setChildId(String newValue){
+         _ChildId = newValue;
+     }
         private String _Vill = "";
         public String getVill(){
               return _Vill;
@@ -110,6 +117,7 @@ import Common.Global;
             try
               {
                  ContentValues contentValues = new ContentValues();
+                 contentValues.put("ChildId", _ChildId);
                  contentValues.put("Vill", _Vill);
                  contentValues.put("Bari", _Bari);
                  contentValues.put("HH", _HH);
@@ -141,6 +149,7 @@ import Common.Global;
             try
               {
                  ContentValues contentValues = new ContentValues();
+                 contentValues.put("ChildId", _ChildId);
                  contentValues.put("Vill", _Vill);
                  contentValues.put("Bari", _Bari);
                  contentValues.put("HH", _HH);
@@ -172,6 +181,7 @@ import Common.Global;
                 Count += 1;
                 d = new data_GAge_DataModel();
                 d._Count = Count;
+                d._ChildId = cur.getString(cur.getColumnIndex("ChildId"));
                 d._Vill = cur.getString(cur.getColumnIndex("Vill"));
                 d._Bari = cur.getString(cur.getColumnIndex("Bari"));
                 d._HH = cur.getString(cur.getColumnIndex("HH"));
