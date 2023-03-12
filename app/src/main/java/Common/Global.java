@@ -23,7 +23,8 @@ public class Global {
 	//-------------------------------------------------------------------------------------------------------------
 	//public static String IPAddress       = "203.190.254.42";
 	//public static String IPAddress       = "172.20.20.234";
-	public static String IPAddress       = "mchd.icddrb.org";
+	//public static String IPAddress       = "mchd.icddrb.org";
+	public static String IPAddress       = "182.160.109.210";
 	public static String Organization    = "ICDDRB, CHRF";
 	//public static String Namespace       = "http://"+ IPAddress +"/";
 	public static String Namespace       = "http://203.190.254.42/";
