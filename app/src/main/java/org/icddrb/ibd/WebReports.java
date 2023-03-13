@@ -128,7 +128,8 @@ public class WebReports extends Activity {
             webSettings.setJavaScriptEnabled(true);
 
             //wv.loadUrl("http://beta.html5test.com/");
-            wv.loadUrl("http://mchd.icddrb.org/ibdweb");
+//            wv.loadUrl("http://mchd.icddrb.org/ibdweb");
+            wv.loadUrl("http://182.160.109.210/ibdweb");
 
             // Force links and redirects to open in the WebView instead of in a browser
             wv.setWebViewClient(new WebViewClient());
