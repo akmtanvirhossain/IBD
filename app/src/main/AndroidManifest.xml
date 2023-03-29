@@ -26,7 +26,6 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-
     <uses-permission-sdk-23 android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="com.problemio.permission.C2D_MESSAGE" />
 

@@ -553,7 +553,7 @@ public class HouseholdIndex extends Activity {
                                     VariableList = "ChildID,SlNo,Vdate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt, Upload,modifyDate";
 
                                     C.DownloadJSON(SQLStr, TableName, VariableList, "ChildID, SlNo");
-                                    //********************* RSV Sample ************************
+//                                    ********************* RSV Sample ************************
 
                                     //Upload Database to Server : 09 Nov 2016
                                     C.DatabaseUploadZip(Cluster);
@@ -1066,11 +1066,20 @@ public class HouseholdIndex extends Activity {
                     if (BariList.getSelectedItemPosition() == 0)
                         CurrentBariNo = "%";
                     else {
-                        String[] B = BariList.getSelectedItem().toString().split(",");
-                        CurrentBariNo = B[0];
+
+                        try {
+                            String[] B = BariList.getSelectedItem().toString().split(",");
+                            CurrentBariNo = B[0];
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                    BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
+                    try {
+                        BariWiseChildList(Global.Left(VillageList.getSelectedItem().toString(), 3), CurrentBariNo, WeekNo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -1177,7 +1186,7 @@ public class HouseholdIndex extends Activity {
 
     }
 
-    private void BlockWiseVillageBari(String BlockCode) {
+    public void BlockWiseVillageBari(String BlockCode) {
         Block = BlockCode;
         lblBlock.setText(BlockCode);
 
