@@ -37,7 +37,7 @@ public class SettingForm extends Activity {
 
             final Spinner spnCluster = (Spinner) findViewById(R.id.spnCluster);
             final Spinner spnVHW = (Spinner) findViewById(R.id.spnVHW);
-            SpinnerItem(spnCluster, "select Cluster from Cluster");
+            SpinnerItem(spnCluster, "select Cluster from Cluster where DeviceSetting='2'");
 
             spnCluster.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

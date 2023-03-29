@@ -139,21 +139,21 @@ public class LoginActivity extends Activity{
                 networkAvailable=false;
             }
 
-            //**************************** Process **************************************
-            try {
-                C.CreateTable("process_tab", "Create table process_tab(process_id int)");
-                //14 Feb 2022
-                if (!C.Existence("Select * from process_tab where process_id=2")) {
-                    String resp = "";
-//                    C.Save("update rsv set upload=2 where notagree!=''");
-                    C.Save("update RSV set Upload=2 where length(NotAgree)>0");
-                    if (resp.length() == 0) C.Save("Insert into process_tab(process_id)values(2)");
-                }
-
-            } catch (Exception e) {
-                Connection.MessageBox(this, e.getMessage());
-            }
-            //**************************** Process **************************************
+//            //**************************** Process **************************************
+//            try {
+//                C.CreateTable("process_tab", "Create table process_tab(process_id int)");
+//                //14 Feb 2022
+//                if (!C.Existence("Select * from process_tab where process_id=2")) {
+//                    String resp = "";
+////                    C.Save("update rsv set upload=2 where notagree!=''");
+//                    C.Save("update RSV set Upload=2 where length(NotAgree)>0");
+//                    if (resp.length() == 0) C.Save("Insert into process_tab(process_id)values(2)");
+//                }
+//
+//            } catch (Exception e) {
+//                Connection.MessageBox(this, e.getMessage());
+//            }
+//            //**************************** Process **************************************
 
             //Update data for Training Purpose
             //No data sync will work for VHW: 999
