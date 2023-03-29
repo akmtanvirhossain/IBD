@@ -170,12 +170,10 @@ public class HouseholdIndex extends Activity {
                                     String VariableList;
                                     String UniqueField;
 
-
                                     //Status on Server
                                     //3-Update Block
                                     //4-Update Cluster and Block
                                     //----------------------------------------------------------------------------------
-
 
                                     //Upload update to server
                                     TableName = "Bari";
@@ -467,7 +465,7 @@ public class HouseholdIndex extends Activity {
 
                                     //data_GAge
                                     SQLStr  = "select a.Vill,a.Bari,a.HH,a.SNo,a.PNo,a.GAge,a.StartTime,a.EndTime,a.DeviceID,a.EntryUser,a.Lat,a.Lon,convert(varchar(20),a.EnDt,120)modifyDate,'1' Upload,convert(varchar(20),a.modifyDate,120)modifyDate\n" +
-                                            "from data_GAge a inner join MDSSVill v on a.Vill=v.Vill where v.Cluster='"+ Cluster +"' and a.Upload='3'";
+                                            "from data_GAge a inner join bari v on a.Vill=v.Vill and a.bari=v.bari where v.Cluster='"+ Cluster +"' and a.Upload='3'";
                                     Res = C.DownloadJSON_UpdateServer(SQLStr, "data_GAge", "Vill,Bari,HH,SNo,PNo,GAge,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,Upload,modifyDate", "Vill,Bari,HH,SNo");
 
 
@@ -540,6 +538,16 @@ public class HouseholdIndex extends Activity {
                                     Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
 
                                     //********************* RSV Sample ************************
+                                    SQLStr = "select r.ChildID, r.CID, r.PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt, Fever, FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SuitSam, SuitSamRe, SuitSamReO, SampleAgree, NotAgree, OthersR, StartTime, EndTime, DeviceID, EntryUser, r.Lat, r.Lon, \n" +
+                                            "convert(varchar(20),r.EnDt,120)EnDt, r.Upload, convert(varchar(20),r.modifyDate,120)modifyDate from RSV r\n" +
+                                            " inner join Child c on r.ChildID=c.ChildId\n" +
+                                            " inner join Bari b on substring(c.CID,1,7)=b.Vill+b.Bari\n" +
+                                            " where b.Cluster='"+ Cluster +"'";
+                                    TableName = "RSV";
+                                    VariableList = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt, Fever, FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SuitSam, SuitSamRe, SuitSamReO, SampleAgree, NotAgree, OthersR, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
+
+                                    C.DownloadJSON(SQLStr, TableName, VariableList, "ChildID,Week,VType,Visit,SlNo");
+
                                     SQLStr = "Select ChildID,SlNo,(cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,'1' Upload,modifyDate from RSVSample";
                                     TableName = "RSVSample";
                                     VariableList = "ChildID,SlNo,Vdate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt, Upload,modifyDate";
