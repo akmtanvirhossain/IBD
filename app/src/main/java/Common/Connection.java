@@ -1364,6 +1364,109 @@ public class Connection extends SQLiteOpenHelper {
         return resp;
     }
 
+    public  String DownloadJSON_Update_Upload(String SQL,String TableName,String ColumnList, String UniqueField)
+    {
+        String WhereClause = "";
+        int varPos         = 0;
+
+        String response = "";
+        String resp     = "";
+        String downloadSyncStatus = "";
+        try{
+            DownloadDataJSON dload = new DownloadDataJSON();
+            response=dload.execute(SQL).get();
+
+            //Process Response
+            downloadClass d = new downloadClass();
+            Gson gson = new Gson();
+            Type collType = new TypeToken<downloadClass>(){}.getType();
+            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+
+            String[] UField = UniqueField.split(",");
+            String[] VarList = ColumnList.split(",");
+            List<String> dataStatus = new ArrayList<>();
+
+            assert responseData != null;
+            if (responseData.getdata().size() > 0) {
+                WhereClause="";
+
+                StringBuilder SQLBuilder = new StringBuilder("Insert or replace into " + TableName + "(" + ColumnList + ")Values");
+                for (int i = 0; i < responseData.getdata().size(); i++) {
+
+                    String VarData[] = split(responseData.getdata().get(i).toString(),'^');
+                    for(int j=0; j< UField.length; j++)
+                    {
+                        varPos = VarPosition(UField[j].toString(),VarList);
+                        if(j==0)
+                        {
+                            WhereClause = UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+                        }
+                        else
+                        {
+                            WhereClause += " and "+ UField[j].toString()+"="+ "'"+ VarData[varPos].toString() +"'";
+                        }
+                    }
+
+                    if (i == 0) {
+                        SQLBuilder.append("('").append(responseData.getdata().get(i).toString().replace("^", "','").replace("null", "")).append("')");
+                    } else {
+                        SQLBuilder.append(",('").append(responseData.getdata().get(i).toString().replace("^", "','").replace("null", "")).append("')");
+                    }
+
+                    dataStatus.add(WhereClause);
+                }
+                SQL = SQLBuilder.toString();
+
+                downloadSyncStatus = SaveData(SQL);
+            }
+
+
+            //Status back to server
+            if(downloadSyncStatus.length()==0 && dataStatus.size()>0)
+            {
+                //Generate SQL String
+                List<String> sqlString = new ArrayList<>();
+                for(String data : dataStatus){
+                    sqlString.add("Update "+ TableName +" Set Upload='1' Where "+ data);
+                }
+
+                DataClass_SQL_Update dt = new DataClass_SQL_Update();
+                dt.setSQLString(sqlString);
+
+                String json = gson.toJson(dt);
+                UploadDataSQLJSON u = new UploadDataSQLJSON();
+                try
+                {
+                    response=u.execute(json).get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        } catch (Exception e) {
+            resp = e.getMessage();
+            e.printStackTrace();
+        }
+
+        return resp;
+    }
+
+    //Save/Update/Delete data in to database
+    //----------------------------------------------------------------------------------------------
+    public String SaveData(String SQL) {
+        String response = "";
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL(SQL);
+        }catch(Exception ex){
+            response = ex.getMessage();
+        }finally {
+            db.close();
+        }
+        return response;
+    }
+
     //Remove data on local device
     public  String DownloadJSON_Delete_UpdateServer(String SQL,String LocalTableName, String ServerTableName, String ColumnList, String UniqueField)
     {
@@ -2188,29 +2291,31 @@ public class Connection extends SQLiteOpenHelper {
         //Calculate batch size
         //------------------------------------------------------------------------------------------
         //0(zero) means all selected data
-        Integer batchSize = 200;
+        Integer batchSize = 500;
         Integer totalBatch = 1;
 
-        if (batchSize == 0) {
-            totalBatch = 1;
-            batchSize = totalRecords;
-        } else if (batchSize > 0) {
-            totalBatch = totalRecords / batchSize;
-            if (totalRecords % batchSize > 0)
-                totalBatch += 1;
-        }
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                totalBatch = 1;
+                batchSize = totalRecords;
+            } else {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
 
-        //Execute batch download
-        //------------------------------------------------------------------------------------------
-        for (int i = 0; i < totalBatch; i++) {
-            SQL = "Select top " + batchSize + " " + VariableList + " from " + TableName + " as t";
-            SQL += " where not exists(select * from Sync_Management where";
-            SQL += " lower(TableName)  = lower('" + TableName + "') and";
-            SQL += " UniqueID   = " + UID + " and";
-            SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
-            SQL += " UserId   ='" + Cluster + "')";
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            for (int i = 0; i < totalBatch; i++) {
+                SQL = "Select top " + batchSize + " " + VariableList + " from " + TableName + " as t";
+                SQL += " where not exists(select * from Sync_Management where";
+                SQL += " lower(TableName)  = lower('" + TableName + "') and";
+                SQL += " UniqueID   = " + UID + " and";
+                SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+                SQL += " UserId   ='" + Cluster + "')";
 
-            Res = DownloadJSON_Update_Sync_Management(SQL, TableName, VariableList, UniqueField, Cluster);
+                Res = DownloadJSON_Update_Sync_Management(SQL, TableName, VariableList, UniqueField, Cluster);
+            }
         }
     }
 
@@ -2508,36 +2613,38 @@ public class Connection extends SQLiteOpenHelper {
 
         //Calculate batch size
         //------------------------------------------------------------------------------------------
-        Integer batchSize = 400;
+        Integer batchSize = 500;
         Integer totalBatch = 1;
 
-        if (batchSize == 0) {
-            totalBatch = 1;
-            batchSize = totalRecords;
-        } else if (batchSize > 0) {
-            totalBatch = totalRecords / batchSize;
-            if (totalRecords % batchSize > 0)
-                totalBatch += 1;
-        }
-
-        //Execute batch download
-        //------------------------------------------------------------------------------------------
-        try {
-            for (int i = 0; i < totalBatch; i++) {
-                SQL = "Select top " + batchSize + " " + VariableList.replace("modifyDate","convert(varchar(19),modifydate,120)") + " from " + TableName + " as t";
-                SQL += " where not exists(select * from Sync_Management where";
-                SQL += " lower(TableName)  = lower('" + TableName + "') and";
-                SQL += " UniqueID   = " + UID + " and";
-                SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
-                SQL += " UserId   ='" + CLUSTER + "')";
-                if (WhereClause.length() > 0) {
-                    SQL += " and " + WhereClause;
-                }
-
-                Res = DownloadJSON_ModifyDate(SQL, TableName, VariableList, UniqueField);
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
             }
-        }catch(Exception ex){
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
 
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "Select top " + batchSize + " " + VariableList.replace("modifyDate", "convert(varchar(19),modifydate,120)") + " from " + TableName + " as t";
+                    SQL += " where not exists(select * from Sync_Management where";
+                    SQL += " lower(TableName)  = lower('" + TableName + "') and";
+                    SQL += " UniqueID   = " + UID + " and";
+                    SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+                    SQL += " UserId   ='" + CLUSTER + "')";
+                    if (WhereClause.length() > 0) {
+                        SQL += " and " + WhereClause;
+                    }
+
+                    Res = DownloadJSON_ModifyDate(SQL, TableName, VariableList, UniqueField);
+                }
+            } catch (Exception ex) {
+
+            }
         }
     }
 
@@ -2561,35 +2668,37 @@ public class Connection extends SQLiteOpenHelper {
 
         //Calculate batch size
         //------------------------------------------------------------------------------------------
-        Integer batchSize = 0;
+        Integer batchSize = 500;
         Integer totalBatch = 1;
 
-        if (batchSize == 0) {
-            totalBatch = 1;
-            batchSize = totalRecords;
-        } else if (batchSize > 0) {
-            totalBatch = totalRecords / batchSize;
-            if (totalRecords % batchSize > 0)
-                totalBatch += 1;
-        }
-
-        //Execute batch download
-        //------------------------------------------------------------------------------------------
-        try {
-            for (int i = 0; i < totalBatch; i++) {
-                SQL = "select top " + batchSize + " ChildId, C.Vill, C.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, \n" +
-                        " (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate, ExType, (case when len(ExType)=0 then null else (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))end)ExDate, \n" +
-                        " (cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo, c.modifydate\n" +
-                        " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='"+ CLUSTER +"'\n" +
-                        " and not exists(select tablename from Sync_Management where lower(tableName)='child' and UniqueID=c.ChildId and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),c.modifydate,120))";
-
-                Res = DownloadJSON_ModifyDate(SQL,
-                        "child",
-                        "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo,modifydate",
-                        "ChildId");
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
             }
-        }catch(Exception ex){
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
 
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "select top " + batchSize + " ChildId, C.Vill, C.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, \n" +
+                            " (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate, ExType, (case when len(ExType)=0 then null else (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))end)ExDate, \n" +
+                            " (cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo, c.modifydate\n" +
+                            " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='" + CLUSTER + "'\n" +
+                            " and not exists(select tablename from Sync_Management where lower(tableName)='child' and UniqueID=c.ChildId and UserId='" + CLUSTER + "' and convert(varchar(19),modifydate,120)=convert(varchar(19),c.modifydate,120))";
+
+                    Res = DownloadJSON_ModifyDate(SQL,
+                            "child",
+                            "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo,modifydate",
+                            "ChildId");
+                }
+            } catch (Exception ex) {
+
+            }
         }
     }
 
@@ -2611,31 +2720,303 @@ public class Connection extends SQLiteOpenHelper {
 
         //Calculate batch size
         //------------------------------------------------------------------------------------------
-        Integer batchSize = 200;
+        Integer batchSize = 500;
         Integer totalBatch = 1;
 
-        if (batchSize == 0) {
-            totalBatch = 1;
-            batchSize = totalRecords;
-        } else if (batchSize > 0) {
-            totalBatch = totalRecords / batchSize;
-            if (totalRecords % batchSize > 0)
-                totalBatch += 1;
-        }
-
-        //Execute batch download
-        //------------------------------------------------------------------------------------------
-        try {
-            for (int i = 0; i < totalBatch; i++) {
-                SQL = "Select top "+ batchSize +" Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate from Bari b where Cluster='"+ CLUSTER +"'" +
-                        " and not exists(select tablename from Sync_Management where lower(tableName)='bari' and UniqueID=b.vill+b.bari and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),b.modifydate,120))";
-                Res = DownloadJSON_ModifyDate(SQL,
-                        "bari",
-                        "Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate",
-                        "vill,bari");
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
             }
-        }catch(Exception ex){
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
 
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "Select top " + batchSize + " Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate from Bari b where Cluster='" + CLUSTER + "'" +
+                            " and not exists(select tablename from Sync_Management where lower(tableName)='bari' and UniqueID=b.vill+b.bari and UserId='" + CLUSTER + "' and convert(varchar(19),modifydate,120)=convert(varchar(19),b.modifydate,120))";
+                    Res = DownloadJSON_ModifyDate(SQL,
+                            "bari",
+                            "Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate",
+                            "vill,bari");
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+    }
+
+    public void Sync_Download_data_GAge(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "select count(*)totalrec from data_GAge a \n" +
+                " inner join bari v on a.Vill=v.Vill and a.bari=v.bari where v.Cluster='"+ CLUSTER +"'\n" +
+                " and not exists(select tablename from Sync_Management where lower(tableName)='data_gage' and\n" +
+                " UniqueID=a.Vill+a.Bari+a.HH+a.SNo and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),a.modifydate,120))\n";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 500;
+        Integer totalBatch = 1;
+
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
+            }
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
+
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "select top " + batchSize + " a.Vill,a.Bari,a.HH,a.SNo,a.PNo,a.GAge,a.StartTime,a.EndTime,a.DeviceID,a.EntryUser,a.Lat,a.Lon,convert(varchar(20),a.EnDt,120)modifyDate,'1' Upload,convert(varchar(20),a.modifyDate,120)modifyDate from data_GAge a \n" +
+                            " inner join bari v on a.Vill=v.Vill and a.bari=v.bari where v.Cluster='" + CLUSTER + "'\n" +
+                            " and not exists(select tablename from Sync_Management where lower(tableName)='data_gage' and\n" +
+                            " UniqueID=a.Vill+a.Bari+a.HH+a.SNo and UserId='" + CLUSTER + "' and convert(varchar(19),modifydate,120)=convert(varchar(19),a.modifydate,120))\n";
+
+                    Res = DownloadJSON_ModifyDate(SQL,
+                            "data_GAge",
+                            "ChildId,Vill,Bari,HH,SNo,PNo,GAge,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,Upload,modifyDate",
+                            "Vill,Bari,HH,SNo");
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+    }
+
+    public void Sync_Download_Visits(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "select count(*)totalrecord\n" +
+                " from Visits v, Child c, Bari b where v.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari\n" +
+                " and b.Cluster='"+ CLUSTER +"' and v.Upload='3'";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 500;
+        Integer totalBatch = 1;
+
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
+            }
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
+
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "select top " + batchSize + " v.ChildId, v.PID, v.CID, v.Week, convert(varchar(10),v.VDate,120)VDate, v.VStat, v.SickStatus, v.ExDate, v.RSVStatus, v.Lat, v.Lon, convert(varchar(19),v.EnDt,120)EnDt, v.UserId, '1' Upload\n" +
+                            " from Visits v, Child c, Bari b where v.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari\n" +
+                            " and b.Cluster='" + CLUSTER + "' and v.Upload='3' order by Week desc";
+
+                    Res = DownloadJSON_Update_Upload(SQL,
+                            "Visits",
+                            "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload",
+                            "ChildId, Week");
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+    }
+
+    public void Sync_Download_AssNewBorn(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "select count(*)totalrecord from AssNewBorn a\n" +
+                " inner join Child c on a.ChildId=c.ChildId\n" +
+                " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari\n" +
+                " where b.Cluster='"+ CLUSTER +"' and a.upload='3'";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 500;
+        Integer totalBatch = 1;
+
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
+            }
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
+
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "select top " + batchSize + " a.ChildId, a.CID, a.PID, Temp, Week, VType, Visit, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, a.EnDt, a.UserId, '1' Upload\n" +
+                            " from AssNewBorn a\n" +
+                            " inner join Child c on a.ChildId=c.ChildId\n" +
+                            " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari\n" +
+                            " where b.Cluster='"+ CLUSTER +"' and a.upload='3'";
+
+                    Res = DownloadJSON_Update_Upload(SQL,
+                            "AssNewBorn",
+                            "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload",
+                            "ChildId, Week, VType, Visit");
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+    }
+
+    public void Sync_Download_AssPneu(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "select count(*)totalrecord from AssPneu a\n" +
+                " inner join Child c on a.ChildId=c.ChildId\n" +
+                " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari\n" +
+                " where b.Cluster='"+ CLUSTER +"' and a.upload='3'";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 500;
+        Integer totalBatch = 1;
+
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
+            }
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
+
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "select top " + batchSize + " a.ChildId, a.PID, a.CID, Week, convert(varchar(10),a.VDate,120) VDate, VType, Visit, temp, Cough, \n" +
+                            "(Case when a.Cough='1' then convert(varchar(10),a.CoughDt,120)else null end) CoughDt, DBrea, \n" +
+                            "(Case when a.DBrea='1' then convert(varchar(10),a.DBreaDt,120)else null end) DBreaDt,Fever,\n" +
+                            "(Case when a.Fever='1' then convert(varchar(10),a.FeverDt,120)else null end), \n" +
+                            "OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, convert(varchar(19),a.EnDt,120)EnDt, a.UserId, '1' Upload,a.RRDk,a.tempDk\n" +
+                            " from AssPneu a\n" +
+                            " inner join Child c on a.ChildId=c.ChildId\n" +
+                            " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari\n" +
+                            " where b.Cluster='007' and a.upload='3'";
+
+                    Res = DownloadJSON_Update_Upload(SQL,
+                            "AssPneu",
+                            "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk",
+                            "ChildId, Week, VType, Visit");
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+    }
+
+    public void Sync_Download_NonComp(String CLUSTER) {
+        String SQL = "";
+        String Res = "";
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "select count(*) from NonComp a\n" +
+                " inner join Child c on a.ChildId=c.ChildId\n" +
+                " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari\n" +
+                " where b.Cluster='"+ CLUSTER +"' and a.upload='3'";
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+        Integer batchSize = 500;
+        Integer totalBatch = 1;
+
+        if(totalRecords>0) {
+            if (totalRecords < 500) {
+                batchSize = totalRecords;
+            }
+            {
+                totalBatch = totalRecords / batchSize;
+                if (totalRecords % batchSize > 0)
+                    totalBatch += 1;
+            }
+
+            //Execute batch download
+            //------------------------------------------------------------------------------------------
+            try {
+                for (int i = 0; i < totalBatch; i++) {
+                    SQL = "select top " + batchSize + " a.ChildId, a.CID, a.PID, Week, VType, Visit, Convert(varchar(10),VDate,120) VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, a.UserId, convert(varchar(19),a.EnDt,120)EnDt, '1' Upload\n" +
+                            " from NonComp a\n" +
+                            " inner join Child c on a.ChildId=c.ChildId\n" +
+                            " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari\n" +
+                            " where b.Cluster='"+ CLUSTER +"' and a.upload='3'";
+
+                    Res = DownloadJSON_Update_Upload(SQL,
+                            "NonComp",
+                            "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload",
+                            "ChildId, Week, VType, Visit");
+                }
+            } catch (Exception ex) {
+
+            }
         }
     }
 
