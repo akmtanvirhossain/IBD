@@ -1549,7 +1549,7 @@ public class RSV extends Activity {
             String Vdt = Global.DateConvertYMD(dtpVDate.getText().toString());
             int Rdt_difference = Global.DateDifferenceDays(Global.DateConvertDMY(Rdt), Global.DateConvertDMY(Vdt));
 
-            if (Rdt_difference < 0) {
+            if (secRSVlistedDt.isShown() && Rdt_difference < 0) {
                 ValidationMsg += "আর এস ভি গবেষণার জন্য তালিকাভুক্ত তারিখ" + Rdt + " অবশ্যই ভিজিটের তারিখ " + Vdt + "  এর সমান অথবা বেশী হতে হবে ।.";
                 secRSVlistedDt.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
@@ -1663,6 +1663,7 @@ public class RSV extends Activity {
                 }
 
                 dtpdtpCoughDt.setText(item.getdtpCoughDt().toString().length() == 0 ? "" : Global.DateConvertDMY(item.getdtpCoughDt()));
+                //dtpdtpCoughDt.setText(item.getdtpCoughDt().toString().length() == 0 ? "" : Global.DateConvertMDY(item.getdtpCoughDt()));
 
                 String[] d_rdogrpDBrea = new String[]{"1", "2"};
                 for (int i = 0; i < d_rdogrpDBrea.length; i++) {
@@ -1709,6 +1710,7 @@ public class RSV extends Activity {
                         rb.setChecked(true);
                     }
                 }
+                //dtpFeverDt.setText(item.getFeverDt().toString().length() == 0 ? "" : Global.DateConvertMDY(item.getFeverDt()));
                 dtpFeverDt.setText(item.getFeverDt().toString().length() == 0 ? "" : Global.DateConvertDMY(item.getFeverDt()));
 
                 String[] d_rdogrpSuitSam = new String[] {"1","2"};

@@ -351,6 +351,36 @@ public class Global {
 	
 	    catch (ParseException e)
 	        {
+	            //e.printStackTrace();
+				SimpleDateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa"); // Make sure user insert date into edittext in this format.
+				Date dateObject2;
+				String date2="";
+				try{
+					dateObject2 = formatter2.parse(DateString);
+					date2 = new SimpleDateFormat("dd/MM/yyyy").format(dateObject2);
+				}
+
+				catch (ParseException e2)
+				{
+					e2.printStackTrace();
+				}
+				return date2;
+	        }
+	    return date;
+    }
+//Date Converter: mm/dd/yyyy to dd/mm/yyyy
+    public static String DateConvertMDY(String DateString)
+    {//
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa"); // Make sure user insert date into edittext in this format.
+        Date dateObject;
+        String date="";
+	    try{
+		    dateObject = formatter.parse(DateString);
+		    date = new SimpleDateFormat("dd/MM/yyyy").format(dateObject);
+	    }
+
+	    catch (ParseException e)
+	        {
 	            e.printStackTrace();
 	        }
 	    return date;
