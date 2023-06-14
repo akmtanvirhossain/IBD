@@ -28,7 +28,7 @@ public class ReturnResult extends AsyncTask<String, Void, String> {
 	    protected String doInBackground(String... urls) {
 	    	
 	        try {
-	                SoapObject request = new SoapObject(WSDL_TARGET_NAMESPACE,Method_Name);
+	                SoapObject request = new SoapObject(WSDL_TARGET_NAMESPACE, Method_Name);
 	                HttpTransportSE androidHttpTransport = new HttpTransportSE(SOAP_ADDRESS);
 
 	                request.addProperty("SQL",SQLStr);
@@ -39,7 +39,6 @@ public class ReturnResult extends AsyncTask<String, Void, String> {
 
 	                androidHttpTransport.call(Global.Namespace+Method_Name, envelope);
 	                SoapObject result = (SoapObject)envelope.bodyIn;
-
 	                
 	                Data=result.getProperty(0).toString();
 
