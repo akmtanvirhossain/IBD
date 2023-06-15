@@ -174,7 +174,7 @@ public class LoginActivity extends Activity{
         //Format: DDMMYYYY
         //*********************************************************************
         //SystemUpdateDT = "14032023";
-        SystemUpdateDT = "07062023";
+        SystemUpdateDT = "09042023";
         lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
         //Check for Internet connectivity
