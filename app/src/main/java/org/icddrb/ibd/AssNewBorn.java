@@ -2731,36 +2731,38 @@ public class AssNewBorn extends Activity {
 
 //            //******************RSV
             String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
-            if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("010") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0,3).equals("307")) || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
 
-                Bundle IDbundle = new Bundle();
-                Intent f1;
-                IDbundle.putString("childid", ChildID);
-                IDbundle.putString("pid", txtPID.getText().toString());
-                IDbundle.putString("weekno", WeekNo);
-                IDbundle.putString("fm", txtFMName.getText().toString());
-                IDbundle.putString("aged", AgeD);
-                IDbundle.putString("agem", AgeM);
-                IDbundle.putString("agedm", AgeD+" দিন");
-                IDbundle.putString("bdate", DOB);
-                IDbundle.putString("name", txtName.getText().toString());
-                IDbundle.putString("visittype", VisitType);
-//                IDbundle.putString("visitno", "0");
-                IDbundle.putString("visitno",txtVisit.getSelectedItem().toString());
-                IDbundle.putString("visitdate", dtpVDate.getText().toString());
-
-                IDbundle.putString("temp", txttemp);
-                IDbundle.putString("Cough", "");
-                IDbundle.putString("CoughDt", "");
-                IDbundle.putString("DBrea", "");
-                IDbundle.putString("DBreaDt", "");
-                IDbundle.putString("source", "nb");
-
-
-                f1 = new Intent(getApplicationContext(), RSV.class);
-                f1.putExtras(IDbundle);
-                startActivityForResult(f1, 1);
-            }
+//            Stop RSV : 15-06-2023  ****************************
+//            if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("010") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0,3).equals("307")) || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
+//
+//                Bundle IDbundle = new Bundle();
+//                Intent f1;
+//                IDbundle.putString("childid", ChildID);
+//                IDbundle.putString("pid", txtPID.getText().toString());
+//                IDbundle.putString("weekno", WeekNo);
+//                IDbundle.putString("fm", txtFMName.getText().toString());
+//                IDbundle.putString("aged", AgeD);
+//                IDbundle.putString("agem", AgeM);
+//                IDbundle.putString("agedm", AgeD+" দিন");
+//                IDbundle.putString("bdate", DOB);
+//                IDbundle.putString("name", txtName.getText().toString());
+//                IDbundle.putString("visittype", VisitType);
+////                IDbundle.putString("visitno", "0");
+//                IDbundle.putString("visitno",txtVisit.getSelectedItem().toString());
+//                IDbundle.putString("visitdate", dtpVDate.getText().toString());
+//
+//                IDbundle.putString("temp", txttemp);
+//                IDbundle.putString("Cough", "");
+//                IDbundle.putString("CoughDt", "");
+//                IDbundle.putString("DBrea", "");
+//                IDbundle.putString("DBreaDt", "");
+//                IDbundle.putString("source", "nb");
+//
+//
+//                f1 = new Intent(getApplicationContext(), RSV.class);
+//                f1.putExtras(IDbundle);
+//                startActivityForResult(f1, 1);
+//            }
 
 
 //                //******************RSV
