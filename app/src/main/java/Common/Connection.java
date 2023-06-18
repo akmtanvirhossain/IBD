@@ -35,7 +35,7 @@ public class Connection extends SQLiteOpenHelper {
 
     // Database Name
     private static final String DB_NAME = Global.DatabaseName;
-    private static final String DBLocation= Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator +  DB_NAME;
+    private static final String DBLocation= Environment.getExternalStorageDirectory() + File.separator + Global.DatabaseFolder + File.separator +  DB_NAME;
 
     // Todo table name
     private static final String TABLE_TODO = "todo_items";
