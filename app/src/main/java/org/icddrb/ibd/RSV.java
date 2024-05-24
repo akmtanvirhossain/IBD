@@ -962,16 +962,25 @@ public class RSV extends Activity {
 //                            Connection.MessageBox(RSV.this,"Last Sample collect diff=2");
 //                        }
                         //******************* Sample Date Check Shahidul
-//                        String Day14;
-//                        Day14=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date(e)max(VDat))-julianday(date('"+Global.DateConvertYMD(dtpVDate.getText().toString())+"'))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-                        String Day14=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-                        if (Day14 != null) {
-                            int dy1 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14));
-                            if (dy1 >= 0 & dy1 <= 14) {
-//                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম ("+Global.DateConvertYMD(dtpVDate.getText().toString())+" "+Day14+" "+dy1+" দিন)");
-                                Connection.MessageBox(RSV.this, "শেষ নমুনা সংগ্রহের তারিখ (" + Day14 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy1 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হতে পারে না)");
+////                        String Day14;
+////                        Day14=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date(e)max(VDat))-julianday(date('"+Global.DateConvertYMD(dtpVDate.getText().toString())+"'))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+//                        String Day14=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+//                        if (Day14 != null) {
+//                            int dy1 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14));
+//                            if (dy1 >= 0 & dy1 <= 14) {
+//                                Connection.MessageBox(RSV.this, "শেষ নমুনা সংগ্রহের তারিখ (" + Day14 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy1 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হতে পারে না)");
+//                            }
+//                        }
+
+//                        String Day60;
+                        String Day60=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+                        if (Day60 != null) {
+                            int dy1 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day60));
+                            if (dy1 >= 0 & dy1 <= 60) {
+                                Connection.MessageBox(RSV.this, "শেষ নমুনা সংগ্রহের তারিখ (" + Day60 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy1 + " দিন)। (সুতরাং ৬০ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হতে পারে না)");
                             }
                         }
+
                         //******************* Sample Date Check
                     }
                     else
@@ -1485,49 +1494,77 @@ public class RSV extends Activity {
                 ValidationMsg += "\nRequired field: আর এস ভি গবেষণার জন্য উপযুক্ত.";
                 secRSVsuitable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
             }
-//            //******************* Sample Date Check Shahidul
-//            String Day15;
-//            Day15=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date('now'))-julianday(date(VDate))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID +"' and Status='1'");
-//            int dy1=Global.DateDifferenceDays(dtpVDate.getText().toString(),Global.DateConvertDMY(Day15));
-//            if (dy1<15 & !rdoSuitSam2.isChecked()) {
-//                Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম। সুতরাং স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা");
-//            }
 //            //******************* Sample Date Check
-            //******************* Sample Date Check (0-14 day) Shahidul
-            String Day14d_day;
-//                        Day14=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date(e)max(VDat))-julianday(date('"+Global.DateConvertYMD(dtpVDate.getText().toString())+"'))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-            Day14d_day=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-            if (Day14d_day != null) {
-                int dy14 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day));
-                if (dy14 >= 0 & dy14 <= 14 & !rdoSuitSam2.isChecked()) {
-//                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম ("+Global.DateConvertYMD(dtpVDate.getText().toString())+" "+Day14+" "+dy1+" দিন)");
-//                Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ ("+Day14d_day+") হইতে আজকের তারিখের (পার্থক্য : "+dy14+" দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)");
-                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)";
+//            //******************* Sample Date Check (0-14 day) Shahidul
+//            String Day14d_day;
+////                        Day14=C.ReturnSingleValue("SELECT cast((ifnull(cast((julianday(date(e)max(VDat))-julianday(date('"+Global.DateConvertYMD(dtpVDate.getText().toString())+"'))) as int),0)) as int)Diff  FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+//            Day14d_day=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+//            if (Day14d_day != null) {
+//                int dy14 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day));
+//                if (dy14 >= 0 & dy14 <= 14 & !rdoSuitSam2.isChecked()) {
+////                            Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ হইতে আজকের তারিখের পার্থক্য ১৪ দিনের কম ("+Global.DateConvertYMD(dtpVDate.getText().toString())+" "+Day14+" "+dy1+" দিন)");
+////                Connection.MessageBox(RSV.this,"শেষ নমুনা সংগ্রহের তারিখ ("+Day14d_day+") হইতে আজকের তারিখের (পার্থক্য : "+dy14+" দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)");
+//                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)";
+//                    secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+//                }
+//            }
+            //******************* Sample Date Check (0-60 day) Shahidul
+            String Day60d_day;
+            Day60d_day=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+            if (Day60d_day != null) {
+                int dy60 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day60d_day));
+                if (dy60 >= 0 & dy60 <= 60 & !rdoSuitSam2.isChecked()) {
+                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day60d_day + ") হইতে আজকের তারিখের (পার্থক্য : " + dy60 + " দিন)। (সুতরাং ৬০ দিনের কম সময়ের মধ্যে আবার স্যাম্পল দেওয়ার জন্য উপযুক্ত হাঁ হতে পারবেনা)";
                     secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
                 }
             }
+
+
             //******************* Sample Date Check
-            //******************* Sample Date Check (>14) days Shahidul
-            String Day14d_day1;
-            Day14d_day1=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-            if (Day14d_day1 != null) {
-                int dy14_1 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day1));
-                if (dy14_1 > 14 & rdoSuitSam2.isChecked() & rdoSuitSamRe1.isChecked()) {
-                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day1 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14_1 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে অপশন সিলেক্ট কোরা যাবে না)";
+//            //******************* Sample Date Check (>14) days Shahidul
+//            String Day14d_day1;
+//            Day14d_day1=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+//            if (Day14d_day1 != null) {
+//                int dy14_1 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day1));
+//                if (dy14_1 > 14 & rdoSuitSam2.isChecked() & rdoSuitSamRe1.isChecked()) {
+//                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day1 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14_1 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে অপশন সিলেক্ট কোরা যাবে না)";
+//                    secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+//                }
+//            }
+//          ******************* Sample Date Check (>60) days (scRNA) Shahidul
+            String Day60d_day1;
+            Day60d_day1=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+            if (Day60d_day1 != null) {
+                int dy60_1 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day60d_day1));
+                if (dy60_1 > 60 & rdoSuitSam2.isChecked() & rdoSuitSamRe1.isChecked()) {
+                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day60d_day1 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy60_1 + " দিন)। (সুতরাং ৬০ দিনের কম সময়ের মধ্যে অপশন সিলেক্ট কোরা যাবে না)";
                     secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
                 }
             }
+
             //******************* Sample Date Check
-            //******************* Sample Date Check (0-14 day but <> ১৪ দিনের কম অপশন সিলেক্ট)  days Shahidul
-            String Day14d_day2;
-            Day14d_day2=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
-            if (Day14d_day2 != null) {
-                int dy14_2 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day2));
-                if (dy14_2 >= 0 & dy14_2 <= 14 & rdoSuitSam2.isChecked() & (rdoSuitSamRe2.isChecked() || rdoSuitSamRe3.isChecked() || rdoSuitSamRe3.isChecked())) {
-                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day2 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14_2 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে অপশন সিলেক্ট করতে হবে)";
+//            //******************* Sample Date Check (0-14 day but <> ১৪ দিনের কম অপশন সিলেক্ট)  days Shahidul
+//            String Day14d_day2;
+//            Day14d_day2=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+//            if (Day14d_day2 != null) {
+//                int dy14_2 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day14d_day2));
+//                if (dy14_2 >= 0 & dy14_2 <= 14 & rdoSuitSam2.isChecked() & (rdoSuitSamRe2.isChecked() || rdoSuitSamRe3.isChecked() || rdoSuitSamRe3.isChecked())) {
+//                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day14d_day2 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy14_2 + " দিন)। (সুতরাং ১৪ দিনের কম সময়ের মধ্যে অপশন সিলেক্ট করতে হবে)";
+//                    secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
+//                }
+//            }
+
+//          ******************* Sample Date Check (0-60 day but <> ৬০ দিনের কম অপশন সিলেক্ট)  days Shahidul
+            String Day60d_day2;
+            Day60d_day2=C.ReturnSingleValue("SELECT date(max(VDate)) FROM RSVSample WHERE   ChildId = '"+ txtChildID.getText().toString() +"' and Status='1'");
+            if (Day60d_day2 != null) {
+                int dy60_2 = Global.DateDifferenceDays(dtpVDate.getText().toString(), Global.DateConvertDMY(Day60d_day2));
+                if (dy60_2 >= 0 & dy60_2 <= 60 & rdoSuitSam2.isChecked() & (rdoSuitSamRe2.isChecked() || rdoSuitSamRe3.isChecked() || rdoSuitSamRe3.isChecked())) {
+                    ValidationMsg += "শেষ নমুনা সংগ্রহের তারিখ (" + Day60d_day2 + ") হইতে আজকের তারিখের (পার্থক্য : " + dy60_2 + " দিন)। (সুতরাং ৬০ দিনের কম সময়ের মধ্যে অপশন সিলেক্ট করতে হবে)";
                     secRSVlisted.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_Section_Highlight));
                 }
             }
+
             //******************* Sample Date Check
 
 

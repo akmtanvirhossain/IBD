@@ -386,7 +386,8 @@ public class FollowUpVisit extends Activity {
                                 if ((spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("21")) & (rbData.equalsIgnoreCase("1"))) {
                                     if (daa <= 731) {
 //                            if (moo <= 24) {
-//                                        Stop RSV : 15-06-2023  ****************************
+//                                        Stop RSV : 15-06-2023  ****************************Open again 22-10-23
+//                                        Stop again : 30-11-2023  ****************************
 //                                        secRSVStatus.setVisibility(View.VISIBLE);
 //                                        lineRSVStatus.setVisibility(View.VISIBLE);
                                     }
@@ -602,6 +603,7 @@ public class FollowUpVisit extends Activity {
             int mo = (int)(da/30.44);
 
 //            Stop RSV : 15-06-2023  ****************************
+//            Stop again : 30-11-2023  ****************************
 //            if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
 //
 ////                String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
@@ -635,9 +637,9 @@ public class FollowUpVisit extends Activity {
 //                        f1 = new Intent(getApplicationContext(), RSV.class);
 //                        f1.putExtras(IDbundle);
 //                        startActivityForResult(f1, 1);
-//                        //******************RSV
 //                    }
 //                }
+            //******************RSV
 
 //            }
 //
