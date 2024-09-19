@@ -170,6 +170,7 @@ public class FollowUpVisit extends Activity {
 
 
 
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try
@@ -208,6 +209,8 @@ public class FollowUpVisit extends Activity {
             Age = (TextView)findViewById(R.id.Age);
             Age.setText(": "+B.getString("agedm"));
             AgeDM = B.getString("agedm");
+
+
 
             txtDOB = (TextView)findViewById(R.id.txtDOB);
             txtDOB.setText(Global.DateConvertDMY(DOB));
@@ -323,10 +326,10 @@ public class FollowUpVisit extends Activity {
                         secExDate.setVisibility(View.GONE);
                         dtpExDate.setText("");
 
+
                     } else if (spnData.equalsIgnoreCase("1") | spnData.equalsIgnoreCase("2") | spnData.equalsIgnoreCase("3") | spnData.equalsIgnoreCase("21")| spnData.equalsIgnoreCase("22")| spnData.equalsIgnoreCase("23")| spnData.equalsIgnoreCase("24")| spnData.equalsIgnoreCase("25")) {
                         secSickStatus.setVisibility(View.VISIBLE);
                         secExDate.setVisibility(View.GONE);
-
 
                     } else {
                         secSickStatus.setVisibility(View.GONE);
@@ -388,8 +391,9 @@ public class FollowUpVisit extends Activity {
 //                            if (moo <= 24) {
 //                                        Stop RSV : 15-06-2023  ****************************Open again 22-10-23
 //                                        Stop again : 30-11-2023  ****************************
-//                                        secRSVStatus.setVisibility(View.VISIBLE);
-//                                        lineRSVStatus.setVisibility(View.VISIBLE);
+//                                        Start again 08-09-2024
+                                        secRSVStatus.setVisibility(View.VISIBLE);
+                                        lineRSVStatus.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
@@ -434,6 +438,7 @@ public class FollowUpVisit extends Activity {
 
 //
             secSickStatus.setVisibility(View.GONE);
+            secRSVStatus.setVisibility(View.GONE);
             secExDate.setVisibility(View.GONE);
             String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVDate.getText().toString(),txtDOB.getText().toString()));
             AgeD = AgeDay;
@@ -604,44 +609,45 @@ public class FollowUpVisit extends Activity {
 
 //            Stop RSV : 15-06-2023  ****************************
 //            Stop again : 30-11-2023  ****************************
-//            if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
+//            stsrt again 08-09-2024
+            if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
 //
-////                String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
-////                if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0,3).equals("307"))  || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
-//
-//                    if (da <= 731) {
-////                if (mo <= 24) {
-//
-//                        Bundle IDbundle = new Bundle();
-//                        Intent f1;
-//                        IDbundle.putString("childid", ChildID);
-//                        IDbundle.putString("pid", PID);
-////                    IDbundle.putString("pid", CID);
-//                        IDbundle.putString("weekno", WeekNo);
-//                        IDbundle.putString("fm", FatherMother.getText().toString());
-//                        IDbundle.putString("aged", AgeD);
-//                        IDbundle.putString("agem", AgeM);
-//                        IDbundle.putString("agedm", AgeDM);
-//                        IDbundle.putString("bdate", DOB);
-//                        IDbundle.putString("name", lblCName.getText().toString());
-//                        IDbundle.putString("visittype", VisitType);
-//                        IDbundle.putString("visitno", "0");
-//                        IDbundle.putString("visitdate", dtpVDate.getText().toString());
-//                        IDbundle.putString("temp", "");
-//                        IDbundle.putString("Cough", "");
-//                        IDbundle.putString("CoughDt", "");
-//                        IDbundle.putString("DBrea", "");
-//                        IDbundle.putString("DBreaDt", "");
-//                        IDbundle.putString("source", "");
-//
-//                        f1 = new Intent(getApplicationContext(), RSV.class);
-//                        f1.putExtras(IDbundle);
-//                        startActivityForResult(f1, 1);
-//                    }
-//                }
-            //******************RSV
+                String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
+                if (RSVCluster.equals("001") || RSVCluster.equals("002") || RSVCluster.equals("003") || RSVCluster.equals("004") || RSVCluster.equals("005") || RSVCluster.equals("006") || RSVCluster.equals("007") || RSVCluster.equals("008") || RSVCluster.equals("009") || RSVCluster.equals("011") || RSVCluster.equals("012") || RSVCluster.equals("013") || RSVCluster.equals("014") || RSVCluster.equals("015") || (RSVCluster.equals("016") & VILLAGE.substring(0,3).equals("307"))  || RSVCluster.equals("017") || RSVCluster.equals("018") || RSVCluster.equals("019")) {
 
-//            }
+                    if (da <= 731) {
+//                if (mo <= 24) {
+
+                        Bundle IDbundle = new Bundle();
+                        Intent f1;
+                        IDbundle.putString("childid", ChildID);
+                        IDbundle.putString("pid", PID);
+//                    IDbundle.putString("pid", CID);
+                        IDbundle.putString("weekno", WeekNo);
+                        IDbundle.putString("fm", FatherMother.getText().toString());
+                        IDbundle.putString("aged", AgeD);
+                        IDbundle.putString("agem", AgeM);
+                        IDbundle.putString("agedm", AgeDM);
+                        IDbundle.putString("bdate", DOB);
+                        IDbundle.putString("name", lblCName.getText().toString());
+                        IDbundle.putString("visittype", VisitType);
+                        IDbundle.putString("visitno", "0");
+                        IDbundle.putString("visitdate", dtpVDate.getText().toString());
+                        IDbundle.putString("temp", "");
+                        IDbundle.putString("Cough", "");
+                        IDbundle.putString("CoughDt", "");
+                        IDbundle.putString("DBrea", "");
+                        IDbundle.putString("DBreaDt", "");
+                        IDbundle.putString("source", "");
+
+                        f1 = new Intent(getApplicationContext(), RSV.class);
+                        f1.putExtras(IDbundle);
+                        startActivityForResult(f1, 1);
+                    }
+                }
+//            ******************RSV
+
+            }
 //
 
 
