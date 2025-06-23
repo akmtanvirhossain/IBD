@@ -173,8 +173,8 @@ public class LoginActivity extends Activity{
         //Need to update date every time whenever shared updated system
         //Format: DDMMYYYY
         //*********************************************************************
-        //SystemUpdateDT = "29112023";
-        SystemUpdateDT = "20092024";
+        //SystemUpdateDT = "20092024";
+        SystemUpdateDT = "13102024";
         lblSystemDate.setText("Version:1.0, Built on: " + SystemUpdateDT + "(" + Global.Organization + ")");
 
         //Check for Internet connectivity

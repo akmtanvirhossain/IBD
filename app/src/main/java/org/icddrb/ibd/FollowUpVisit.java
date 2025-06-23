@@ -392,8 +392,9 @@ public class FollowUpVisit extends Activity {
 //                                        Stop RSV : 15-06-2023  ****************************Open again 22-10-23
 //                                        Stop again : 30-11-2023  ****************************
 //                                        Start again 08-09-2024
-                                        secRSVStatus.setVisibility(View.VISIBLE);
-                                        lineRSVStatus.setVisibility(View.VISIBLE);
+//                                        Stop again : 14-110-2024  ****************************
+                                        secRSVStatus.setVisibility(View.GONE);
+                                        lineRSVStatus.setVisibility(View.GONE);
                                     }
                                 }
                             }
