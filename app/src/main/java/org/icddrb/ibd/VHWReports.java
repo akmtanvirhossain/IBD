@@ -97,7 +97,8 @@ public class VHWReports extends Activity {
             webSettings.setJavaScriptEnabled(true);
 
 //            wv.loadUrl("http://mchd.icddrb.org/ibdweb/report_vhw.aspx?cluster="+ g.getClusterCode());
-            wv.loadUrl("http://182.160.109.210/ibdweb/report_vhw.aspx?cluster="+ g.getClusterCode());
+//            wv.loadUrl("http://182.160.109.210/ibdweb/report_vhw.aspx?cluster="+ g.getClusterCode());
+            wv.loadUrl("http://103.174.189.131/ibdweb/report_vhw.aspx?cluster="+ g.getClusterCode());
 
             // Force links and redirects to open in the WebView instead of in a browser
             wv.setWebViewClient(new WebViewClient());
