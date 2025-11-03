@@ -393,8 +393,10 @@ public class FollowUpVisit extends Activity {
 //                                        Stop again : 30-11-2023  ****************************
 //                                        Start again 08-09-2024
 //                                        Stop again : 14-110-2024  ****************************
-                                        secRSVStatus.setVisibility(View.GONE);
-                                        lineRSVStatus.setVisibility(View.GONE);
+//                                        Start again 01-11-2025  ****************************
+//                                        Change VISIBLE/GONE ********
+                                        secRSVStatus.setVisibility(View.VISIBLE);
+                                        lineRSVStatus.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
@@ -611,6 +613,7 @@ public class FollowUpVisit extends Activity {
 //            Stop RSV : 15-06-2023  ****************************
 //            Stop again : 30-11-2023  ****************************
 //            stsrt again 08-09-2024
+//            Start again 01-11-2025  ****************************
             if(rdoRSVStatus1.isChecked() &  secRSVStatus.isShown()) {
 //
                 String RSVCluster = C.ReturnSingleValue("Select Cluster from Cluster");
