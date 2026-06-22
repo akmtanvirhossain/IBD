@@ -1829,7 +1829,9 @@ public class Connection extends SQLiteOpenHelper {
             TableName = "DSSBari";
             VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId";
             SQLStr  = "Select d.Vill, d.Bari, d.BariName, d.BariLoc, d.Cluster, d.Block, d.Lat, d.Lon, d.EnDt, d.UserId";
-            SQLStr += " from DSSBari d,Bari b where d.Vill+d.Bari=b.vill+b.bari and b.Cluster='"+ Cluster +"'";
+            SQLStr += " from DSSBari d" +
+                    " inner join Bari b on d.Vill=b.vill and d.Bari=b.bari" +
+                    " where b.Cluster='"+ Cluster +"'";
             Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"Vill, Bari");
 
             //Visits
@@ -1840,7 +1842,9 @@ public class Connection extends SQLiteOpenHelper {
             SQLStr += " (Select ChildId, PID, CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate,";
             SQLStr += " VStat, SickStatus, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2)) ExDate,";
             SQLStr += " v.Lat, v.Lon, v.EnDt, v.UserId, v.Upload, v.UploadDT,rank() over (partition by childid order by week desc)total";
-            SQLStr += " from Visits v, Bari b where left(v.CID,7)=b.Vill+b.Bari and b.Cluster='"+ Cluster +"')a";
+            SQLStr += " from Visits v" +
+                    " inner join Bari b on left(v.CID,7)=b.Vill+b.Bari" +
+                    " where b.Cluster='"+ Cluster +"')a";
             SQLStr += " where total  between 1 and 5";
             Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"ChildId,Week");
 
@@ -1850,7 +1854,9 @@ public class Connection extends SQLiteOpenHelper {
             SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
             SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,";
             SQLStr += "(cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate,VHW, VHWCluster, VHWBlock, Referral, c.EnDt, c.UserId, c.Upload, c.UploadDt";
-            SQLStr += " from Child c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='"+ Cluster +"'";
+            SQLStr += " from Child c" +
+                    " Bari b on c.Vill=b.Vill and c.Bari=b.Bari" +
+                    " where b.Cluster='"+ Cluster +"'";
 
             TableName = "Child";
             VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, EnDt, UserId, Upload, UploadDt";
@@ -1861,7 +1867,9 @@ public class Connection extends SQLiteOpenHelper {
             SQLStr = "Select mwraId, c.Vill, c.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate,";
             SQLStr += "AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate,";
             SQLStr += "ExType, (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))ExDate,c.PStat,c.LMPDt,c.EnDt";
-            SQLStr += " from MWRA c,Bari b where c.Vill=b.Vill and c.Bari=b.Bari and b.Cluster='"+ Cluster +"'";
+            SQLStr += " from MWRA c" +
+                    " Bari b c.Vill=b.Vill and c.Bari=b.Bari" +
+                    " where and b.Cluster='"+ Cluster +"'";
 
             TableName = "MWRA";
             VariableList = "MwraId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate,PStat,LMPDt, EnDt";
@@ -2657,8 +2665,10 @@ public class Connection extends SQLiteOpenHelper {
         //------------------------------------------------------------------------------------------
         Integer totalRecords = 0;
         SQL = "select count(ChildId)totalrec" +
-                " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='"+ CLUSTER +"'\n" +
-                " and not exists(select tablename from Sync_Management where lower(tableName)='child' and UniqueID=c.ChildId and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),c.modifydate,120))";
+                " from Child c" +
+                " inner join Bari b where c.Vill=b.Vill and c.bari=b.Bari " +
+                " where b.Cluster='"+ CLUSTER +"'\n" +
+                " and not exists(select sm.tablename from Sync_Management sm where sm.tableName='Child' and sm.UniqueID=c.ChildId and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, c.modifydate) = 0)";
 
         String totalRec = ReturnResult("ReturnSingleValue", SQL);
         if (totalRec == null)
@@ -2688,8 +2698,10 @@ public class Connection extends SQLiteOpenHelper {
                     SQL = "select top " + batchSize + " ChildId, C.Vill, C.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, \n" +
                             " (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate, ExType, (case when len(ExType)=0 then null else (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))end)ExDate, \n" +
                             " (cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo, c.modifydate\n" +
-                            " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='" + CLUSTER + "'\n" +
-                            " and not exists(select tablename from Sync_Management where lower(tableName)='child' and UniqueID=c.ChildId and UserId='" + CLUSTER + "' and convert(varchar(19),modifydate,120)=convert(varchar(19),c.modifydate,120))";
+                            " from Child c" +
+                            " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari" +
+                            " where b.Cluster='" + CLUSTER + "'\n" +
+                            " and not exists(select sm.tablename from Sync_Management sm where sm.tableName='Child' and sm.UniqueID=c.ChildId and sm.UserId='" + CLUSTER + "' and DATEDIFF(second, sm.modifyDate, c.modifydate) = 0)";
 
                     Res = DownloadJSON_ModifyDate(SQL,
                             "child",
@@ -2710,7 +2722,9 @@ public class Connection extends SQLiteOpenHelper {
         //------------------------------------------------------------------------------------------
         Integer totalRecords = 0;
         SQL = "Select count(Vill)total from Bari b where Cluster='"+ CLUSTER +"'\n" +
-                " and not exists(select tablename from Sync_Management where lower(tableName)='bari' and UniqueID=b.vill+b.bari and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),b.modifydate,120))";
+                " and not exists(select sm.tablename from Sync_Management sm " +
+                " where sm.tableName='Bari' and sm.UniqueID=b.vill+b.bari" +
+                " and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, b.modifydate) = 0)";
 
         String totalRec = ReturnResult("ReturnSingleValue", SQL);
         if (totalRec == null)
@@ -2737,8 +2751,10 @@ public class Connection extends SQLiteOpenHelper {
             //------------------------------------------------------------------------------------------
             try {
                 for (int i = 0; i < totalBatch; i++) {
-                    SQL = "Select top " + batchSize + " Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate from Bari b where Cluster='" + CLUSTER + "'" +
-                            " and not exists(select tablename from Sync_Management where lower(tableName)='bari' and UniqueID=b.vill+b.bari and UserId='" + CLUSTER + "' and convert(varchar(19),modifydate,120)=convert(varchar(19),b.modifydate,120))";
+                    SQL = "Select top " + batchSize + " Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate " +
+                            " from Bari b" +
+                            " where Cluster='" + CLUSTER + "'" +
+                            " and not exists(select sm.tablename from Sync_Management sm where tableName='Bari' and sm.UniqueID=b.vill+b.bari and sm.UserId='" + CLUSTER + "' and DATEDIFF(second, sm.modifyDate, cb.modifydate) = 0)";
                     Res = DownloadJSON_ModifyDate(SQL,
                             "bari",
                             "Vill,Bari,Cluster,Block,BariName,BariLoc,modifydate",
@@ -2758,9 +2774,10 @@ public class Connection extends SQLiteOpenHelper {
         //------------------------------------------------------------------------------------------
         Integer totalRecords = 0;
         SQL = "select count(*)totalrec from data_GAge a \n" +
-                " inner join bari v on a.Vill=v.Vill and a.bari=v.bari where v.Cluster='"+ CLUSTER +"'\n" +
-                " and not exists(select tablename from Sync_Management where lower(tableName)='data_gage' and\n" +
-                " UniqueID=a.Vill+a.Bari+a.HH+a.SNo and UserId='"+ CLUSTER +"' and convert(varchar(19),modifydate,120)=convert(varchar(19),a.modifydate,120))\n";
+                " inner join bari v on a.Vill=v.Vill and a.bari=v.bari" +
+                " where v.Cluster='"+ CLUSTER +"'\n" +
+                " and not exists(select sm.tablename from Sync_Management sm where tableName='data_GAge' and\n" +
+                " sm.UniqueID=a.Vill+a.Bari+a.HH+a.SNo and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)\n";
 
         String totalRec = ReturnResult("ReturnSingleValue", SQL);
         if (totalRec == null)
@@ -2787,10 +2804,12 @@ public class Connection extends SQLiteOpenHelper {
             //------------------------------------------------------------------------------------------
             try {
                 for (int i = 0; i < totalBatch; i++) {
-                    SQL = "select top " + batchSize + " a.Vill,a.Bari,a.HH,a.SNo,a.PNo,a.GAge,a.StartTime,a.EndTime,a.DeviceID,a.EntryUser,a.Lat,a.Lon,convert(varchar(20),a.EnDt,120)modifyDate,'1' Upload,convert(varchar(20),a.modifyDate,120)modifyDate from data_GAge a \n" +
-                            " inner join bari v on a.Vill=v.Vill and a.bari=v.bari where v.Cluster='" + CLUSTER + "'\n" +
-                            " and not exists(select tablename from Sync_Management where lower(tableName)='data_gage' and\n" +
-                            " UniqueID=a.Vill+a.Bari+a.HH+a.SNo and UserId='" + CLUSTER + "' and convert(varchar(19),modifydate,120)=convert(varchar(19),a.modifydate,120))\n";
+                    SQL = "select top " + batchSize + " a.Vill,a.Bari,a.HH,a.SNo,a.PNo,a.GAge,a.StartTime,a.EndTime,a.DeviceID,a.EntryUser,a.Lat,a.Lon,convert(varchar(20),a.EnDt,120)modifyDate,'1' Upload,convert(varchar(20),a.modifyDate,120)modifyDate" +
+                            " from data_GAge a \n" +
+                            " inner join bari v on a.Vill=v.Vill and a.bari=v.bari" +
+                            " where v.Cluster='" + CLUSTER + "'\n" +
+                            " and not exists(select sm.tablename from Sync_Management sm where tableName='data_GAge' and\n" +
+                            " sm.UniqueID=a.Vill+a.Bari+a.HH+a.SNo and sm.UserId='" + CLUSTER + "' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)\n";
 
                     Res = DownloadJSON_ModifyDate(SQL,
                             "data_GAge",
@@ -2811,7 +2830,8 @@ public class Connection extends SQLiteOpenHelper {
         //------------------------------------------------------------------------------------------
         Integer totalRecords = 0;
         SQL = "select count(*)totalrecord\n" +
-                " from Visits v, Child c, Bari b where v.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari\n" +
+                " from Visits v, Child c" +
+                " Bari b where v.ChildId=c.ChildId and c.Vill=b.Vill and c.bari=b.bari\n" +
                 " and b.Cluster='"+ CLUSTER +"' and v.Upload='3'";
 
         String totalRec = ReturnResult("ReturnSingleValue", SQL);

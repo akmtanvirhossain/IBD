@@ -37,7 +37,7 @@ public class SettingForm extends Activity {
 
             final Spinner spnCluster = (Spinner) findViewById(R.id.spnCluster);
             final Spinner spnVHW = (Spinner) findViewById(R.id.spnVHW);
-            SpinnerItem(spnCluster, "select Cluster from Cluster where DeviceSetting='2'");
+            SpinnerItem(spnCluster, "select Cluster from Cluster where DeviceSetting='2' order by cast(Cluster as int)");
 
             spnCluster.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -57,7 +57,7 @@ public class SettingForm extends Activity {
                 public void onClick(View arg0) {
                     try {
 
-                        String Setting = C.ReturnResult("Existence", "Select Cluster from CLuster where Cluster='" + spnCluster.getSelectedItem().toString() + "' and DeviceSetting='1'");
+                        String Setting = C.ReturnResult("Existence", "Select Cluster from CLuster where Cluster='" + spnCluster.getSelectedItem().toString() + "' and DeviceSetting='2'");
                         if (Setting.equals("2")) {
                             Connection.MessageBox(SettingForm.this, "This is not a valid information for device setting or information not available for this VHW.");
                             return;

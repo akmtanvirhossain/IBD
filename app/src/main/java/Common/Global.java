@@ -27,12 +27,15 @@ public class Global {
 //	public static String IPAddress       = "182.160.109.210";
 	public static String IPAddress       = "103.174.189.131";
 	public static String Organization    = "ICDDRB, CHRF";
-	//public static String Namespace       = "http://"+ IPAddress +"/";
 	public static String Namespace       = "http://203.190.254.42/";
-	public static String Soap_Address    = "http://"+ IPAddress +"/ibdsurveillance/datasync.asmx";
+
+
+	//public static String APIName       = "ibdsurveillance";
+	public static String APIName       = "ibdsurveillance_temp";
+	public static String Soap_Address    = "http://"+ IPAddress +"/"+ APIName +"/datasync.asmx";
 
 	//New version
-	public static String UpdatedSystem   = "http://"+ IPAddress +"/ibdsurveillance/Update/"+ Global.NewVersionName +".txt";
+	public static String UpdatedSystem   = "http://"+ IPAddress +"/"+ APIName +"/Update/"+ Global.NewVersionName +".txt";
 
 	//Database
 	public static String DatabaseFolder = "IBDSurveillance";

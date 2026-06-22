@@ -27,8 +27,8 @@
     </LinearLayout>
     <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
     <LinearLayout android:layout_width="fill_parent" android:paddingTop="60sp" android:layout_height="wrap_content" android:orientation="horizontal">
-       	<Button android:id="@+id/cmdSave" android:layout_width="fill_parent" android:layout_height="wrap_content"
-       			android:textSize="20sp" android:text=" Done "  android:layout_marginBottom="10sp"/>
+        <Button android:id="@+id/cmdSave" android:layout_width="fill_parent" android:layout_height="wrap_content"
+            android:textSize="20sp" android:text=" Done "  android:layout_marginBottom="10sp"/>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
