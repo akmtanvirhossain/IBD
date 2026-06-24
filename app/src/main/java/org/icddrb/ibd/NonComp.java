@@ -881,6 +881,7 @@ public class NonComp extends Activity {
             }
 
             SQL = "Update " + TableName + " Set upload='2',";
+            SQL+="modifydate = '"+  Global.DateTimeNowYMDHMS() +"',";
             //SQL+="ChildId = '"+ txtChildId.getText().toString() +"',";
             SQL+="CID = '"+ CID +"',";
             SQL+="PID = '"+ PID +"',";

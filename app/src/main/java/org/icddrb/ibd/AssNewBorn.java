@@ -2489,6 +2489,8 @@ public class AssNewBorn extends Activity {
 
             SQL = "Update " + TableName + " Set Upload='2',";
             SQL+="Temp = '"+ txtTemp.getText().toString() +"',";
+//            Toriqul bhai
+            SQL+="modifydate = '"+  Global.DateTimeNowYMDHMS() +"',";
 //            SQL +="tempDk = '"+ (chkTemp.isChecked()?"1":"2") +"',";
             //21 Jul 2020
             if(rdoTemp1.isChecked())

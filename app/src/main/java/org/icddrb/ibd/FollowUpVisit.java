@@ -563,6 +563,7 @@ public class FollowUpVisit extends Activity {
             }
 
             SQL = "Update " + TableName + " Set Upload='2',";
+            SQL+="modifydate = '"+  Global.DateTimeNowYMDHMS() +"',";
             SQL += "CID = '" + CID +"',";
             SQL += "PID = '" + PID + "',";
             SQL += "Week = '" + WeekNo +"',";

@@ -3500,6 +3500,7 @@ public class AssPneu extends Activity {
             }
 
             SQL = "Update " + TableName + " Set Upload='2',";
+            SQL+="modifydate = '"+  Global.DateTimeNowYMDHMS() +"',";
             //SQL += "ChildId = '" + txtChildId.getText().toString() + "',";
             //SQL += "CID = '" + txtCID.getText().toString() + "',";
             //SQL += "PID = '" + txtPID.getText().toString() + "',";
