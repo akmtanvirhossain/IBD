@@ -209,7 +209,7 @@ public class LoginActivity extends Activity{
         g.setClusterCode(Cluster);
         sp.save(this,"cluster",Cluster);
 
-        try {
+       /* try {
             C.CreateTable("process_tab", "Create table process_tab(process_id int)");
             String resp = "";
 
@@ -221,7 +221,7 @@ public class LoginActivity extends Activity{
 
         }catch (Exception ex){
 
-        }
+        }*/
 
         if (networkAvailable)
         {
