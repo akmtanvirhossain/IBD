@@ -216,7 +216,7 @@ public class HouseholdIndex extends Activity {
                                         SQLStr += " v.Lat, v.Lon, v.EnDt, v.UserId, v.Upload, v.UploadDT,rank() over (partition by childid order by week desc)total";
                                         SQLStr += " from Visits v, Bari b where left(v.ChildId,7)=b.Vill+b.Bari and b.Cluster='" + Cluster + "' and b.Upload='4')a";
                                         SQLStr += " where total  between 1 and 5";
-                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId,Week");
+                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId,Week,VDate");
 
                                         //Child
                                         //--------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@ public class HouseholdIndex extends Activity {
 
                                         TableName = "AssNewBorn";
                                         VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload";
-                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week, Visit");
+                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
 
                                         //AssPneu
                                         //--------------------------------------------------------------------------------------
@@ -266,7 +266,7 @@ public class HouseholdIndex extends Activity {
 
                                         TableName = "AssPneu";
                                         VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk";
-                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week, Visit");
+                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
 
                                         //NonComp
                                         //--------------------------------------------------------------------------------------
@@ -278,7 +278,7 @@ public class HouseholdIndex extends Activity {
 
                                         TableName = "NonComp";
                                         VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
-                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week, Visit");
+                                        Res = C.DownloadJSON(SQLStr, TableName, VariableList, "ChildId, Week,VType, Visit");
                                     }
 
                                     //Bari - finally change the status of Upload='4'
@@ -355,10 +355,11 @@ public class HouseholdIndex extends Activity {
                                     SQLStr = "Select Vill,Bari,Cluster,Block,BariName,BariLoc from Bari where Cluster='"+ Cluster +"' and Upload='3'";
                                     VariableList = "Vill,Bari,Cluster,Block,BariName,BariLoc";
                                     Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "Vill,Bari");*/
-                                    C.Sync_Download_Bari(Cluster);
+                                    //C.Sync_Download_Bari(Cluster);
 
-                                    //Upload
-                                    //----------------------------------------------------------------------------------
+                                    //============================================================================================================
+                                    // Upload Data to Server
+                                    //============================================================================================================
                                     C.ExecuteCommandOnServer("Insert into UploadMonitor(Cluster)Values('" + g.getClusterCode() + "')");
 
                                     //Table: data_GAge
@@ -368,29 +369,29 @@ public class HouseholdIndex extends Activity {
 
                                     //Bari(New/Old-Block Update)
                                     TableName = "Bari";
-                                    VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload";
+                                    VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload,modifyDate";
                                     UniqueField = "Vill, Bari";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Child
                                     TableName = "Child";
-                                    VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral,Referral_Add,Referral_Foll,Absent_Sick,ContactNo, EnDt, UserId, Upload";
+                                    VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral,Referral_Add,Referral_Foll,Absent_Sick,ContactNo, EnDt, UserId, Upload,modifyDate";
                                     UniqueField = "ChildId";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Visits
                                     TableName = "Visits";
-                                    VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload";
-                                    UniqueField = "ChildId,Week";
+                                    VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate, RSVStatus, Lat, Lon, EnDt, UserId, Upload,modifyDate";
+                                    UniqueField = "ChildId,Week,VDate";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //AssNewBorn
                                     TableName = "AssNewBorn";
                                     VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, ";
-                                    VariableList += "HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload";
+                                    VariableList += "HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload,modifyDate";
                                     UniqueField = "ChildId, Week, VType, Visit";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
@@ -398,7 +399,7 @@ public class HouseholdIndex extends Activity {
                                     //AssPneu
                                     TableName = "AssPneu";
                                     VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, ";
-                                    VariableList += "CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk";
+                                    VariableList += "CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk,modifyDate";
                                     UniqueField = "ChildId, Week, VType, Visit";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
@@ -406,14 +407,14 @@ public class HouseholdIndex extends Activity {
                                     //NonComp
                                     TableName = "NonComp";
                                     VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ";
-                                    VariableList += "ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
+                                    VariableList += "ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload,modifyDate";
                                     UniqueField = "ChildId, Week, VType, Visit";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //CID Update(CID_Update_Log)
                                     TableName = "CID_Update_Log";
-                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
+                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload,modifydate";
                                     UniqueField = "ChildId, NewCID, OldCID";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
@@ -421,12 +422,15 @@ public class HouseholdIndex extends Activity {
 
                                     TableName = "RSV";
                                     VariableList = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt,Fever,FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason,SuitSam,SuitSamRe,SuitSamReO,SampleAgree,NotAgree,OthersR, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
-                                    UniqueField = "ChildID, Week, VType, Visit";
+                                    UniqueField = "ChildID, Week, VType, Visit, SlNo";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
+
+
+                                    //============================================================================================================
                                     //Delete
-                                    //-------------------------------------------------------------------
+                                    //============================================================================================================
                                     //Child remove based on server data, Table: ChildRemove
                                     SQLStr = "select ChildId,c.Vill,c.Bari from ChildRemove c,Bari b where c.vill+c.bari=b.Vill+b.bari and b.Cluster='" + Cluster + "' and c.Upload='1'";
                                     VariableList = "ChildId,Vill,Bari";
@@ -448,8 +452,9 @@ public class HouseholdIndex extends Activity {
                                     Res = C.DownloadJSON_Delete_UpdateServer(SQLStr, "Visits", "Visits_Audit", VariableList, "ChildId, Week, VDate");
 
 
+                                    //============================================================================================================
                                     //Data Update on local device
-                                    //-------------------------------------------------------------------
+                                    //============================================================================================================
 
                                     //Child
                                     /*TableName = "Child";
@@ -563,6 +568,18 @@ public class HouseholdIndex extends Activity {
 
                                     C.DownloadJSON(SQLStr, TableName, VariableList, "ChildID, SlNo");
 //                                    ********************* RSV Sample ************************
+
+
+
+                                   /* TableName = "Bari";
+                                    VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, modifydate";
+                                    SQLStr = "Select Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, modifydate" +
+                                            " from Bari where Cluster = '"+ Cluster +"'";
+                                    Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"Vill, Bari");
+*/
+
+
+                                    C.Sync_Download("Bari",Cluster,"");
 
                                     //Upload Database to Server : 09 Nov 2016
                                     C.DatabaseUploadZip(Cluster);
