@@ -26,8 +26,8 @@ public class Global {
 	public static String Namespace       = "http://203.190.254.42/";
 
 
-	//public static String APIName       = "ibdsurveillance";
-	public static String APIName       = "ibdsurveillance_temp";
+	public static String APIName       = "ibdsurveillance";
+	//public static String APIName       = "ibdsurveillance_temp";
 	public static String Soap_Address    = "http://"+ IPAddress +"/"+ APIName +"/datasync.asmx";
 
 	//New version
