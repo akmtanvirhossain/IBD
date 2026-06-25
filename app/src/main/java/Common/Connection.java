@@ -2007,7 +2007,7 @@ public class Connection extends SQLiteOpenHelper {
 
             this.Sync_Download_RSV(Cluster);
             this.Sync_Download_RSVSample(Cluster);
-            this.Sync_Download_CID_Update(Cluster);
+            //this.Sync_Download_CID_Update_Log(Cluster);
 
             /*
             //Bari
@@ -3475,7 +3475,7 @@ public class Connection extends SQLiteOpenHelper {
         }
     }
 
-    public void Sync_Download_CID_Update(String CLUSTER) {
+    public void Sync_Download_CID_Update_Log(String CLUSTER) {
         String SQL = "";
         String Res = "";
 
@@ -3483,11 +3483,11 @@ public class Connection extends SQLiteOpenHelper {
         //------------------------------------------------------------------------------------------
         Integer totalRecords = 0;
         SQL = "select count(*)totalrecord\n" +
-                " from NonComp v\n" +
+                " from CID_Update_Log v\n" +
                 " inner join Child c on v.ChildId=c.ChildId\n" +
                 " inner join Bari b on c.Vill=b.Vill and c.bari=b.bari\n" +
                 " and b.Cluster='"+ CLUSTER +"' \n" +
-                " and not exists(select sm.tablename from Sync_Management sm where tableName='NonComp' and\n" +
+                " and not exists(select sm.tablename from Sync_Management sm where tableName='CID_Update_Log' and\n" +
                 " sm.UniqueID=v.ChildId+Cast(v.Week as varchar(5))+Cast(v.vtype as varchar(5))+cast(v.visit as varchar(5)) and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)\n";
 
         String totalRec = ReturnResult("ReturnSingleValue", SQL);
@@ -3516,11 +3516,11 @@ public class Connection extends SQLiteOpenHelper {
             try {
                 for (int i = 0; i < totalBatch; i++) {
                     SQL = "select top " + batchSize + " a.ChildId, a.CID, a.PID, Week, VType, Visit, Convert(varchar(10),VDate,120) VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, a.UserId, convert(varchar(23),a.EnDt,120)EnDt, '1' Upload,convert(varchar(23),a.modifydate,120)modifydate\n" +
-                            " from NonComp v\n" +
+                            " from CID_Update_Log v\n" +
                             " inner join Child c on v.ChildId=c.ChildId\n" +
                             " inner join Bari b on c.Vill=b.Vill and c.bari=b.bari\n" +
                             " and b.Cluster='"+ CLUSTER +"' \n" +
-                            " and not exists(select sm.tablename from Sync_Management sm where tableName='NonComp' and\n" +
+                            " and not exists(select sm.tablename from Sync_Management sm where tableName='CID_Update_Log' and\n" +
                             " sm.UniqueID=v.ChildId+Cast(v.Week as varchar(5))+Cast(v.vtype as varchar(5))+cast(v.visit as varchar(5)) and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)\n";
 
 

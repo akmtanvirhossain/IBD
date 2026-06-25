@@ -479,7 +479,7 @@ public class HouseholdIndex extends Activity {
 
                                     C.Sync_Download_RSV(Cluster);
                                     C.Sync_Download_RSVSample(Cluster);
-                                    C.Sync_Download_CID_Update(Cluster);
+                                    //C.Sync_Download_CID_Update_Log(Cluster);
 
                                     //MigChild
                                     C.Save("Delete from MigChild");
