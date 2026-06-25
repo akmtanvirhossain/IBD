@@ -660,7 +660,7 @@ public class FollowUpVisit extends Activity {
 
             Connection.MessageBox(FollowUpVisit.this, "Saved Successfully");
 
-            finish();
+            //finish();
 
             if(EX.equals("0")|EX.equals("1")|EX.equals("2")|EX.equals("3")|EX.equals("21")|EX.equals("22")|EX.equals("23")|EX.equals("24")|EX.equals("25")) {
                 String AgeDay = String.valueOf(Global.DateDifferenceDays(dtpVDate.getText().toString(),txtDOB.getText().toString()));
@@ -731,6 +731,7 @@ public class FollowUpVisit extends Activity {
                     startActivity(f1);
                 }
             }
+            finish();
 
         }
         catch(Exception  e)

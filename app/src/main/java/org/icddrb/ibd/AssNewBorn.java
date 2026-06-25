@@ -2914,14 +2914,16 @@ public class AssNewBorn extends Activity {
 //                    chkTemp.setChecked(false);
 //                }
 //                27/07/2020
-                if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
-                    rdoTemp1.setChecked(true);
-                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
-                    rdoTemp2.setChecked(true);
-                else if(cur.getString(cur.getColumnIndex("tempDk")).equals("3"))
-                    rdoTemp3.setChecked(true);
-                else
-                    rdogrpTemp1.clearCheck();
+                if (cur.getString(cur.getColumnIndex("tempDk")) != null) {
+                    if(cur.getString(cur.getColumnIndex("tempDk")).equals("2"))
+                        rdoTemp1.setChecked(true);
+                    else if(cur.getString(cur.getColumnIndex("tempDk")).equals("1"))
+                        rdoTemp2.setChecked(true);
+                    else if(cur.getString(cur.getColumnIndex("tempDk")).equals("3"))
+                        rdoTemp3.setChecked(true);
+                    else
+                        rdogrpTemp1.clearCheck();
+                }
 //
 
 //                if(a.equals(""))
@@ -3075,13 +3077,15 @@ public class AssNewBorn extends Activity {
                         rb.setChecked(false);
                 }
 
-                if(cur.getString(cur.getColumnIndex("RRDk")).equals("1"))
-                {
-                    chkRR.setChecked(true);
-                }
-                else if(cur.getString(cur.getColumnIndex("RRDk")).equals("2"))
-                {
-                    chkRR.setChecked(false);
+                if (cur.getString(cur.getColumnIndex("RRDk")) !=null) {
+                    if(cur.getString(cur.getColumnIndex("RRDk")).equals("1"))
+                    {
+                        chkRR.setChecked(true);
+                    }
+                    else if(cur.getString(cur.getColumnIndex("RRDk")).equals("2"))
+                    {
+                        chkRR.setChecked(false);
+                    }
                 }
 
                 txtRR1.setText(cur.getString(cur.getColumnIndex("RR1")));
