@@ -434,6 +434,11 @@ public class HouseholdIndex extends Activity {
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
 
+                                    //CID Update(CID_Update_Log)
+                                    TableName = "CID_Update_Log";
+                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
+                                    UniqueField = "ChildId, NewCID, OldCID";
+                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //============================================================================================================
                                     //Delete
@@ -460,141 +465,29 @@ public class HouseholdIndex extends Activity {
 
 
                                     //============================================================================================================
-                                    //Data Update on local device
+                                    //Data Download
                                     //============================================================================================================
-                                   /* TableName = "Bari";
-                                    VariableList = "Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, modifydate";
-                                    SQLStr = "Select Vill, Bari, BariName, BariLoc, Cluster, Block, Lat, Lon, EnDt, UserId, Upload, modifydate" +
-                                            " from Bari where Cluster = '"+ Cluster +"'";
-                                    Res = DownloadJSON_InsertOnly(SQLStr,TableName,VariableList,"Vill, Bari");
-*/
-
-
-                                    C.Sync_Download("Bari",Cluster,"");
-
-
-                                    //Child
-                                    /*TableName = "Child";
-                                    VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo";
-                                    SQLStr  = "select ChildId, C.Vill, C.bari, HH, SNo, PID, CID, Name, Sex, (cast(YEAR(BDate) as varchar(4))+'-'+right('0'+ cast(MONTH(BDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(BDate) as varchar(2)),2))BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, ";
-                                    SQLStr += " (cast(YEAR(EnDate) as varchar(4))+'-'+right('0'+ cast(MONTH(EnDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(EnDate) as varchar(2)),2))EnDate, ExType, (case when len(ExType)=0 then null else (cast(YEAR(ExDate) as varchar(4))+'-'+right('0'+ cast(MONTH(ExDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(ExDate) as varchar(2)),2))end)ExDate, ";
-                                    SQLStr += " (cast(YEAR(VStDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VStDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VStDate) as varchar(2)),2))VStDate, VHW, VHWCluster, VHWBlock, Referral, Referral_Add, Referral_Foll, ContactNo";
-                                    SQLStr += " from Child c,Bari b where c.Vill+c.bari=b.Vill+b.Bari and b.Cluster='"+ Cluster +"' and c.Upload='3'";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr,TableName,VariableList,"ChildId");
-                                    */
+                                    C.Sync_Download_Bari(Cluster);
+                                    C.Sync_Download_DSSBari(Cluster);
+                                    C.Sync_Download_MWRA(Cluster);
                                     C.Sync_Download_Child(Cluster);
-
-
-                                    //data_GAge
-                                    /*SQLStr  = "select a.Vill,a.Bari,a.HH,a.SNo,a.PNo,a.GAge,a.StartTime,a.EndTime,a.DeviceID,a.EntryUser,a.Lat,a.Lon,convert(varchar(20),a.EnDt,120)modifyDate,'1' Upload,convert(varchar(20),a.modifyDate,120)modifyDate\n" +
-                                            " from data_GAge a inner join bari v on a.Vill=v.Vill and a.bari=v.bari where v.Cluster='"+ Cluster +"' and a.Upload='3'";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr, "data_GAge", "Vill,Bari,HH,SNo,PNo,GAge,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,Upload,modifyDate", "Vill,Bari,HH,SNo");
-                                    */
                                     C.Sync_Download_data_GAge(Cluster);
-
-                                    //Visit
-                                    /*TableName = "Visits";
-                                    VariableList = "ChildId, PID, CID, Week, VDate, VStat, SickStatus, ExDate";
-                                    SQLStr = " select top 1000 v.ChildId, v.PID, v.CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate, VStat, SickStatus, v.ExDate";
-                                    SQLStr += " from Visits v, Child c, Bari b where v.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari";
-                                    SQLStr += " and b.Cluster='" + Cluster + "' and v.Upload='3' order by Week asc";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week");*/
-
                                     C.Sync_Download_Visits(Cluster);
-
-                                    //Assessment (0-28 days)
-                                    /*TableName = "AssNewBorn";
-                                    VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, EnDt, UserId, Upload";
-
-                                    *//*VariableList = "ChildId, CID, PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos";
-                                    SQLStr  = " Select a.ChildId, a.CID, a.PID, Temp, Week, VType, Visit, VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever,";
-                                    SQLStr += " HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus,";
-                                    SQLStr += " UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason,";
-                                    SQLStr += " TPlace, TPlaceC, TAbsIn, TAbsDur, Hos from AssNewBorn a,Child c,Bari b where a.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari";
-                                    SQLStr += " and b.Cluster='"+ Cluster +"' and a.Upload='3'";*//*
-
-                                    SQLStr = "select a.ChildId, a.CID, a.PID, Temp, Week, VType, Visit, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate, Oth1, Oth2, Oth3, HNoCry, HNoBrea, HConv, HUncon, HDBrea, HJaund, HHFever, HLFever, HSkin, HFedp, HPus, HVomit, HWeak, HLeth, Asses, RR1, RR2, NoCry, Gasp, SBrea, BirthAs, Conv, RBrea, CInd, HFever, Hypo, UCon, Pus, UmbR, Weak, Leth, NoFed, Vsd, ConvH, Fonta, Vomit, H1Fever, LFever, NJaun, Pvsd, Jaund, SJaun, EyeP, Gono, Sick, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, StartTime, EndTime, a.EnDt, a.UserId, '1' Upload";
-                                    SQLStr += " from AssNewBorn a";
-                                    SQLStr += " inner join Child c on a.ChildId=c.ChildId";
-                                    SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                    SQLStr += " where b.Cluster='" + Cluster + "' and a.upload='3'";
-
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
-                                    */
                                     C.Sync_Download_AssNewBorn(Cluster);
-
-                                    //Assessment (29-59 months)
-                                    /*TableName = "AssPneu";
-                                    VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, EnDt, UserId, Upload,RRDk,tempDk";
-
-                                    *//*VariableList = "ChildId, PID, CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos";
-                                    SQLStr  = " Select a.ChildId, a.PID, a.CID, Week, VDate, VType, Visit, temp, Cough, CoughDt, DBrea, DBreaDt, Fever, FeverDt, OthCom1, OthCom2, OthCom3,";
-                                    SQLStr += " Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2,";
-                                    SQLStr += " CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason,";
-                                    SQLStr += " TPlace, TPlaceC, TAbsIn, TAbsDur, Hos from AssPneu a,Child c,Bari b where a.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari";
-                                    SQLStr += " and b.Cluster='"+ Cluster +"' and a.Upload='3'";*//*
-
-                                    SQLStr = "select top 1000 a.ChildId, a.PID, a.CID, Week, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate, VType, Visit, temp, Cough, ";
-                                    SQLStr += " (cast(YEAR(CoughDt) as varchar(4))+'-'+right('0'+ cast(MONTH(CoughDt) as varchar(2)),2)+'-'+right('0'+cast(DAY(CoughDt) as varchar(2)),2))CoughDt, DBrea, ";
-                                    SQLStr += " (cast(YEAR(DBreaDt) as varchar(4))+'-'+right('0'+ cast(MONTH(DBreaDt) as varchar(2)),2)+'-'+right('0'+cast(DAY(DBreaDt) as varchar(2)),2))DBreaDt, Fever, ";
-                                    SQLStr += " (cast(YEAR(FeverDt) as varchar(4))+'-'+right('0'+ cast(MONTH(FeverDt) as varchar(2)),2)+'-'+right('0'+cast(DAY(FeverDt) as varchar(2)),2))FeverDt, OthCom1, OthCom2, OthCom3, Asses, RR1, RR2, Conv, FBrea, CInd, Leth, UCon, Drink, Vomit, None, LFever, MFever, HFever, Neck, Fonta, Conv2, Leth2, Ucon2, Drink2, Vomit2, CSPne, CPPne, CNPne, CLFever, CMFever, CHFever, CMenin, TSPne, TPPne, TNPne, TLFever, TMFever, THFever, TMenin, Ref, RSlip, Comp, Reason, TPlace, TPlaceC, TAbsIn, TAbsDur, Hos, a.EnDt, a.UserId, '1' Upload,a.RRDk,a.tempDk";
-                                    SQLStr += " from AssPneu a";
-                                    SQLStr += " inner join Child c on a.ChildId=c.ChildId";
-                                    SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                    SQLStr += " where b.Cluster='" + Cluster + "' and a.upload='3'";
-
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");*/
-
                                     C.Sync_Download_AssPneu(Cluster);
-
-                                    //Non-Complience
-                                    /*TableName = "NonComp";
-                                    VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, UserId, EnDt, Upload";
-
-                                    *//*VariableList = "ChildId, CID, PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth";
-                                    SQLStr  = " Select a.ChildId, a.CID, a.PID, Week, VType, Visit, VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3,";
-                                    SQLStr += " Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD,";
-                                    SQLStr += " ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth";
-                                    SQLStr += " from NonComp a,Child c,Bari b where a.ChildId=c.ChildId and c.Vill+c.bari=b.Vill+b.bari";
-                                    SQLStr += " and b.Cluster='"+ Cluster +"' and a.Upload='3'";*//*
-
-
-                                    SQLStr = " select a.ChildId, a.CID, a.PID, Week, VType, Visit, (cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2)) VDate, RefResult, Q1a, Q1b, Q1c, Q1d, CausOth, VisitOthYN, Provider1, Provider2, Provider3, Provider4, ProviderOth1, Prescrip, RefA, RefB, RefC, RefD, RefE, RefF, RefG, RefH, RefI, RefX, RefOth, ServiceA, ServiceB, ServiceC, ServiceD, ServiceE, ServiceF, ServiceG, ServiceH, ServiceX, ServiceOth, StartTime, EndTime, a.UserId, a.EnDt, '1' Upload";
-                                    SQLStr += " from NonComp a";
-                                    SQLStr += " inner join Child c on a.ChildId=c.ChildId";
-                                    SQLStr += " inner join Bari b on c.Vill=b.Vill and c.bari=b.Bari";
-                                    SQLStr += " where b.Cluster='" + Cluster + "' and a.upload='3'";
-                                    Res = C.DownloadJSON_UpdateServer(SQLStr, TableName, VariableList, "ChildId, Week, VType, Visit");
-                                    */
                                     C.Sync_Download_NonComp(Cluster);
 
-                                    //********************* RSV Sample ************************
-                                    SQLStr = "select r.ChildID, r.CID, r.PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt, Fever, FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SuitSam, SuitSamRe, SuitSamReO, SampleAgree, NotAgree, OthersR, StartTime, EndTime, DeviceID, EntryUser, r.Lat, r.Lon, \n" +
-                                            "convert(varchar(20),r.EnDt,120)EnDt, r.Upload, convert(varchar(20),r.modifyDate,120)modifyDate from RSV r\n" +
-                                            " inner join Child c on r.ChildID=c.ChildId\n" +
-                                            " inner join Bari b on substring(c.CID,1,7)=b.Vill+b.Bari\n" +
-                                            " where b.Cluster='"+ Cluster +"'";
-                                    TableName = "RSV";
-                                    VariableList = "ChildID, CID, PID, Week, VDate, VType, Visit, SlNo, Temp, Cough, dtpCoughDt, DBrea, dtpDBreaDt, DeepCold, DeepColdDt, SoreThroat, SoreThroatDt, Fever, FeverDt, RSVsuitable, RSVlisted, RSVlistedDt, Reason, SuitSam, SuitSamRe, SuitSamReO, SampleAgree, NotAgree, OthersR, StartTime, EndTime, DeviceID, EntryUser, Lat, Lon, EnDt, Upload, modifyDate";
+                                    C.Sync_Download_RSV(Cluster);
+                                    C.Sync_Download_RSVSample(Cluster);
+                                    C.Sync_Download_CID_Update(Cluster);
 
-                                    C.DownloadJSON(SQLStr, TableName, VariableList, "ChildID,Week,VType,Visit,SlNo");
-
-                                    SQLStr = "Select ChildID,SlNo,(cast(YEAR(VDate) as varchar(4))+'-'+right('0'+ cast(MONTH(VDate) as varchar(2)),2)+'-'+right('0'+cast(DAY(VDate) as varchar(2)),2))VDate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,'1' Upload,modifyDate from RSVSample";
-                                    TableName = "RSVSample";
-                                    VariableList = "ChildID,SlNo,Vdate,SampleTime,Status,Place,Reason,ReasonOth,RSVSampleID,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt, Upload,modifyDate";
-
-                                    C.DownloadJSON(SQLStr, TableName, VariableList, "ChildID, SlNo");
-//                                    ********************* RSV Sample ************************
-
-
-
-
-
-                                    //CID Update(CID_Update_Log)
-                                    TableName = "CID_Update_Log";
-                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
-                                    UniqueField = "ChildId, NewCID, OldCID";
-                                    C.UploadJSON(TableName, VariableList, UniqueField);
+                                    //MigChild
+                                    C.Save("Delete from MigChild");
+                                    TableName = "MigChild";
+                                    SQLStr = "select ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, " +
+                                            "EnDate, ExType, ExDate from MigChild";
+                                    VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate";
+                                    Res = C.DownloadJSON_InsertOnly(SQLStr, TableName, VariableList, "ChildId");
 
 
                                     //Upload Database to Server : 09 Nov 2016
@@ -620,7 +513,7 @@ public class HouseholdIndex extends Activity {
 
                 return true;
 
-            case R.id.menuMasterData:
+            /*case R.id.menuMasterData:
                 //Check for Internet connectivity
                 //*******************************************************************************
                 if (!Connection.haveNetworkConnection(this)) {
@@ -652,20 +545,13 @@ public class HouseholdIndex extends Activity {
                                     //----------------------------------------------------------------------------------
 
                                     //CodeList
-                                    /*
+                                    *//*
                                     TableName = "CodeList";
                                     SQLStr = "select FName, VarName, VarCode, VarDes from CodeList";
                                     VariableList = "FName, VarName, VarCode, VarDes";
                                     Res = C.DownloadJSON(SQLStr, TableName, VariableList, "FName, VarName, VarCode");
-                                    */
+                                    *//*
 
-                                    //MigChild
-                                    C.Save("Delete from MigChild");
-                                    TableName = "MigChild";
-                                    SQLStr = "select ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, " +
-                                            "EnDate, ExType, ExDate from MigChild";
-                                    VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate";
-                                    Res = C.DownloadJSON_InsertOnly(SQLStr, TableName, VariableList, "ChildId");
 
                                     //End-----------------------------------------------------------------
 
@@ -680,7 +566,7 @@ public class HouseholdIndex extends Activity {
                     }
                 });
                 adb.show();
-                return true;
+                return true;*/
 
             case R.id.menuExit:
                 adb.setTitle("Exit");
@@ -720,7 +606,7 @@ public class HouseholdIndex extends Activity {
                 return true;
 
             //EDD List Sync from DSS Database
-            case R.id.menuSyncEDDList:
+            /*case R.id.menuSyncEDDList:
                 //Check for Internet connectivity
                 //*******************************************************************************
                 if (!Connection.haveNetworkConnection(this)) {
@@ -818,7 +704,7 @@ public class HouseholdIndex extends Activity {
                 });
                 adb.show();
 
-                return true;
+                return true;*/
         }
         return false;
     }
@@ -2096,13 +1982,13 @@ public class HouseholdIndex extends Activity {
 
             FatherMother.setText(": " + FM);
 
-            if (Integer.valueOf(o.get("aged")) <= 28)
+            if (Integer.valueOf(o.get("aged").isEmpty()?"0":o.get("aged")) <= 28)
                 Age.setText(": " + o.get("aged") + " দিন");
             else
                 Age.setText(": " + o.get("agem") + " মাস");
 
-            double m = Integer.valueOf(o.get("aged")) / 30.44;
-            double d = Integer.valueOf(o.get("aged")) % 30.44;
+            double m = Integer.valueOf(o.get("aged").isEmpty()?"0":o.get("aged")) / 30.44;
+            double d = Integer.valueOf(o.get("aged").isEmpty()?"0":o.get("aged")) % 30.44;
 
             final String AgeDayMonth = String.valueOf((int) m) + " মাস " + String.valueOf((int) d) + "  দিন";
 
