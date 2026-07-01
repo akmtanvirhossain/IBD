@@ -348,7 +348,6 @@ public class HouseholdIndex extends Activity {
                                     String VariableList;
                                     String UniqueField;
 
-
                                     /*TableName = "MDSSVill";
                                     VariableList = "Vill, Vname, UCode, UName, Cluster, Status, OldUnion";
                                     UniqueField = "Vill";
@@ -421,7 +420,7 @@ public class HouseholdIndex extends Activity {
 
                                     //CID Update(CID_Update_Log)
                                     TableName = "CID_Update_Log";
-                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload,modifydate";
+                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, Status, Upload";
                                     UniqueField = "ChildId, NewCID, OldCID";
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
@@ -433,12 +432,6 @@ public class HouseholdIndex extends Activity {
 
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
-
-                                    //CID Update(CID_Update_Log)
-                                    TableName = "CID_Update_Log";
-                                    VariableList = "ChildId, NewCID, OldCID, ChangeType, UserId, UpdateDT, Status, Upload";
-                                    UniqueField = "ChildId, NewCID, OldCID";
-                                    C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //============================================================================================================
                                     //Delete
@@ -479,7 +472,6 @@ public class HouseholdIndex extends Activity {
 
                                     C.Sync_Download_RSV(Cluster);
                                     C.Sync_Download_RSVSample(Cluster);
-                                    //C.Sync_Download_CID_Update_Log(Cluster);
 
                                     //MigChild
                                     C.Save("Delete from MigChild");
