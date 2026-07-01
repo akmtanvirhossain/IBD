@@ -1139,7 +1139,7 @@ public class HouseholdIndex extends Activity {
             cmdBlock2.setTextColor(Color.WHITE);
             cmdBlock3.setBackgroundColor(Color.DKGRAY);
             cmdBlock3.setTextColor(Color.WHITE);
-            cmdBlock4.setBackgroundColor(Color.DKGRAY);
+            cmdBlock4.setBackgroundColor(Color.DKGRAY); 
             cmdBlock4.setTextColor(Color.WHITE);
             cmdBlock5.setBackgroundColor(Color.DKGRAY);
             cmdBlock5.setTextColor(Color.WHITE);
@@ -3374,12 +3374,14 @@ public class HouseholdIndex extends Activity {
     public void turnGPSOff(){
         String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
 
-        if(provider.contains("gps")){ //if gps is enabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            sendBroadcast(poke);
+        if (provider !=null) {
+            if(provider.contains("gps")){ //if gps is enabled
+                final Intent poke = new Intent();
+                poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+                poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+                poke.setData(Uri.parse("3"));
+                sendBroadcast(poke);
+            }
         }
     }
 
