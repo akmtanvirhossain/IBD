@@ -14,11 +14,12 @@ public class ProjectSetting {
     //public static String APIName       = "ibdsurveillance";
 
 
-    public static String ProjectName    = "ibdsurveillance_temp";
-    public static String APIName       = "ibdsurveillance_temp";
+    public static String ProjectName    = "ibdsurveillance";
+//    public static String APIName       = "ibdsurveillance_temp";
 
     // ---------------------------------------------------------------------------------------------
-    public static String VersionDate    = "16062026"; //Format: DDMMYYYY
+//    public static String VersionDate    = "01072026"; //Format: DDMMYYYY
+    public static String VersionDate    = "11072026"; //Format: DDMMYYYY
 
     // ---------------------------------------------------------------------------------------------
     public static String apiName         = ProjectName.toLowerCase();

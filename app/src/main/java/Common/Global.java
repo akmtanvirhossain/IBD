@@ -27,7 +27,7 @@ public class Global {
 
 
 	public static String APIName       = "ibdsurveillance";
-	//public static String APIName       = "ibdsurveillance_temp";
+//	public static String APIName       = "ibdsurveillance_temp";
 	public static String Soap_Address    = "http://"+ IPAddress +"/"+ APIName +"/datasync.asmx";
 
 	//New version
