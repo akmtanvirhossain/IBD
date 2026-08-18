@@ -3040,7 +3040,8 @@ public class Connection extends SQLiteOpenHelper {
                             " inner join Bari b on v.vill=b.Vill and v.bari=b.Bari\n" +
                             " where b.Cluster='"+ CLUSTER +"'\n" +
                             " and not exists(select sm.tablename from Sync_Management sm where tableName='MWRA' and\n" +
-                            " sm.UniqueID=v.Vill+v.Bari and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)";
+                            //" sm.UniqueID=v.Vill+v.Bari and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)";
+                            " sm.UniqueID=v.MWRAId and sm.UserId='"+ CLUSTER +"' and DATEDIFF(second, sm.modifyDate, v.modifydate) = 0)";
 
                     Res = DownloadJSON_ModifyDate(SQL,
                             "MWRA",

@@ -17,8 +17,7 @@ public class ProjectSetting {
     public static String ProjectName    = "ibdsurveillance";
 //    public static String APIName       = "ibdsurveillance_temp";
 
-    // ---------------------------------------------------------------------------------------------
-//    public static String VersionDate    = "01072026"; //Format: DDMMYYYY
+    // --OLD---Built date not provide from here----------------------------------------------------------------------------------------
     public static String VersionDate    = "11072026"; //Format: DDMMYYYY
 
     // ---------------------------------------------------------------------------------------------
