@@ -385,6 +385,8 @@ public class HouseholdIndex extends Activity {
                                     VariableList = "ChildId, Vill, bari, HH, SNo, PID, CID, Name, Sex, BDate, AgeM, MoNo, MoPNO, MoName, FaNo, FaPNO, FaName, EnType, EnDate, ExType, ExDate, VStDate, VHW, VHWCluster, VHWBlock, Referral,Referral_Add,Referral_Foll,Absent_Sick,ContactNo, EnDt, UserId, Upload,modifyDate";
                                     UniqueField = "ChildId";
 
+                                    //modifydate is NOT NULL on server
+                                    C.Save("Update "+TableName+" set modifydate='" + Global.DateTimeNowYMDHMS() + "' where Upload='2' and (modifydate is null or modifydate='')");
                                     C.UploadJSON(TableName, VariableList, UniqueField);
 
                                     //Visits

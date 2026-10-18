@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
@@ -701,7 +702,7 @@ public class Connection extends SQLiteOpenHelper {
                     else if(cur_H.getString(c).equals("null"))
                         DataList = "";
                     else
-                        DataList = cur_H.getString(c).toString();
+                        DataList = RemoveNonBMP(cur_H.getString(c).toString());
 
                 }
                 else
@@ -711,7 +712,7 @@ public class Connection extends SQLiteOpenHelper {
                     else if(cur_H.getString(c).equals("null"))
                         DataList+="^"+"";
                     else
-                        DataList+="^"+cur_H.getString(c).toString();
+                        DataList+="^"+RemoveNonBMP(cur_H.getString(c).toString());
                 }
             }
 
@@ -744,6 +745,13 @@ public class Connection extends SQLiteOpenHelper {
         cur_H.close();
 
         return data;
+    }
+
+    //Remove emoji and other characters outside the Basic Multilingual Plane.
+    //ksoap writes them as invalid XML, the server rejects the whole request and the table never syncs.
+    private String RemoveNonBMP(String Value)
+    {
+        return Value.replaceAll("[\\x{10000}-\\x{10FFFF}]", "");
     }
 
     public  String DownloadJSON(String SQL,String TableName,String ColumnList, String UniqueField)
@@ -1854,6 +1862,11 @@ public class Connection extends SQLiteOpenHelper {
         UploadDataJSON u = new UploadDataJSON();
         try{
             response=u.execute(json).get();
+            if(response == null)
+            {
+                Log.e("UploadJSON", TableName + ": no response from server, " + data.size() + " record(s) not uploaded");
+                return "";
+            }
 
             //Process Response
             downloadClass d = new downloadClass();

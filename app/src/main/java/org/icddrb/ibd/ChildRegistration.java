@@ -625,7 +625,9 @@ public class ChildRegistration extends Activity {
                 SQL+="ExDate = '',";
             }
 
-            SQL+="VStDate = '"+ Global.DateConvertYMD(dtpVStDate.getText().toString()) +"'";
+            //SQL+="VStDate = '"+ Global.DateConvertYMD(dtpVStDate.getText().toString()) +"'";
+            SQL += "VStDate = '" + Global.DateConvertYMD(dtpVStDate.getText().toString()) + "',";
+            SQL += "modifydate = '" + Global.DateTimeNowYMDHMS() + "'";
             SQL+="  Where ChildId='"+ ChildId +"'";
             C.Save(SQL);
 
